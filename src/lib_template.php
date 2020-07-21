@@ -1,8 +1,8 @@
 <?php
 
-require_once($_SERVER['DOCUMENT_ROOT'] . '/include.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/src/include.php');
 
-function renderTemplate($template, $data) {
+function render_template($template, $data) {
   $string = '';
   if (file_exists($template)) {
     ob_start();

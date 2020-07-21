@@ -17,13 +17,12 @@
 
 <!DOCTYPE html>
 <html>
-
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="Start your development with a Dashboard for Bootstrap 4.">
   <meta name="author" content="Creative Tim">
-  <title>Argon Dashboard - Free Dashboard for Bootstrap 4</title>
+  <title><?= $data['title'] ?></title>
   <!-- Favicon -->
   <link rel="icon" href="/argon-dashboard/assets/img/brand/zd-blue.png" type="image/png">
   <!-- Fonts -->
@@ -35,7 +34,6 @@
   <!-- Argon CSS -->
   <link rel="stylesheet" href="/argon-dashboard/assets/css/argon.css?v=1.2.0" type="text/css">
 </head>
-
 <body>
 <!-- Sidenav -->
 <nav class="sidenav navbar navbar-vertical  fixed-left  navbar-expand-xs navbar-light bg-white" id="sidenav-main">
@@ -44,7 +42,7 @@
     <div class="sidenav-header  align-items-center">
       <a class="navbar-brand" href="javascript:void(0)">
         <img src="/argon-dashboard/assets/img/brand/zd-blue.png" class="navbar-brand-img" alt="...">
-        <h2 class="d-inline align-bottom text-primary">zdoffice</h2>
+        <h2 class="d-inline align-bottom text-primary"><?= $data['prog_config']['prog_name'] ?></h2>
       </a>
     </div>
     <div class="navbar-inner">
@@ -52,18 +50,19 @@
       <div class="collapse navbar-collapse" id="sidenav-collapse-main">
         <!-- Nav items -->
         <ul class="navbar-nav">
+        <?php foreach ($data['nav_list'] as $nav_key => $nav_val): ?>
+          <?php if ($nav_val['is_available'] && $nav_val['is_caption'] === false): ?>
           <li class="nav-item">
-            <a class="nav-link" href="dashboard.html">
-              <i class="ni ni-bullet-list-67 text-primary"></i>
-              <span class="nav-link-text">Пользователи</span>
+            <a class="nav-link <?php if ($nav_list['is_active']): ?>active<?php endif; ?>" href="<?= $nav_val['url'] ?>">
+              <?= $nav_val['title'] ?>
             </a>
           </li>
+          <?php elseif ($nav_val['is_available'] && $nav_val['is_caption']): ?>
           <li class="nav-item">
-            <a class="nav-link active" href="icons.html">
-              <i class="ni ni-fat-add text-primary"></i>
-              <span class="nav-link-text">Новый</span>
-            </a>
+            <span class="h4 m-3 text-primary"><?= $nav_val['title'] ?></span>
           </li>
+          <?php endif; ?>
+        <?php endforeach ?>
         </ul>
       </div>
     </div>
@@ -72,7 +71,7 @@
 <!-- Main content -->
 <div class="main-content" id="panel">
   <!-- Topnav -->
-  <nav class="navbar navbar-top navbar-expand navbar-dark bg-primary border-bottom">
+  <nav class="navbar navbar-top navbar-expand navbar-dark border-bottom <?= $data['prog_config']['bg_style'] ?>">
     <div class="container-fluid">
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <!-- Search form -->
@@ -165,7 +164,7 @@
                 <!--                    <img alt="Image placeholder" src="/argon-dashboard/assets/img/theme/team-4.jpg">-->
                 <!--                  </span>-->
                 <div class="media-body  ml-2">
-                  <span class="mb-0 text-sm  font-weight-bold">John Snow</span>
+                  <span class="mb-0 text-sm  font-weight-bold">Черный хрен</span>
                 </div>
               </div>
             </a>
@@ -184,7 +183,7 @@
     </div>
   </nav>
   <!-- Header -->
-  <div class="header bg-primary pb-6">
+  <div class="header pb-6 <?= $data['prog_config']['bg_style'] ?>">
     <div class="container-fluid">
       <div class="header-body">
         <div class="row align-items-center py-4">
@@ -206,138 +205,30 @@
       </div>
     </div>
   </div>
-
-
-
   <!-- Page content -->
   <div class="container-fluid mt--6">
     <div class="row justify-content-center">
-      <div class=" col ">
-        <div class="card">
-          <div class="card-header bg-transparent">
-            <h2 class="mb-0">Новый пользователь</h2>
+      <div class="col">
+        <?php if ($data['alert_massage']): ?>
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+						<?= $data['alert_massage'] ?>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
           </div>
-          <div class="card-body">
-            <form action="/users.php" method="POST">
-
-              <fieldset>
-                <div class="row">
-                  <div class="col-12 col-md mb-4">
-                    <input type="text" name="login" class="form-control" required minlength="5" maxlength="15" placeholder="логин">
-                  </div>
-                  <div class="col-12 col-md mb-4">
-                    <input type="text" name="password" class="form-control" required minlength="5" maxlength="15" placeholder="пароль">
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-12 col-md mb-4">
-                    <input type="text" name="last_name" class="form-control" required minlength="5" maxlength="15" placeholder="фамилия">
-                  </div>
-                  <div class="col-12 col-md mb-4">
-                    <input type="text" name="first_name" class="form-control" required minlength="5" maxlength="15" placeholder="имя">
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-12 col-md-6 col-lg-4 mb-4">
-                    <input type="text" name="position" class="form-control" required minlength="5" maxlength="15" placeholder="должность">
-                  </div>
-                  <div class="col-12 col-md-6 col-lg-4 mb-4 input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="basic-addon1">+998</span>
-                    </div>
-                    <input type="tel" name="mobile_phone" class="form-control" required placeholder="XX XXX XX XX" pattern="\d{2}\s\d{3}\s\d{2}\s\d{2}"">
-                  </div>
-                  <div class="col-12 col-md-6 col-lg-4 mb-4">
-                    <input type="email" name="email" class="form-control" required placeholder="почта">
-                  </div>
-                </div>
-              </fieldset>
-
-              <hr>
-
-              <div class="row">
-                <fieldset class="col-12 col-md-6 mb-4">
-                  <h3 class="mb-4">Дизайн</h3>
-                  <div class="custom-control custom-checkbox mb-2">
-                    <input type="checkbox" name="design_order_new" id="auth_design_order_new" class="custom-control-input">
-                    <label class="custom-control-label" for="auth_design_order_new">создать заявку</label>
-                  </div>
-                  <div class="custom-control custom-checkbox mb-2">
-                    <input type="checkbox" name="design_order_view" id="auth_design_order_view" class="custom-control-input">
-                    <label class="custom-control-label" for="auth_design_order_view">просматривать заявки</label>
-                  </div>
-                  <div class="custom-control custom-checkbox mb-2">
-                    <input type="checkbox" name="design_order_change_status" id="auth_design_order_change_status" class="custom-control-input">
-                    <label class="custom-control-label" for="auth_design_order_change_status">менять статус заявки</label>
-                  </div>
-                  <div class="custom-control custom-checkbox mb-2">
-                    <input type="checkbox" name="design_order_select_designer" id="auth_design_order_select_designer" class="custom-control-input">
-                    <label class="custom-control-label" for="auth_design_order_select_designer">распределять заявки</label>
-                  </div>
-                  <div class="custom-control custom-checkbox mb-2">
-                    <input type="checkbox" name="design_order_change_priority" id="auth_design_order_change_priority" class="custom-control-input">
-                    <label class="custom-control-label" for="auth_design_order_change_priority">менять приоритет заявки</label>
-                  </div>
-                </fieldset>
-
-                <fieldset class="col-12 col-lg-6 mb-4">
-                  <h3 class="mb-4">Производство</h3>
-                  <div class="custom-control custom-checkbox mb-2">
-                    <input type="checkbox" name="production_order_new" id="auth_production_order_new" class="custom-control-input">
-                    <label class="custom-control-label" for="auth_production_order_new">создать заявку</label>
-                  </div>
-                  <div class="custom-control custom-checkbox mb-2">
-                    <input type="checkbox" name="production_order_view" id="auth_production_order_view" class="custom-control-input">
-                    <label class="custom-control-label" for="auth_production_order_view">просматривать заявки</label>
-                  </div>
-
-                  <div class="custom-control custom-checkbox mb-2">
-                    <input type="checkbox" name="production_order_change_priority" id="auth_production_order_change_priority" class="custom-control-input">
-                    <label class="custom-control-label" for="auth_production_order_change_priority">менять приоритет заявки</label>
-                  </div>
-                  <div class="custom-control custom-checkbox mb-2">
-                    <input type="checkbox" name="production_order_start" id="auth_production_order_start" class="custom-control-input">
-                    <label class="custom-control-label" for="auth_production_order_start">запустить в работу заявку</label>
-                  </div>
-                  <div class="custom-control custom-checkbox mb-2">
-                    <input type="checkbox" name="production_order_cancel" id="auth_production_order_cancel" class="custom-control-input">
-                    <label class="custom-control-label" for="auth_production_order_cancel">подтвердить отмену заявки</label>
-                  </div>
-
-                  <hr>
-                  <div class="custom-control custom-checkbox mb-2">
-                    <input type="checkbox" name="production_order_change_status_const" id="auth_production_order_change_status_const" class="custom-control-input">
-                    <label class="custom-control-label" for="auth_production_order_change_status_const"><b>конструктор</b> менять статус заявки</label>
-                  </div>
-                  <div class="custom-control custom-checkbox mb-2">
-                    <input type="checkbox" name="production_order_change_status_adv" id="auth_production_order_change_status_adv" class="custom-control-input">
-                    <label class="custom-control-label" for="auth_production_order_change_status_adv"><b>реклама</b> менять статус заявки</label>
-                  </div>
-                  <div class="custom-control custom-checkbox mb-2">
-                    <input type="checkbox" name="production_order_change_status_furn" id="auth_production_order_change_status_furn" class="custom-control-input">
-                    <label class="custom-control-label" for="auth_production_order_change_status_furn"><b>мебель</b> менять статус заявки</label>
-                  </div>
-                  <div class="custom-control custom-checkbox mb-2">
-                    <input type="checkbox" name="production_order_change_status_steel" id="auth_production_order_change_status_steel" class="custom-control-input">
-                    <label class="custom-control-label" for="auth_production_order_change_status_steel"><b>металл</b> менять статус заявки</label>
-                  </div>
-                  <div class="custom-control custom-checkbox mb-2">
-                    <input type="checkbox" name="production_order_change_status_install" id="auth_production_order_change_status_install" class="custom-control-input">
-                    <label class="custom-control-label" for="auth_production_order_change_status_install"><b>монтаж</b> менять статус заявки</label>
-                  </div>
-                  <div class="custom-control custom-checkbox mb-2">
-                    <input type="checkbox" name="production_order_change_status_supply" id="auth_production_order_change_status_supply" class="custom-control-input">
-                    <label class="custom-control-label" for="auth_production_order_change_status_supply"><b>склад</b> менять статус заявки</label>
-                  </div>
-                </fieldset>
-
-              </div>
-              <hr>
-              <input class="btn btn-primary" type="submit" value="Сохранить">
-            </form>
-
+        <?php elseif ($data['error_massage']): ?>
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+						<?= $data['error_massage'] ?>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
           </div>
-        </div>
+        <?php endif; ?>
+
+        <?php
+          echo $data['content'];
+        ?>
+
       </div>
     </div>
     <!-- Footer -->
@@ -370,8 +261,6 @@
 </div>
 <!-- Argon Scripts -->
 <!-- Core -->
-
-
 <script src="/argon-dashboard/assets/vendor/jquery/dist/jquery.min.js"></script>
 <script src="/argon-dashboard/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/argon-dashboard/assets/vendor/js-cookie/js.cookie.js"></script>
@@ -382,10 +271,5 @@
 <script src="/argon-dashboard/assets/vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
 <!-- Argon JS -->
 <script src="/argon-dashboard/assets/js/argon.js?v=1.2.0"></script>
-
-
-
-
 </body>
-
 </html>
