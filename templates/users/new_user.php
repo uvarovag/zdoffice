@@ -9,23 +9,23 @@
       <fieldset>
         <div class="row">
           <div class="col-12 col-md mb-4">
-            <input type="text" name="login" class="form-control" required pattern="[A-Za-z0-9 ]{5,20}" placeholder="логин">
+            <input type="text" name="login" class="form-control" required pattern="[A-Za-z0-9 ]{5,32}" placeholder="логин">
           </div>
           <div class="col-12 col-md mb-4">
-            <input type="text" name="password" class="form-control" required pattern="[A-Za-z0-9 ]{5,20}" placeholder="пароль">
+            <input type="text" name="password" class="form-control" required pattern="[A-Za-z0-9 ]{5,32}" placeholder="пароль">
           </div>
         </div>
         <div class="row">
           <div class="col-12 col-md mb-4">
-            <input type="text" name="last_name" class="form-control" required pattern="[А-Яа-яЁё0-9 ]{5,20}" placeholder="фамилия">
+            <input type="text" name="last_name" class="form-control" required pattern="[А-Яа-яЁё0-9 ]{3,32}" placeholder="фамилия">
           </div>
           <div class="col-12 col-md mb-4">
-            <input type="text" name="first_name" class="form-control" required pattern="[А-Яа-яЁё0-9 ]{5,20}" placeholder="имя">
+            <input type="text" name="first_name" class="form-control" required pattern="[А-Яа-яЁё0-9 ]{3,32}" placeholder="имя">
           </div>
         </div>
         <div class="row">
           <div class="col-12 col-md-6 col-lg-4 mb-4">
-            <input type="text" name="position" class="form-control" required pattern="[А-Яа-яЁё0-9 ]{5,20}" placeholder="должность">
+            <input type="text" name="position" class="form-control" required pattern="[А-Яа-яЁё0-9 ]{3,32}" placeholder="должность">
           </div>
           <div class="col-12 col-md-6 col-lg-4 mb-4 input-group">
             <div class="input-group-prepend">

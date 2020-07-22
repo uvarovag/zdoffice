@@ -2,8 +2,8 @@
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/include.php');
 
-$con = mysqli_connect($sys_config['bd_host'], $sys_config['bd_user'],
-  $sys_config['bd_password'], $sys_config['bd_name']);
+$con = mysqli_connect($sysConfig['bdHost'], $sysConfig['bdUser'],
+  $sysConfig['bdPassword'], $sysConfig['bdName']);
 
 if ($con) {
   mysqli_set_charset($con, "utf8");

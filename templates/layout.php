@@ -36,13 +36,13 @@
 </head>
 <body>
 <!-- Sidenav -->
-<nav class="sidenav navbar navbar-vertical  fixed-left  navbar-expand-xs navbar-light bg-white" id="sidenav-main">
+<nav class="sidenav navbar navbar-vertical fixed-left navbar-expand-xs navbar-light bg-white" id="sidenav-main">
   <div class="scrollbar-inner">
     <!-- Brand -->
     <div class="sidenav-header  align-items-center">
-      <a class="navbar-brand" href="javascript:void(0)">
+      <a class="navbar-brand" href="#">
         <img src="/argon-dashboard/assets/img/brand/zd-blue.png" class="navbar-brand-img" alt="...">
-        <h2 class="d-inline align-bottom text-primary"><?= $data['prog_config']['prog_name'] ?></h2>
+        <h2 class="d-inline align-bottom text-primary"><?= $data['progConfig']['progName'] ?></h2>
       </a>
     </div>
     <div class="navbar-inner">
@@ -50,16 +50,16 @@
       <div class="collapse navbar-collapse" id="sidenav-collapse-main">
         <!-- Nav items -->
         <ul class="navbar-nav">
-        <?php foreach ($data['nav_list'] as $nav_key => $nav_val): ?>
-          <?php if ($nav_val['is_available'] && $nav_val['is_caption'] === false): ?>
+        <?php foreach ($data['navList'] as $navKey => $navVal): ?>
+          <?php if ($navVal['isAvailable'] && $navVal['isCaption'] === false): ?>
           <li class="nav-item">
-            <a class="nav-link <?php if ($nav_list['is_active']): ?>active<?php endif; ?>" href="<?= $nav_val['url'] ?>">
-              <?= $nav_val['title'] ?>
+            <a class="nav-link <?php if ($navVal['isActive']): ?>active<?php endif; ?>" href="<?= $navVal['url'] ?>">
+              <?= $navVal['title'] ?>
             </a>
           </li>
-          <?php elseif ($nav_val['is_available'] && $nav_val['is_caption']): ?>
+          <?php elseif ($navVal['isAvailable'] && $navVal['isCaption']): ?>
           <li class="nav-item">
-            <span class="h4 m-3 text-primary"><?= $nav_val['title'] ?></span>
+            <span class="h4 m-3 text-primary"><?= $navVal['title'] ?></span>
           </li>
           <?php endif; ?>
         <?php endforeach ?>
@@ -71,7 +71,7 @@
 <!-- Main content -->
 <div class="main-content" id="panel">
   <!-- Topnav -->
-  <nav class="navbar navbar-top navbar-expand navbar-dark border-bottom <?= $data['prog_config']['bg_style'] ?>">
+  <nav class="navbar navbar-top navbar-expand navbar-dark border-bottom <?= $data['progConfig']['bgStyle'] ?>">
     <div class="container-fluid">
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <!-- Search form -->
@@ -164,7 +164,7 @@
                 <!--                    <img alt="Image placeholder" src="/argon-dashboard/assets/img/theme/team-4.jpg">-->
                 <!--                  </span>-->
                 <div class="media-body  ml-2">
-                  <span class="mb-0 text-sm  font-weight-bold">Черный хрен</span>
+                  <span class="mb-0 text-sm  font-weight-bold">Admin</span>
                 </div>
               </div>
             </a>
@@ -183,7 +183,7 @@
     </div>
   </nav>
   <!-- Header -->
-  <div class="header pb-6 <?= $data['prog_config']['bg_style'] ?>">
+  <div class="header pb-6 <?= $data['progConfig']['bgStyle'] ?>">
     <div class="container-fluid">
       <div class="header-body">
         <div class="row align-items-center py-4">
@@ -209,25 +209,25 @@
   <div class="container-fluid mt--6">
     <div class="row justify-content-center">
       <div class="col">
-        <?php if ($data['alert_massage']): ?>
+        <?php if ($data['alertMassage']): ?>
           <div class="alert alert-success alert-dismissible fade show" role="alert">
-						<?= $data['alert_massage'] ?>
+						<?= $data['alertMassage'] ?>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-        <?php elseif ($data['error_massage']): ?>
+        <?php elseif ($data['errorMassage']): ?>
           <div class="alert alert-danger alert-dismissible fade show" role="alert">
-						<?= $data['error_massage'] ?>
+						<?= $data['errorMassage'] ?>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
         <?php endif; ?>
 
-        <?php
-          echo $data['content'];
-        ?>
+				<?= $data['content'] ?>
+
+        <?= $data['pagination'] ?>
 
       </div>
     </div>

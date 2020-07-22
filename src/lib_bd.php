@@ -11,7 +11,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/src/include.php');
  *
  * @return mysqli_stmt Подготовленное выражение
  */
-function db_get_prepare_stmt($link, $sql, $data = []) {
+function dbGetPrepareStmt($link, $sql, $data = []) {
   $stmt = mysqli_prepare($link, $sql);
 
   if ($data) {
@@ -45,10 +45,10 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
 }
 
 
-function db_select_data($con, $sql, $data) {
+function dbSelectData($con, $sql, $data) {
   $rows = [];
 
-  $stmt = db_get_prepare_stmt($con, $sql, $data);
+  $stmt = dbGetPrepareStmt($con, $sql, $data);
 
   if ($stmt) {
     mysqli_stmt_execute($stmt);
@@ -62,7 +62,7 @@ function db_select_data($con, $sql, $data) {
 }
 
 
-function db_insert_data($con, $table, $data) {
+function dbInsertData($con, $table, $data) {
   $last_insert_id = false;
 
   if (count($data) > 0) {
@@ -76,7 +76,7 @@ function db_insert_data($con, $table, $data) {
 
     $sql = 'INSERT INTO ' . $table . ' (' . implode(', ', $data_fields) . ') VALUES (' . implode(', ', $data_value) . ')';
 
-    $stmt = db_get_prepare_stmt($con, $sql, $data);
+    $stmt = dbGetPrepareStmt($con, $sql, $data);
 
     if ($stmt) {
       mysqli_stmt_execute($stmt);
@@ -88,10 +88,10 @@ function db_insert_data($con, $table, $data) {
 }
 
 
-function db_exec_query($con, $sql, $data) {
+function dbExecQuery($con, $sql, $data) {
   $rows = false;
 
-  $stmt = db_get_prepare_stmt($con, $sql, $data);
+  $stmt = dbGetPrepareStmt($con, $sql, $data);
 
   if ($stmt) {
     mysqli_stmt_execute($stmt);

@@ -3,40 +3,90 @@
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/include.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/data/navigation_list_admin.php');
 
-$tmp_layout_data = [
-	'prog_config' => $prog_config,
+$tmpLayoutData = [
+	'progConfig' => $progConfig,
 	'title' => 'Пользователи',
-	'nav_list' => $navigation_list_admin,
+	'navList' => $navigationListAdmin,
 	'content' => '',
 	'pagination' => '',
-	'alert_massage' => false,
-	'error_massage' => false
+	'alertMassage' => false,
+	'errorMassage' => false
 ];
 
-if ($_GET['alert_massage'])
+if (isset($_GET['alert_massage']))
 {
-	$tmp_layout_data['alert_massage'] = $_GET['alert_massage'];
+	$tmpLayoutData['alertMassage'] = $_GET['alert_massage'];
 }
-else if ($_GET['error_massage'])
+else if (isset($_GET['error_massage']))
 {
-	$tmp_layout_data['error_massage'] = $_GET['error_massage'];
+	$tmpLayoutData['errorMassage'] = $_GET['error_massage'];
+}
+
+
+if (isset($_GET['action']) && $_GET['action'] === 'add_new_user')
+{
+	$tmpLayoutData['content'] =
+		renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/templates/users/new_user.php', []);
 }
 
 
-if ($_GET['action'] && $_GET['action'] === 'add_user')
+
+if (isset($_GET['action']) && $_GET['action'] === 'show_user_card')
 {
-	$tmp_layout_data['content'] =
-		render_template($_SERVER['DOCUMENT_ROOT'] . '/templates/users/user_new.php', []);
-}
-if ($_GET['action'] && $_GET['action'] === 'show_list')
-{
-	$tmp_layout_data['content'] =
-		render_template($_SERVER['DOCUMENT_ROOT'] . '/templates/users/users_list.php', []);
+
+	$tmpLayoutContentData = [
+		'config' => $progConfig,
+		'user' => []
+	];
+
+	$tmpLayoutContentData['user'] =
+		dbSelectData($con, 'SELECT * FROM users WHERE id = ?', [$_GET['id']])[0] ?? [];
+
+	$tmpLayoutData['content'] =
+		renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/templates/users/user_info.php', $tmpLayoutContentData);
+
 }
 
-if ($_POST['action'] && $_POST['action'] == 'add_user')
+
+
+
+
+if (isset($_GET['action']) && $_GET['action'] === 'show_users_list')
 {
-	$new_user_data = [
+	$tmpLayoutContentData = [
+		'users' => []
+	];
+
+	$sqlQuerySelect = 'SELECT * FROM users ';
+	$sqlQueryWhere = '';
+	$sqlParametrs = [];
+	$sqlSortBy = '';
+
+
+	$paginationData =
+		getPagination($progConfig, $sysConfig['host'] . '/users.php', $con, 'SELECT COUNT(*) as pgn FROM users ' .
+			$sqlQueryWhere, $sqlParametrs);
+
+	$tmpLayoutData['pagination'] = $paginationData['tmpPagination'];
+	$sqlPagination = $paginationData['sqlPagination'];
+
+	$tmpLayoutContentData['users'] =
+		dbSelectData($con, $sqlQuerySelect . $sqlQueryWhere . $sqlSortBy . $sqlPagination, $sqlParametrs);
+
+	$tmpLayoutData['content'] =
+		renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/templates/users/users_list.php', $tmpLayoutContentData);
+
+
+
+}
+
+
+
+
+
+if (isset($_POST['action']) && $_POST['action'] == 'add_user')
+{
+	$newUserData = [
 		'login' => $_POST['login'],
 		'password' => $_POST['password'],
 		'last_name' => $_POST['last_name'],
@@ -66,11 +116,11 @@ if ($_POST['action'] && $_POST['action'] == 'add_user')
 		'auth_production_order_cancel' => 0
 	];
 
-	var_dump(db_insert_data($con, 'users', $new_user_data));
+	var_dump(dbInsertData($con, 'users', $newUserData));
 
 
 
 }
 
-echo render_template($_SERVER['DOCUMENT_ROOT'] . '/templates/layout.php', $tmp_layout_data);
+echo renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/templates/layout.php', $tmpLayoutData);
 
