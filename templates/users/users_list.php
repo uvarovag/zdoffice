@@ -17,14 +17,15 @@
       </thead>
       <tbody>
 
-      <?php foreach ($data['users'] as $users): ?>
-        <tr onclick="window.location.href='<?= $data['config']['host'] . '?action=show_user_card&id=' . $users['id']?>'; return false">
-          <td><?= $users['login'] ?></td>
-          <td><?= $users['last_name'] . ' ' . $users['first_name'] ?></td>
-          <td><?= $users['position'] ?></td>
-          <td><?= $users['mobile_phone'] ?></td>
-          <td><?= $users['email'] ?></td>
-          <td><?= $users['reg_datetime'] ?></td>
+      <?php foreach ($data['users'] as $user): ?>
+        <tr onclick="window.location.href='<?= $data['config']['host'] . '?action=user_info_card&id=' .
+        $user['id']?>'; return false" class="<?= ($user['is_block']) ? 'table-danger' : ''?>">
+          <td><?= $user['login'] ?></td>
+          <td><?= $user['last_name'] . ' ' . $user['first_name'] ?></td>
+          <td><?= $user['position'] ?></td>
+          <td><?= $user['mobile_phone'] ?></td>
+          <td><?= $user['email'] ?></td>
+          <td><?= $user['reg_datetime'] ?></td>
         </tr>
       <?php endforeach ?>
 

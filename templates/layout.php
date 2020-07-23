@@ -42,7 +42,7 @@
     <div class="sidenav-header  align-items-center">
       <a class="navbar-brand" href="#">
         <img src="/argon-dashboard/assets/img/brand/zd-blue.png" class="navbar-brand-img" alt="...">
-        <h2 class="d-inline align-bottom text-primary"><?= $data['progConfig']['progName'] ?></h2>
+        <h2 class="d-inline align-bottom text-primary"><?= $data['config']['progName'] ?></h2>
       </a>
     </div>
     <div class="navbar-inner">
@@ -71,7 +71,7 @@
 <!-- Main content -->
 <div class="main-content" id="panel">
   <!-- Topnav -->
-  <nav class="navbar navbar-top navbar-expand navbar-dark border-bottom <?= $data['progConfig']['bgStyle'] ?>">
+  <nav class="navbar navbar-top navbar-expand navbar-dark border-bottom <?= $data['config']['bgStyle'] ?>">
     <div class="container-fluid">
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <!-- Search form -->
@@ -183,7 +183,7 @@
     </div>
   </nav>
   <!-- Header -->
-  <div class="header pb-6 <?= $data['progConfig']['bgStyle'] ?>">
+  <div class="header pb-6 <?= $data['config']['bgStyle'] ?>">
     <div class="container-fluid">
       <div class="header-body">
         <div class="row align-items-center py-4">
