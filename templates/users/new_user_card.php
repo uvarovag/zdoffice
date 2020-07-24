@@ -3,39 +3,39 @@
     <h2 class="mb-0">Добавить пользователя</h2>
   </div>
   <div class="card-body">
-    <form action="/users.php" method="POST">
+    <form action="<?= $data['config']['host'] . '/users.php' ?>" method="POST">
       <input type="hidden" name="action" value="new_user_data">
-      <input type="hidden" name="form_id" value="<?= $data['form_id'] ?>">
+      <input type="hidden" name="form_id" value="<?= $data['formId'] ?>">
       <fieldset>
         <div class="row">
           <div class="col-12 col-md mb-4">
             <input type="text" name="login" class="form-control" required
-                   pattern="<?= $data['config']['regexp_a'] ?>{<?= $data['config']['min_len_a'] ?>,<?= $data['config']['max_len_a'] ?>}"
-                   placeholder="логин (<?= 'en ' . $data['config']['min_len_a'] . '-' . $data['config']['max_len_a']?>)">
+                   pattern="<?= $data['config']['regexpA'] ?>{<?= $data['config']['minLenA'] ?>,<?= $data['config']['maxLenA'] ?>}"
+                   placeholder="логин (<?= 'en ' . $data['config']['minLenA'] . '-' . $data['config']['maxLenA']?>)">
           </div>
           <div class="col-12 col-md mb-4">
             <input type="text" name="password" class="form-control" required
-                   pattern="<?= $data['config']['regexp_a'] ?>{<?= $data['config']['min_len_a'] ?>,<?= $data['config']['max_len_a'] ?>}"
-                   placeholder="пароль (<?= 'en ' . $data['config']['min_len_a'] . '-' . $data['config']['max_len_a']?>)">
+                   pattern="<?= $data['config']['regexpA'] ?>{<?= $data['config']['minLenA'] ?>,<?= $data['config']['maxLenA'] ?>}"
+                   placeholder="пароль (<?= 'en ' . $data['config']['minLenA'] . '-' . $data['config']['maxLenA']?>)">
           </div>
         </div>
         <div class="row">
           <div class="col-12 col-md mb-4">
             <input type="text" name="last_name" class="form-control" required
-                   pattern="<?= $data['config']['regexp_b'] ?>{<?= $data['config']['min_len_a'] ?>,<?= $data['config']['max_len_a'] ?>}"
-                   placeholder="фамилия (<?= 'ru ' . $data['config']['min_len_a'] . '-' . $data['config']['max_len_a']?>)">
+                   pattern="<?= $data['config']['regexpB'] ?>{<?= $data['config']['minLenA'] ?>,<?= $data['config']['maxLenA'] ?>}"
+                   placeholder="фамилия (<?= 'ru ' . $data['config']['minLenA'] . '-' . $data['config']['maxLenA']?>)">
           </div>
           <div class="col-12 col-md mb-4">
             <input type="text" name="first_name" class="form-control" required
-                   pattern="<?= $data['config']['regexp_b'] ?>{<?= $data['config']['min_len_a'] ?>,<?= $data['config']['max_len_a'] ?>}"
-                   placeholder="имя (<?= 'ru ' . $data['config']['min_len_a'] . '-' . $data['config']['max_len_a']?>)">
+                   pattern="<?= $data['config']['regexpB'] ?>{<?= $data['config']['minLenA'] ?>,<?= $data['config']['maxLenA'] ?>}"
+                   placeholder="имя (<?= 'ru ' . $data['config']['minLenA'] . '-' . $data['config']['maxLenA']?>)">
           </div>
         </div>
         <div class="row">
           <div class="col-12 col-md-6 col-lg-4 mb-4">
             <input type="text" name="position" class="form-control" required
-                   pattern="<?= $data['config']['regexp_b'] ?>{<?= $data['config']['min_len_a'] ?>,<?= $data['config']['max_len_a'] ?>}"
-                   placeholder="должность (<?= 'ru ' . $data['config']['min_len_a'] . '-' . $data['config']['max_len_a']?>)">
+                   pattern="<?= $data['config']['regexpB'] ?>{<?= $data['config']['minLenA'] ?>,<?= $data['config']['maxLenA'] ?>}"
+                   placeholder="должность (<?= 'ru ' . $data['config']['minLenA'] . '-' . $data['config']['maxLenA']?>)">
           </div>
           <div class="col-12 col-md-6 col-lg-4 mb-4 input-group">
             <div class="input-group-prepend">

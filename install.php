@@ -5,6 +5,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/src/include.php');
 $sql_table_users = "create table users(
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	is_deleted TINYINT,
+	need_logout TINYINT,
 	login CHAR(32) NOT NULL,
 	password CHAR(32) NOT NULL,
 	last_name CHAR(32) NOT NULL,

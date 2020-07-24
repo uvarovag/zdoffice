@@ -50,16 +50,16 @@
       <div class="collapse navbar-collapse" id="sidenav-collapse-main">
         <!-- Nav items -->
         <ul class="navbar-nav">
-        <?php foreach ($data['navList'] as $navKey => $navVal): ?>
-          <?php if ($navVal['isAvailable'] && $navVal['isCaption'] === false): ?>
+        <?php foreach ($data['navList'] as $nav): ?>
+          <?php if ($nav['isAvailable'] && $nav['isCaption'] === false): ?>
           <li class="nav-item">
-            <a class="nav-link <?php if ($navVal['isActive']): ?>active<?php endif; ?>" href="<?= $navVal['url'] ?>">
-              <?= $navVal['title'] ?>
+            <a class="nav-link <?php if ($nav['isActive']): ?> active<?php endif; ?>" href="<?= $nav['url'] ?>">
+              <?= $nav['title'] ?>
             </a>
           </li>
-          <?php elseif ($navVal['isAvailable'] && $navVal['isCaption']): ?>
+          <?php elseif ($nav['isAvailable'] && $nav['isCaption']): ?>
           <li class="nav-item">
-            <span class="h4 m-3 text-primary"><?= $navVal['title'] ?></span>
+            <span class="h4 m-3 text-primary"><?= $nav['title'] ?></span>
           </li>
           <?php endif; ?>
         <?php endforeach ?>

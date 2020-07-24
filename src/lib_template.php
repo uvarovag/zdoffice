@@ -76,3 +76,11 @@ function getPagination($config, $url, $con, $sqlQuery, $sqlParametrs) {
 //	}
 //}
 
+function cutStr($str, $maxLength) {
+	if (iconv_strlen($str) > $maxLength) {
+		return mb_strimwidth($str, 0, $maxLength) . '...';
+	} else {
+		return $str;
+	}
+}
+
