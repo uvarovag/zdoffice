@@ -14,11 +14,16 @@
 				<div class="mb-3"><span>Логин: <?= $data['user']['login']?></span></div>
 				<div class="mb-3"><span>Фамилия: <?= $data['user']['last_name']?></span></div>
 				<div class="mb-3"><span>Имя: <?= $data['user']['first_name']?></span></div>
-				<div class="mb-3"><span>Должность: <?= $data['user']['position']?></span></div>
-				<div class="mb-3"><span>Телефон: <?= $data['config']['phone_prefix']?></span> <span><?= $data['user']['mobile_phone']?></span></div>
+				<div class="mb-3"><span>Должность:
+						<?= $data['progData']['usersPositionsList'][$data['user']['position']] ?? '???'?></span></div>
+				<div class="mb-3"><span>Телефон:
+						<?= $data['config']['phone_prefix']?>
+					</span> <span><?= $data['user']['mobile_phone']?></span></div>
 				<div class="mb-3"><span>Почта: <?= $data['user']['email']?></span></div>
 				<div class="mb-3"><span>Дата регистрации: <?= $data['user']['reg_datetime']?></span></div>
-				<div class="mb-3"><span>Дата последнего изменения данных: <?= $data['user']['last_modify_datetime']?></span></div>
+				<div class="mb-3">
+					<span>Дата последнего изменения данных:
+						<?= $data['user']['last_modify_datetime']?></span></div>
 			</div>
 
 			<div class="col-12 col-md-6 mb-4">

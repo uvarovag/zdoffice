@@ -62,7 +62,7 @@
             <span class="h4 m-3 text-primary"><?= $nav['title'] ?></span>
           </li>
           <?php endif; ?>
-        <?php endforeach ?>
+        <?php endforeach; ?>
         </ul>
       </div>
     </div>

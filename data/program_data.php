@@ -1,0 +1,5 @@
+<?php
+
+$progData = [
+	'usersPositionsList' => $usersPositionsList
+];

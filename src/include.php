@@ -2,6 +2,8 @@
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/data/system_config.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/data/program_config.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/data/users_positions_list.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/data/program_data.php');
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/lib_bd.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/lib_correct_format.php');

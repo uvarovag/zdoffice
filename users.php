@@ -101,7 +101,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'new_user_data')
 	errorIfDoubleClick($_SESSION['formId'], $_POST['form_id'],
 		$progConfig['host'] . '/users.php?action=new_user_card');
 
-	if (isValidNewUserData($progConfig) === false || isValidNewUserPassword($progConfig) === false)
+	if (isValidNewUserData($progConfig, $progData) === false || isValidNewUserPassword($progConfig) === false)
 	{
 		header('Location:' . $progConfig['host'] . '/users.php?action=new_user_card&error_massage=ошибка входных данных');
 		exit();
@@ -124,12 +124,13 @@ if (isset($_POST['action']) && $_POST['action'] == 'new_user_data')
 
 	$newUserData = [
 		'login' => correctFormat($_POST['login']),
+		'is_deleted' => 0,
 		'is_block' => 0,
 		'need_logout' => 0,
 		'password' => correctFormat($_POST['password']),
 		'last_name' => correctFormatUpper($_POST['last_name']),
 		'first_name' => correctFormatUpper($_POST['first_name']),
-		'position' => correctFormatLower($_POST['position']),
+		'position' => (int) $_POST['position'],
 		'mobile_phone' => $_POST['mobile_phone'],
 		'email' => correctFormatLower($_POST['email']),
 		'reg_datetime' => date('Y-m-d H:i:s'),
@@ -204,7 +205,7 @@ if (isset($_POST['action']) && isset($_POST['id']) && $_POST['action'] == 'edit_
 	errorIfDoubleClick($_SESSION['formId'], $_POST['form_id'],
 		$progConfig['host'] . '/users.php?action=edit_user_card&id=' . $_POST['id']);
 
-	if (isValidNewUserData($progConfig) === false)
+	if (isValidNewUserData($progConfig, $progData) === false)
 	{
 		header('Location:' . $progConfig['host'] . '/users.php?action=edit_user_card&id=' .
 			$_POST['id'] . '&error_massage=ошибка входных данных');
@@ -228,12 +229,12 @@ if (isset($_POST['action']) && isset($_POST['id']) && $_POST['action'] == 'edit_
 
 	$editUserData = [
 		'need_logout' => 1,
-		'password' => $_POST['password'],
-		'last_name' => $_POST['last_name'],
-		'first_name' => $_POST['first_name'],
-		'position' => $_POST['position'],
+		'password' => correctFormat($_POST['password']),
+		'last_name' => correctFormatUpper($_POST['last_name']),
+		'first_name' => correctFormatUpper($_POST['first_name']),
+		'position' => (int) $_POST['position'],
 		'mobile_phone' => $_POST['mobile_phone'],
-		'email' => $_POST['email'],
+		'email' => correctFormatLower($_POST['email']),
 		'last_modify_datetime' => date('Y-m-d H:i:s'),
 
 		'auth_design_order_new' =>

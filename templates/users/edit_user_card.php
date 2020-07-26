@@ -16,11 +16,13 @@
       <fieldset>
         <div class="row">
           <div class="col-12 col-md mb-4">
+            <small class="text-gray">логин (<?= 'en ' . $data['config']['minLenA'] . '-' . $data['config']['maxLenA']?>)</small>
             <input type="text" name="login" class="form-control" required readonly
                    pattern="<?= $data['config']['regexpA'] ?>{<?= $data['config']['minLenA'] ?>,<?= $data['config']['maxLenA'] ?>}"
                    value="<?= $data['user']['login']?>">
           </div>
           <div class="col-12 col-md mb-4">
+            <small class="text-gray">пароль (<?= 'en ' . $data['config']['minLenA'] . '-' . $data['config']['maxLenA']?>)</small>
             <input type="text" name="password" class="form-control" required
                    pattern="<?= $data['config']['regexpA'] ?>{<?= $data['config']['minLenA'] ?>,<?= $data['config']['maxLenA'] ?>}"
                    placeholder="пароль (<?= 'en ' . $data['config']['minLenA'] . '-' . $data['config']['maxLenA']?>)"
@@ -29,11 +31,13 @@
         </div>
         <div class="row">
           <div class="col-12 col-md mb-4">
+            <small class="text-gray">фамилия (<?= 'ru ' . $data['config']['minLenA'] . '-' . $data['config']['maxLenA']?>)</small>
             <input type="text" name="last_name" class="form-control" required
                    pattern="<?= $data['config']['regexpB'] ?>{<?= $data['config']['minLenA'] ?>,<?= $data['config']['maxLenA'] ?>}"
                    value="<?= $data['user']['last_name']?>">
           </div>
           <div class="col-12 col-md mb-4">
+            <small class="text-gray">имя (<?= 'ru ' . $data['config']['minLenA'] . '-' . $data['config']['maxLenA']?>)</small>
             <input type="text" name="first_name" class="form-control" required
                    pattern="<?= $data['config']['regexpB'] ?>{<?= $data['config']['minLenA'] ?>,<?= $data['config']['maxLenA'] ?>}"
                    value="<?= $data['user']['first_name']?>">
@@ -41,18 +45,30 @@
         </div>
         <div class="row">
           <div class="col-12 col-md-6 col-lg-4 mb-4">
-            <input type="text" name="position" class="form-control" required
-                   pattern="<?= $data['config']['regexpB'] ?>{<?= $data['config']['minLenA'] ?>,<?= $data['config']['maxLenA'] ?>}"
-                   value="<?= $data['user']['position']?>">
-          </div>
-          <div class="col-12 col-md-6 col-lg-4 mb-4 input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="basic-addon1"><?= $data['config']['phone_prefix']?></span>
-            </div>
-            <input type="tel" name="mobile_phone" class="form-control" required
-                   pattern="<?= $data['config']['regexpC'] ?>" value="<?= $data['user']['mobile_phone']?>">
+            <small class="text-gray">должность</small>
+            <select name="position" required class="form-control">
+              <option value="none" disabled selected>выбрать</option>
+							<?php foreach ($data['progData']['usersPositionsList'] as $posKey => $posVal): ?>
+              <?php if ($data['user']['position'] == $posKey): ?>
+                  <option value="<?= $posKey ?>" selected><?= $posVal ?></option>
+              <?php else: ?>
+                  <option value="<?= $posKey ?>"><?= $posVal ?></option>
+              <?php endif; ?>
+							<?php endforeach; ?>
+            </select>
           </div>
           <div class="col-12 col-md-6 col-lg-4 mb-4">
+            <small class="text-gray">телефон</small>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1"><?= $data['config']['phone_prefix']?></span>
+              </div>
+              <input type="tel" name="mobile_phone" class="form-control" required
+                     pattern="<?= $data['config']['regexpC'] ?>" value="<?= $data['user']['mobile_phone']?>">
+            </div>
+          </div>
+          <div class="col-12 col-md-6 col-lg-4 mb-4">
+            <small class="text-gray">почта</small>
             <input type="email" name="email" class="form-control" required value="<?= $data['user']['email']?>">
           </div>
         </div>

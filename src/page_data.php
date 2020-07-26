@@ -2,6 +2,7 @@
 
 $tmpLayoutData = [
 	'config' => $progConfig,
+	'progData' => $progData,
 	'title' => $progConfig['progName'],
 	'navList' => $navigationListAdmin,
 	'content' => '',
@@ -12,5 +13,6 @@ $tmpLayoutData = [
 
 $tmpLayoutContentData = [
 	'config' => $progConfig,
+	'progData' => $progData,
 	'formId' => 'none'
 ];
