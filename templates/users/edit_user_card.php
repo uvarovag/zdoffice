@@ -23,6 +23,7 @@
           <div class="col-12 col-md mb-4">
             <input type="text" name="password" class="form-control" required
                    pattern="<?= $data['config']['regexpA'] ?>{<?= $data['config']['minLenA'] ?>,<?= $data['config']['maxLenA'] ?>}"
+                   placeholder="пароль (<?= 'en ' . $data['config']['minLenA'] . '-' . $data['config']['maxLenA']?>)"
                    value="<?= $data['user']['password']?>">
           </div>
         </div>
@@ -49,7 +50,7 @@
               <span class="input-group-text" id="basic-addon1"><?= $data['config']['phone_prefix']?></span>
             </div>
             <input type="tel" name="mobile_phone" class="form-control" required
-                   pattern="\d{2}\s\d{3}\s\d{2}\s\d{2}" value="<?= $data['user']['mobile_phone']?>">
+                   pattern="<?= $data['config']['regexpC'] ?>" value="<?= $data['user']['mobile_phone']?>">
           </div>
           <div class="col-12 col-md-6 col-lg-4 mb-4">
             <input type="email" name="email" class="form-control" required value="<?= $data['user']['email']?>">

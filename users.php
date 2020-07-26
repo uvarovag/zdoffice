@@ -1,35 +1,11 @@
 <?php
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/include.php');
+
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/session_start.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/data/navigation_list_admin.php');
 
-// preg_match
-
-function errorIfDoubleClick($sesFormId, $postFormId, $url) {
-	if ($sesFormId !== $postFormId)
-	{
-		header('Location:' . $url . '&error_massage=блокировка повторного клика');
-		exit();
-	}
-	return true;
-}
-
-$tmpLayoutData = [
-	'config' => $progConfig,
-	'title' => $progConfig['progName'],
-	'navList' => $navigationListAdmin,
-	'content' => '',
-	'pagination' => '',
-	'alertMassage' => false,
-	'errorMassage' => false
-];
-
-$tmpLayoutContentData = [
-	'config' => $progConfig,
-	'formId' => 'none'
-];
-
+require_once($_SERVER['DOCUMENT_ROOT'] . '/src/page_data.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/alert_massage.php');
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,7 +26,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'new_user_card')
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-if (isset($_GET['action']) && $_GET['action'] === 'edit_user_card')
+if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] === 'edit_user_card')
 {
 	$_SESSION['formId'] = md5(time());
 	$tmpLayoutContentData['formId'] = $_SESSION['formId'];
@@ -60,6 +36,12 @@ if (isset($_GET['action']) && $_GET['action'] === 'edit_user_card')
 	$tmpLayoutContentData['user'] =
 		dbSelectData($con, 'SELECT * FROM users WHERE id = ?', [$_GET['id']])[0] ?? [];
 
+	if (empty($tmpLayoutContentData['user']))
+	{
+		header('Location:' . $progConfig['host'] . '/users.php?action=users_list&error_massage=USER ID ERROR');
+		exit();
+	}
+
 	$tmpLayoutData['content'] =
 		renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/templates/users/edit_user_card.php', $tmpLayoutContentData);
 }
@@ -67,12 +49,18 @@ if (isset($_GET['action']) && $_GET['action'] === 'edit_user_card')
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-if (isset($_GET['action']) && $_GET['action'] === 'user_info_card')
+if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] === 'user_info_card')
 {
 	$tmpLayoutData['title'] = 'Карта пользователя';
 
 	$tmpLayoutContentData['user'] =
 		dbSelectData($con, 'SELECT * FROM users WHERE id = ?', [$_GET['id']])[0] ?? [];
+
+	if (empty($tmpLayoutContentData['user']))
+	{
+		header('Location:' . $progConfig['host'] . '/users.php?action=users_list&error_massage=USER ID ERROR');
+		exit();
+	}
 
 	$tmpLayoutData['content'] =
 		renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/templates/users/user_info_card.php', $tmpLayoutContentData);
@@ -88,18 +76,18 @@ if (isset($_GET['action']) && $_GET['action'] === 'users_list')
 
 	$sqlQuerySelect = 'SELECT * FROM users ';
 	$sqlQueryWhere = '';
-	$sqlParametrs = [];
+	$sqlParameters = [];
 	$sqlSortBy = 'ORDER by id DESC ';
 
 	$paginationData =
 		getPagination($progConfig, $sysConfig['host'] . '/users.php', $con, 'SELECT COUNT(*) as pgn FROM users ' .
-			$sqlQueryWhere, $sqlParametrs);
+			$sqlQueryWhere, $sqlParameters);
 
 	$tmpLayoutData['pagination'] = $paginationData['tmpPagination'];
 	$sqlPagination = $paginationData['sqlPagination'];
 
 	$tmpLayoutContentData['users'] =
-		dbSelectData($con, $sqlQuerySelect . $sqlQueryWhere . $sqlSortBy . $sqlPagination, $sqlParametrs);
+		dbSelectData($con, $sqlQuerySelect . $sqlQueryWhere . $sqlSortBy . $sqlPagination, $sqlParameters);
 
 	$tmpLayoutData['content'] =
 		renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/templates/users/users_list.php', $tmpLayoutContentData);
@@ -111,18 +99,39 @@ if (isset($_GET['action']) && $_GET['action'] === 'users_list')
 if (isset($_POST['action']) && $_POST['action'] == 'new_user_data')
 {
 	errorIfDoubleClick($_SESSION['formId'], $_POST['form_id'],
-		$config['host'] . '/users.php?action=new_user_card');
+		$progConfig['host'] . '/users.php?action=new_user_card');
+
+	if (isValidNewUserData($progConfig) === false || isValidNewUserPassword($progConfig) === false)
+	{
+		header('Location:' . $progConfig['host'] . '/users.php?action=new_user_card&error_massage=ошибка входных данных');
+		exit();
+	}
+
+	if (dbSelectData($con, 'SELECT COUNT(*) as count FROM users WHERE login = ?', [$_POST['login']])[0]['count'] > 0)
+	{
+		header('Location:' . $progConfig['host'] .
+			'/users.php?action=new_user_card&error_massage=пользователь с таким логином уже существует');
+		exit();
+	}
+
+	if (dbSelectData($con, 'SELECT COUNT(*) as count FROM users WHERE last_name = ? AND first_name = ?',
+		[correctFormatUpper($_POST['last_name']), correctFormatUpper($_POST['first_name'])])[0]['count'])
+	{
+		header('Location:' . $progConfig['host'] .
+			'/users.php?action=new_user_card&error_massage=пользователь с таким имнем и фамилией уже существует');
+		exit();
+	}
 
 	$newUserData = [
-		'login' => $_POST['login'],
+		'login' => correctFormat($_POST['login']),
 		'is_block' => 0,
 		'need_logout' => 0,
-		'password' => $_POST['password'],
-		'last_name' => $_POST['last_name'],
-		'first_name' => $_POST['first_name'],
-		'position' => $_POST['position'],
+		'password' => correctFormat($_POST['password']),
+		'last_name' => correctFormatUpper($_POST['last_name']),
+		'first_name' => correctFormatUpper($_POST['first_name']),
+		'position' => correctFormatLower($_POST['position']),
 		'mobile_phone' => $_POST['mobile_phone'],
-		'email' => $_POST['email'],
+		'email' => correctFormatLower($_POST['email']),
 		'reg_datetime' => date('Y-m-d H:i:s'),
 		'last_modify_datetime' => date('Y-m-d H:i:s'),
 
@@ -176,13 +185,13 @@ if (isset($_POST['action']) && $_POST['action'] == 'new_user_data')
 
 	if ($newUser)
 	{
-		header('Location:' . $config['host'] . '/users.php?action=user_info_card' . '&id=' .
+		header('Location:' . $progConfig['host'] . '/users.php?action=user_info_card' . '&id=' .
 			$newUser . '&alert_massage=сохранено');
 		exit();
 	}
 	else
 	{
-		header('Location:' . $config['host'] . '/users.php?action=new_user_card&error_massage=ошибка');
+		header('Location:' . $progConfig['host'] . '/users.php?action=new_user_card&error_massage=ошибка');
 		exit();
 	}
 }
@@ -190,10 +199,32 @@ if (isset($_POST['action']) && $_POST['action'] == 'new_user_data')
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-if (isset($_POST['action']) && $_POST['action'] == 'edit_user_data')
+if (isset($_POST['action']) && isset($_POST['id']) && $_POST['action'] == 'edit_user_data')
 {
 	errorIfDoubleClick($_SESSION['formId'], $_POST['form_id'],
-		$config['host'] . '/users.php?action=edit_user_card&id=' . $_POST['id']);
+		$progConfig['host'] . '/users.php?action=edit_user_card&id=' . $_POST['id']);
+
+	if (isValidNewUserData($progConfig) === false)
+	{
+		header('Location:' . $progConfig['host'] . '/users.php?action=edit_user_card&id=' .
+			$_POST['id'] . '&error_massage=ошибка входных данных');
+		exit();
+	}
+	
+	if (dbSelectData($con, 'SELECT COUNT(*) as count FROM users WHERE login = ? AND id != ?', [$_POST['login'], $_POST['id']])[0]['count'] > 0)
+	{
+		header('Location:' . $progConfig['host'] . '/users.php?action=edit_user_card&id=' .
+			$_POST['id'] . '&error_massage=пользователь с таким логином уже существует');
+		exit();
+	}
+
+	if (dbSelectData($con, 'SELECT COUNT(*) as count FROM users WHERE last_name = ? AND first_name = ? AND id != ?',
+		[correctFormatUpper($_POST['last_name']), correctFormatUpper($_POST['first_name']), $_POST['id']])[0]['count'])
+	{
+		header('Location:' . $progConfig['host'] . '/users.php?action=edit_user_card&id=' .
+			$_POST['id'] . '&error_massage=пользователь с таким имнем и фамилией уже существует');
+		exit();
+	}
 
 	$editUserData = [
 		'need_logout' => 1,
@@ -283,13 +314,13 @@ if (isset($_POST['action']) && $_POST['action'] == 'edit_user_data')
 
 	if ($editUser)
 	{
-		header('Location:' . $config['host'] . '/users.php?action=user_info_card&id=' .
+		header('Location:' . $progConfig['host'] . '/users.php?action=user_info_card&id=' .
 			$editUserData['id'] . '&alert_massage=сохранено');
 		exit();
 	}
 	else
 	{
-		header('Location:' . $config['host'] . '/users.php?action=edit_user_card&id=' .
+		header('Location:' . $progConfig['host'] . '/users.php?action=edit_user_card&id=' .
 			$editUserData['id'] . '&error_massage=ошибка');
 		exit();
 	}
@@ -298,28 +329,9 @@ if (isset($_POST['action']) && $_POST['action'] == 'edit_user_data')
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-if (isset($_GET['action']) && $_GET['action'] == 'block_user_data')
+if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'block_user_data')
 {
-	$editUserData = [
-		'is_block' => 1,
-		'need_logout' => 1,
-		'id' => $_GET['id']
-	];
-
-	$editUser = dbExecQuery($con, 'UPDATE users SET is_block = ?, need_logout = ? WHERE id = ?', $editUserData);
-
-	if ($editUser)
-	{
-		header('Location:' . $config['host'] . '/users.php?action=user_info_card&id=' .
-			$editUserData['id'] . '&alert_massage=сохранено');
-		exit();
-	}
-	else
-	{
-		header('Location:' . $config['host'] . '/users.php?action=edit_user_card&id=' .
-			$editUserData['id'] . '&error_massage=ошибка');
-		exit();
-	}
+	setUserIsBlockVal($con, $progConfig, $_GET['id'], 1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -327,26 +339,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'block_user_data')
 
 if (isset($_GET['action']) && $_GET['action'] == 'unlock_user_data')
 {
-	$editUserData = [
-		'is_block' => 0,
-		'need_logout' => 1,
-		'id' => $_GET['id']
-	];
-
-	$editUser = dbExecQuery($con, 'UPDATE users SET is_block = ?, need_logout = ? WHERE id = ?', $editUserData);
-
-	if ($editUser)
-	{
-		header('Location:' . $config['host'] . '/users.php?action=user_info_card&id=' .
-			$editUserData['id'] . '&alert_massage=сохранено');
-		exit();
-	}
-	else
-	{
-		header('Location:' . $config['host'] . '/users.php?action=edit_user_card&id=' .
-			$editUserData['id'] . '&error_massage=ошибка');
-		exit();
-	}
+	setUserIsBlockVal($con, $progConfig, $_GET['id'], 0);
 }
 
 echo renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/templates/layout.php', $tmpLayoutData);

@@ -1,7 +1,5 @@
 <?php
 
-require_once($_SERVER['DOCUMENT_ROOT'] . '/src/include.php');
-
 if (isset($_GET['alert_massage']))
 {
 $tmpLayoutData['alertMassage'] = $_GET['alert_massage'];

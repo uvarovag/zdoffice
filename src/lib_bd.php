@@ -1,7 +1,5 @@
 <?php
 
-require_once($_SERVER['DOCUMENT_ROOT'] . '/src/include.php');
-
 /**
  * Создает подготовленное выражение на основе готового SQL запроса и переданных данных
  *

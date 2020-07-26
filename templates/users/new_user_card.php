@@ -42,7 +42,7 @@
               <span class="input-group-text" id="basic-addon1"><?= $data['config']['phone_prefix']?></span>
             </div>
             <input type="tel" name="mobile_phone" class="form-control" required
-                   pattern="\d{2}\s\d{3}\s\d{2}\s\d{2}"
+                   pattern="<?= $data['config']['regexpC'] ?>"
                    placeholder="XX XXX XX XX"">
           </div>
           <div class="col-12 col-md-6 col-lg-4 mb-4">

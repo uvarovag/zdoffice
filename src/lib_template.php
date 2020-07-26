@@ -1,7 +1,5 @@
 <?php
 
-require_once($_SERVER['DOCUMENT_ROOT'] . '/src/include.php');
-
 function renderTemplate($template, $data) {
   $string = '';
   if (file_exists($template)) {
