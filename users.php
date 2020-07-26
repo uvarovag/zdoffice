@@ -80,7 +80,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'users_list')
 	$sqlSortBy = 'ORDER by id DESC ';
 
 	$paginationData =
-		getPagination($progConfig, $sysConfig['host'] . '/users.php', $con, 'SELECT COUNT(*) as pgn FROM users ' .
+		getPagination($progConfig, $progConfig['host'] . '/users.php', $con, 'SELECT COUNT(*) as pgn FROM users ' .
 			$sqlQueryWhere, $sqlParameters);
 
 	$tmpLayoutData['pagination'] = $paginationData['tmpPagination'];
