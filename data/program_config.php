@@ -1,11 +1,10 @@
 <?php
 
-require_once($_SERVER['DOCUMENT_ROOT'] . '/src/include.php');
-
 $progConfig = [
 	'host' => 'http://zdoffice',
   'progName' => 'office',
   'bgStyle' => 'bg-primary',
+  'textStyle' => 'text-primary',
 	'phone_prefix' => '+998',
 	'maxTabeleRow' => 15,
 	'maxLenTabeCell' => 12,
@@ -19,8 +18,8 @@ $progConfig = [
 	'minLenA' => 3,
 	// !!!MAX 32!!! maxLenA login, password, last_name, firs_name, position
 	'maxLenA' => 32,
-	'minLenB' => 0,
-	'maxLenB' => 0,
+	'minLenB' => 10,
+	'maxLenB' => 1000,
 	'minLenC' => 0,
 	'maxLenC' => 0,
 ];

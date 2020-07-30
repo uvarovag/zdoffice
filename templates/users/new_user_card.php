@@ -7,32 +7,30 @@
       <input type="hidden" name="action" value="new_user_data">
       <input type="hidden" name="form_id" value="<?= $data['formId'] ?>">
       <fieldset>
-        <div class="row">
-          <div class="col-12 col-md mb-4">
+        <div class="form-row">
+          <div class="form-group col-12 col-md-6 mb-4">
             <small class="text-gray">логин (<?= 'en ' . $data['config']['minLenA'] . '-' . $data['config']['maxLenA']?>)</small>
             <input type="text" name="login" class="form-control" required
                    pattern="<?= $data['config']['regexpA'] ?>{<?= $data['config']['minLenA'] ?>,<?= $data['config']['maxLenA'] ?>}">
           </div>
-          <div class="col-12 col-md mb-4">
+          <div class="form-group col-12 col-md-6 mb-4">
             <small class="text-gray">пароль (<?= 'en ' . $data['config']['minLenA'] . '-' . $data['config']['maxLenA']?>)</small>
             <input type="text" name="password" class="form-control" required
                    pattern="<?= $data['config']['regexpA'] ?>{<?= $data['config']['minLenA'] ?>,<?= $data['config']['maxLenA'] ?>}">
           </div>
-        </div>
-        <div class="row">
-          <div class="col-12 col-md mb-4">
+          <div class="form-group col-12 col-md-6 mb-4">
             <small class="text-gray">фамилия (<?= 'ru ' . $data['config']['minLenA'] . '-' . $data['config']['maxLenA']?>)</small>
             <input type="text" name="last_name" class="form-control" required
                    pattern="<?= $data['config']['regexpB'] ?>{<?= $data['config']['minLenA'] ?>,<?= $data['config']['maxLenA'] ?>}">
           </div>
-          <div class="col-12 col-md mb-4">
+          <div class="form-group col-12 col-md-6 mb-4">
             <small class="text-gray">имя (<?= 'ru ' . $data['config']['minLenA'] . '-' . $data['config']['maxLenA']?>)</small>
             <input type="text" name="first_name" class="form-control" required
                    pattern="<?= $data['config']['regexpB'] ?>{<?= $data['config']['minLenA'] ?>,<?= $data['config']['maxLenA'] ?>}">
           </div>
         </div>
-        <div class="row">
-          <div class="col-12 col-md-6 col-lg-4 mb-4">
+        <div class="form-row">
+          <div class="form-group col-12 col-md-6 col-lg-4 mb-4">
             <small class="text-gray">должность</small>
             <select name="position" required class="form-control">
               <option value="none" disabled selected>выбрать</option>
@@ -41,7 +39,7 @@
 							<?php endforeach; ?>
             </select>
           </div>
-          <div class="col-12 col-md-6 col-lg-4 mb-4">
+          <div class="form-group col-12 col-md-6 col-lg-4 mb-4">
             <small class="text-gray">телефон</small>
             <div class="input-group">
               <div class="input-group-prepend">
@@ -52,7 +50,7 @@
                      placeholder="XX XXX XX XX"">
             </div>
           </div>
-            <div class="col-12 col-md-6 col-lg-4 mb-4">
+            <div class="form-group col-12 col-md-6 col-lg-4 mb-4">
               <small class="text-gray">почта</small>
               <input type="email" name="email" class="form-control" required>
             </div>
@@ -63,7 +61,7 @@
 
       <div class="row">
         <fieldset class="col-12 col-md-6 mb-4">
-          <h3 class="mb-4">Дизайн</h3>
+          <h3 class="my-4">Дизайн</h3>
           <div class="custom-control custom-checkbox mb-2">
             <input type="checkbox" name="design_order_new" id="auth_design_order_new" class="custom-control-input">
             <label class="custom-control-label" for="auth_design_order_new">создать заявку</label>
@@ -84,9 +82,10 @@
             <input type="checkbox" name="design_order_change_priority" id="auth_design_order_change_priority" class="custom-control-input">
             <label class="custom-control-label" for="auth_design_order_change_priority">менять приоритет заявки</label>
           </div>
-        </fieldset>
-        <fieldset class="col-12 col-lg-6 mb-4">
-          <h3 class="mb-4">Производство</h3>
+
+          <hr>
+          <h3 class="my-4">Производство</h3>
+
           <div class="custom-control custom-checkbox mb-2">
             <input type="checkbox" name="production_order_new" id="auth_production_order_new" class="custom-control-input">
             <label class="custom-control-label" for="auth_production_order_new">создать заявку</label>

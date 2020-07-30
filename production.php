@@ -16,7 +16,7 @@ $tmpLayoutData['navList'] = $navigationListUser;
 
 if (isset($_GET['action']) && $_GET['action'] == 'new_order')
 {
-	$tmpLayoutData['content'] = renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/templates/design/new_order.php', $tmpLayoutContentData);
+	$tmpLayoutData['content'] = renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/templates/production/new_order.php', $tmpLayoutContentData);
 
 
 }

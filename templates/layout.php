@@ -42,7 +42,7 @@
     <div class="sidenav-header  align-items-center">
       <a class="navbar-brand" href="#">
         <img src="/argon-dashboard/assets/img/brand/zd-blue.png" class="navbar-brand-img" alt="...">
-        <h2 class="d-inline align-bottom text-primary"><?= $data['config']['progName'] ?></h2>
+        <h2 class="d-inline align-bottom <?= $data['config']['textStyle'] ?>"><?= $data['config']['progName'] ?></h2>
       </a>
     </div>
     <div class="navbar-inner">
@@ -59,7 +59,7 @@
           </li>
           <?php elseif ($nav['isAvailable'] && $nav['isCaption']): ?>
           <li class="nav-item">
-            <span class="h4 m-3 text-primary"><?= $nav['title'] ?></span>
+            <span class="h4 m-3 <?= $data['config']['textStyle'] ?>"><?= $nav['title'] ?></span>
           </li>
           <?php endif; ?>
         <?php endforeach; ?>
@@ -112,7 +112,7 @@
           <!--            <div class="dropdown-menu dropdown-menu-xl  dropdown-menu-right  py-0 overflow-hidden">-->
           <!--              &lt;!&ndash; Dropdown header &ndash;&gt;-->
           <!--              <div class="px-3 py-3">-->
-          <!--                <h6 class="text-sm text-muted m-0">You have <strong class="text-primary">13</strong> notifications.</h6>-->
+          <!--                <h6 class="text-sm text-muted m-0">You have <strong class="<?= $data['config']['textStyle'] ?>">13</strong> notifications.</h6>-->
           <!--              </div>-->
           <!--              &lt;!&ndash; List group &ndash;&gt;-->
           <!--              <div class="list-group list-group-flush">-->
@@ -137,7 +137,7 @@
           <!--                </a>-->
           <!--              </div>-->
           <!--              &lt;!&ndash; View all &ndash;&gt;-->
-          <!--              <a href="#!" class="dropdown-item text-center text-primary font-weight-bold py-3">View all</a>-->
+          <!--              <a href="#!" class="dropdown-item text-center <?= $data['config']['textStyle'] ?> font-weight-bold py-3">View all</a>-->
           <!--            </div>-->
           <!--          </li>-->
           <!--          <li class="nav-item dropdown">-->
@@ -211,6 +211,7 @@
       <div class="col">
         <?php if ($data['alertMassage']): ?>
           <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="ni ni-bell-55"></i>
 						<?= $data['alertMassage'] ?>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
@@ -218,6 +219,7 @@
           </div>
         <?php elseif ($data['errorMassage']): ?>
           <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="ni ni-bell-55"></i>
 						<?= $data['errorMassage'] ?>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>

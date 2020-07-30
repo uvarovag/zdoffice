@@ -5,7 +5,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/src/include.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/session_start.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/data/navigation_list_admin.php');
 
-require_once($_SERVER['DOCUMENT_ROOT'] . '/src/page_data.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/src/tmp_data.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/alert_massage.php');
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -211,7 +211,7 @@ if (isset($_POST['action']) && isset($_POST['id']) && $_POST['action'] == 'edit_
 			$_POST['id'] . '&error_massage=ошибка входных данных');
 		exit();
 	}
-	
+
 	if (dbSelectData($con, 'SELECT COUNT(*) as count FROM users WHERE login = ? AND id != ?', [$_POST['login'], $_POST['id']])[0]['count'] > 0)
 	{
 		header('Location:' . $progConfig['host'] . '/users.php?action=edit_user_card&id=' .
