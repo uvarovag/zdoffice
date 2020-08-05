@@ -42,7 +42,7 @@
     <div class="sidenav-header  align-items-center">
       <a class="navbar-brand" href="#">
         <img src="/argon-dashboard/assets/img/brand/zd-blue.png" class="navbar-brand-img" alt="...">
-        <h2 class="d-inline align-bottom <?= $data['config']['textStyle'] ?>"><?= $data['config']['progName'] ?></h2>
+        <h2 class="d-inline align-bottom <?= $data['config']['TEXT_STYLE'] ?>"><?= $data['config']['PROG_NAME'] ?></h2>
       </a>
     </div>
     <div class="navbar-inner">
@@ -50,19 +50,19 @@
       <div class="collapse navbar-collapse" id="sidenav-collapse-main">
         <!-- Nav items -->
         <ul class="navbar-nav">
-        <?php foreach ($data['navList'] as $nav): ?>
-          <?php if ($nav['isAvailable'] && $nav['isCaption'] === false): ?>
-          <li class="nav-item">
-            <a class="nav-link <?php if ($nav['isActive']): ?> active<?php endif; ?>" href="<?= $nav['url'] ?>">
-              <?= $nav['title'] ?>
-            </a>
-          </li>
-          <?php elseif ($nav['isAvailable'] && $nav['isCaption']): ?>
-          <li class="nav-item">
-            <span class="h4 m-3 <?= $data['config']['textStyle'] ?>"><?= $nav['title'] ?></span>
-          </li>
-          <?php endif; ?>
-        <?php endforeach; ?>
+					<?php foreach ($data['navList'] as $nav): ?>
+						<?php if ($nav['isAvailable'] && $nav['isCaption'] === false): ?>
+              <li class="nav-item">
+                <a class="nav-link <?php if ($nav['isActive']): ?> active<?php endif; ?>" href="<?= $nav['url'] ?>">
+									<?= $nav['title'] ?>
+                </a>
+              </li>
+						<?php elseif ($nav['isAvailable'] && $nav['isCaption']): ?>
+              <li class="nav-item">
+                <span class="h4 m-3 <?= $data['config']['TEXT_STYLE'] ?>"><?= $nav['title'] ?></span>
+              </li>
+						<?php endif; ?>
+					<?php endforeach; ?>
         </ul>
       </div>
     </div>
@@ -71,7 +71,7 @@
 <!-- Main content -->
 <div class="main-content" id="panel">
   <!-- Topnav -->
-  <nav class="navbar navbar-top navbar-expand navbar-dark border-bottom <?= $data['config']['bgStyle'] ?>">
+  <nav class="navbar navbar-top navbar-expand navbar-dark border-bottom <?= $data['config']['BG_STYLE'] ?>">
     <div class="container-fluid">
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <!-- Search form -->
@@ -112,7 +112,7 @@
           <!--            <div class="dropdown-menu dropdown-menu-xl  dropdown-menu-right  py-0 overflow-hidden">-->
           <!--              &lt;!&ndash; Dropdown header &ndash;&gt;-->
           <!--              <div class="px-3 py-3">-->
-          <!--                <h6 class="text-sm text-muted m-0">You have <strong class="<?= $data['config']['textStyle'] ?>">13</strong> notifications.</h6>-->
+          <!--                <h6 class="text-sm text-muted m-0">You have <strong class="<?= $data['config']['TEXT_STYLE'] ?>">13</strong> notifications.</h6>-->
           <!--              </div>-->
           <!--              &lt;!&ndash; List group &ndash;&gt;-->
           <!--              <div class="list-group list-group-flush">-->
@@ -137,7 +137,7 @@
           <!--                </a>-->
           <!--              </div>-->
           <!--              &lt;!&ndash; View all &ndash;&gt;-->
-          <!--              <a href="#!" class="dropdown-item text-center <?= $data['config']['textStyle'] ?> font-weight-bold py-3">View all</a>-->
+          <!--              <a href="#!" class="dropdown-item text-center <?= $data['config']['TEXT_STYLE'] ?> font-weight-bold py-3">View all</a>-->
           <!--            </div>-->
           <!--          </li>-->
           <!--          <li class="nav-item dropdown">-->
@@ -183,7 +183,7 @@
     </div>
   </nav>
   <!-- Header -->
-  <div class="header pb-6 <?= $data['config']['bgStyle'] ?>">
+  <div class="header pb-6 <?= $data['config']['BG_STYLE'] ?>">
     <div class="container-fluid">
       <div class="header-body">
         <div class="row align-items-center py-4">
@@ -209,7 +209,7 @@
   <div class="container-fluid mt--6">
     <div class="row justify-content-center">
       <div class="col">
-        <?php if ($data['alertMassage']): ?>
+				<?php if ($data['alertMassage']): ?>
           <div class="alert alert-success alert-dismissible fade show" role="alert">
             <i class="ni ni-bell-55"></i>
 						<?= $data['alertMassage'] ?>
@@ -217,7 +217,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-        <?php elseif ($data['errorMassage']): ?>
+				<?php elseif ($data['errorMassage']): ?>
           <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <i class="ni ni-bell-55"></i>
 						<?= $data['errorMassage'] ?>
@@ -225,11 +225,11 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-        <?php endif; ?>
+				<?php endif; ?>
 
 				<?= $data['content'] ?>
 
-        <?= $data['pagination'] ?>
+				<?= $data['pagination'] ?>
 
       </div>
     </div>

@@ -16,7 +16,7 @@ module Jekyll
 
             c.option 'detach', '-B', '--detach', 'Run the server in the background (detach)'
             c.option 'port', '-P', '--port [PORT]', 'Port to listen on'
-            c.option 'host', '-H', '--host [HOST]', 'Host to bind to'
+            c.option 'HOST', '-H', '--host [HOST]', 'Host to bind to'
             c.option 'baseurl', '-b', '--baseurl [URL]', 'Base URL'
             c.option 'skip_initial_build', '--skip-initial-build', 'Skips the initial site build which occurs before the server is started.'
 
@@ -76,7 +76,7 @@ module Jekyll
 
         def webrick_options(config)
           opts = {
-            :BindAddress        => config['host'],
+            :BindAddress        => config['HOST'],
             :DirectoryIndex     => %w(index.html index.htm index.cgi index.rhtml index.xml),
             :DocumentRoot       => config['destination'],
             :DoNotReverseLookup => true,

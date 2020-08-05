@@ -1,5 +1,0 @@
-<?php
-
-$progData = [
-	'usersPositionsList' => $usersPositionsList
-];

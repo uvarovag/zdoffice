@@ -1,15 +1,15 @@
 <?php
 
 function renderTemplate($template, $data) {
-  $string = '';
-  if (file_exists($template)) {
-    ob_start();
-    require_once($template);
-    $string = ob_get_clean();
-    return $string;
-  } else {
-    return $string;
-  }
+	$string = '';
+	if (file_exists($template)) {
+		ob_start();
+		require_once($template);
+		$string = ob_get_clean();
+		return $string;
+	} else {
+		return $string;
+	}
 }
 
 
@@ -41,21 +41,21 @@ function getPagination($config, $url, $con, $sqlQuery, $sqlParametrs) {
 
 	$paginationCount = dbSelectData($con, $sqlQuery, $sqlParametrs)[0]['pgn'];
 
-	if ($paginationCount > $config['maxTabeleRow']) {
+	if ($paginationCount > $config['MAX_TABLE_ROWS']) {
 
-		$sqlPaginationItem = $config['maxTabeleRow'];
+		$sqlPaginationItem = $config['MAX_TABLE_ROWS'];
 		$sqlPaginationStart = 0;
 
-		$tmpPaginationData['pagesQuantity'] = ceil($paginationCount / $config['maxTabeleRow']);
+		$tmpPaginationData['pagesQuantity'] = ceil($paginationCount / $config['MAX_TABLE_ROWS']);
 		$tmpPaginationData['currentPage'] = 1;
 
 		if (isset($_GET['page']) && $_GET['page'] > 1) {
-			$sqlPaginationStart = floor($config['maxTabeleRow'] * (floor($_GET['page']) - 1));
+			$sqlPaginationStart = floor($config['MAX_TABLE_ROWS'] * (floor($_GET['page']) - 1));
 			$tmpPaginationData['currentPage'] = floor($_GET['page']);
 		}
 
 		$sqlPagination = 'LIMIT ' . $sqlPaginationItem . ' OFFSET ' . $sqlPaginationStart . ' ';
-		$tmpPagination = renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/templates/pagination.php', $tmpPaginationData);
+		$tmpPagination = renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/src/templates/pagination.php', $tmpPaginationData);
 	}
 
 	return [
@@ -64,19 +64,22 @@ function getPagination($config, $url, $con, $sqlQuery, $sqlParametrs) {
 	];
 }
 
-//function get_order_name($orderId) {
-//	$maxOrderNameBodyLenght = 4;
-//	$orderIdLength = mb_strlen($orderId);
-//	if ($orderIdLength > $maxOrderNameBodyLenght) {
-//		return substr($orderId, $orderIdLength - $maxOrderNameBodyLenght, $orderIdLength) . '-' . date('y-m');
-//	} else {
-//		return $orderId . '-' . date('m-y');
-//	}
-//}
+function getOrderName($orderId) {
+	$maxOrderNameBodyLenght = 4;
+	$orderIdLength = mb_strlen($orderId);
+	if ($orderIdLength > $maxOrderNameBodyLenght) {
+		return substr($orderId, $orderIdLength - $maxOrderNameBodyLenght,
+				$orderIdLength) . '-' . date('y-m');
+	} else {
 
-function cutStr($str, $maxLength) {
+		return str_repeat('0',
+				$maxOrderNameBodyLenght - $orderIdLength) . $orderId . '-' . date('m-y');
+	}
+}
+
+function sortStr($str, $maxLength) {
 	if (iconv_strlen($str) > $maxLength) {
-		return mb_strimwidth($str, 0, $maxLength) . '...';
+		return '<span data-toggle="tooltip" data-placement="top" title="' . $str . '">' . mb_strimwidth($str, 0, $maxLength) . '...</span>';
 	} else {
 		return $str;
 	}

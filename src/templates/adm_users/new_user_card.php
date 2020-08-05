@@ -1,67 +1,70 @@
 <div class="card">
   <div class="card-header bg-transparent">
-    <h2 class="mb-0">Добавить пользователя</h2>
+    <h2 class="mb-0"><?= $data['title'] ?></h2>
   </div>
   <div class="card-body">
-    <form action="<?= $data['config']['host'] . '/users.php' ?>" method="POST">
+    <form action="<?= $data['config']['HOST'] . '/adm_users.php' ?>" method="POST">
       <input type="hidden" name="action" value="new_user_data">
       <input type="hidden" name="form_id" value="<?= $data['formId'] ?>">
-      <fieldset>
-        <div class="form-row">
-          <div class="form-group col-12 col-md-6 mb-4">
-            <small class="text-gray">логин (<?= 'en ' . $data['config']['minLenA'] . '-' . $data['config']['maxLenA']?>)</small>
-            <input type="text" name="login" class="form-control" required
-                   pattern="<?= $data['config']['regexpA'] ?>{<?= $data['config']['minLenA'] ?>,<?= $data['config']['maxLenA'] ?>}">
-          </div>
-          <div class="form-group col-12 col-md-6 mb-4">
-            <small class="text-gray">пароль (<?= 'en ' . $data['config']['minLenA'] . '-' . $data['config']['maxLenA']?>)</small>
-            <input type="text" name="password" class="form-control" required
-                   pattern="<?= $data['config']['regexpA'] ?>{<?= $data['config']['minLenA'] ?>,<?= $data['config']['maxLenA'] ?>}">
-          </div>
-          <div class="form-group col-12 col-md-6 mb-4">
-            <small class="text-gray">фамилия (<?= 'ru ' . $data['config']['minLenA'] . '-' . $data['config']['maxLenA']?>)</small>
-            <input type="text" name="last_name" class="form-control" required
-                   pattern="<?= $data['config']['regexpB'] ?>{<?= $data['config']['minLenA'] ?>,<?= $data['config']['maxLenA'] ?>}">
-          </div>
-          <div class="form-group col-12 col-md-6 mb-4">
-            <small class="text-gray">имя (<?= 'ru ' . $data['config']['minLenA'] . '-' . $data['config']['maxLenA']?>)</small>
-            <input type="text" name="first_name" class="form-control" required
-                   pattern="<?= $data['config']['regexpB'] ?>{<?= $data['config']['minLenA'] ?>,<?= $data['config']['maxLenA'] ?>}">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group col-12 col-md-6 col-lg-4 mb-4">
-            <small class="text-gray">должность</small>
-            <select name="position" required class="form-control">
-              <option value="none" disabled selected>выбрать</option>
-							<?php foreach ($data['progData']['usersPositionsList'] as $posKey => $posVal): ?>
-                <option value="<?= $posKey ?>"><?= $posVal ?></option>
-							<?php endforeach; ?>
-            </select>
-          </div>
-          <div class="form-group col-12 col-md-6 col-lg-4 mb-4">
-            <small class="text-gray">телефон</small>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text" id="basic-addon1"><?= $data['config']['phone_prefix']?></span>
-              </div>
-              <input type="tel" name="mobile_phone" class="form-control" required
-                     pattern="<?= $data['config']['regexpC'] ?>"
-                     placeholder="XX XXX XX XX"">
+      <div class="row mb-4">
+        <fieldset class="col-12 col-md-6">
+          <h3>Данные пользователя</h3>
+          <div class="form-row">
+            <div class="form-group col-12 mb-4">
+              <small class="text-gray">логин (<?= 'en ' . $data['config']['MIN_LEN_A'] . '-' . $data['config']['MAX_LEN_A'] ?>)</small>
+              <input type="text" name="login" class="form-control" required
+                     minlength="<?= $data['config']['MIN_LEN_A'] ?>" maxlength="<?= $data['config']['MAX_LEN_A'] ?>"
+                     pattern="^[a-zA-Z0-9]+$">
+            </div>
+            <div class="form-group col-12 mb-4">
+              <small class="text-gray">пароль (<?= 'en ' . $data['config']['MIN_LEN_A'] . '-' . $data['config']['MAX_LEN_A'] ?>)</small>
+              <input type="text" name="password" class="form-control" required
+                     minlength="<?= $data['config']['MIN_LEN_A'] ?>" maxlength="<?= $data['config']['MAX_LEN_A'] ?>"
+                     pattern="^[a-zA-Z0-9]+$">
+            </div>
+            <div class="form-group col-12 mb-4">
+              <small class="text-gray">фамилия (<?= 'ru ' . $data['config']['MIN_LEN_A'] . '-' . $data['config']['MAX_LEN_A'] ?>)</small>
+              <input type="text" name="last_name" class="form-control" required
+                     minlength="<?= $data['config']['MIN_LEN_A'] ?>" maxlength="<?= $data['config']['MAX_LEN_A'] ?>"
+                     pattern="^[а-яА-ЯёЁ0-9]+$">
+            </div>
+            <div class="form-group col-12 mb-4">
+              <small class="text-gray">имя (<?= 'ru ' . $data['config']['MIN_LEN_A'] . '-' . $data['config']['MAX_LEN_A'] ?>)</small>
+              <input type="text" name="first_name" class="form-control" required
+                     minlength="<?= $data['config']['MIN_LEN_A'] ?>" maxlength="<?= $data['config']['MAX_LEN_A'] ?>"
+                     pattern="^[а-яА-ЯёЁ0-9]+$">
             </div>
           </div>
-            <div class="form-group col-12 col-md-6 col-lg-4 mb-4">
+          <div class="form-row">
+            <div class="form-group col-12 mb-4">
+              <small class="text-gray">должность</small>
+              <select name="position" required class="form-control">
+                <option></option>
+								<?php foreach ($data['progData']['USERS_POSITIONS_LIST'] as $posKey => $posVal): ?>
+                  <option value="<?= $posKey ?>"><?= $posVal ?></option>
+								<?php endforeach; ?>
+              </select>
+            </div>
+            <div class="form-group col-12 mb-4">
+              <small class="text-gray">телефон</small>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1"><?= $data['config']['PHONE_PREFIX'] ?></span>
+                </div>
+                <input type="tel" name="mobile_phone" class="form-control" required
+                       pattern="\d{2}\s\d{3}\s\d{2}\s\d{2}"
+                       placeholder="XX XXX XX XX"">
+              </div>
+            </div>
+            <div class="form-group col-12 mb-4">
               <small class="text-gray">почта</small>
               <input type="email" name="email" class="form-control" required>
             </div>
-        </div>
-      </fieldset>
+          </div>
+        </fieldset>
 
-      <hr>
-
-      <div class="row">
-        <fieldset class="col-12 col-md-6 mb-4">
-          <h3 class="my-4">Дизайн</h3>
+        <fieldset class="col-12 col-md-6">
+          <h3>Дизайн</h3>
           <div class="custom-control custom-checkbox mb-2">
             <input type="checkbox" name="design_order_new" id="auth_design_order_new" class="custom-control-input">
             <label class="custom-control-label" for="auth_design_order_new">создать заявку</label>
@@ -84,8 +87,7 @@
           </div>
 
           <hr>
-          <h3 class="my-4">Производство</h3>
-
+          <h3>Производство</h3>
           <div class="custom-control custom-checkbox mb-2">
             <input type="checkbox" name="production_order_new" id="auth_production_order_new" class="custom-control-input">
             <label class="custom-control-label" for="auth_production_order_new">создать заявку</label>
@@ -107,32 +109,38 @@
             <label class="custom-control-label" for="auth_production_order_cancel">подтвердить отмену заявки</label>
           </div>
           <div class="custom-control custom-checkbox mb-2">
-            <input type="checkbox" name="production_order_change_status_const" id="auth_production_order_change_status_const" class="custom-control-input">
+            <input type="checkbox" name="production_order_change_status_const" id="auth_production_order_change_status_const"
+                   class="custom-control-input">
             <label class="custom-control-label" for="auth_production_order_change_status_const">
               <b>конструктор</b> менять статус заявки</label>
           </div>
           <div class="custom-control custom-checkbox mb-2">
-            <input type="checkbox" name="production_order_change_status_adv" id="auth_production_order_change_status_adv" class="custom-control-input">
+            <input type="checkbox" name="production_order_change_status_adv" id="auth_production_order_change_status_adv"
+                   class="custom-control-input">
             <label class="custom-control-label" for="auth_production_order_change_status_adv">
               <b>реклама</b> менять статус заявки</label>
           </div>
           <div class="custom-control custom-checkbox mb-2">
-            <input type="checkbox" name="production_order_change_status_furn" id="auth_production_order_change_status_furn" class="custom-control-input">
+            <input type="checkbox" name="production_order_change_status_furn" id="auth_production_order_change_status_furn"
+                   class="custom-control-input">
             <label class="custom-control-label" for="auth_production_order_change_status_furn">
               <b>мебель</b> менять статус заявки</label>
           </div>
           <div class="custom-control custom-checkbox mb-2">
-            <input type="checkbox" name="production_order_change_status_steel" id="auth_production_order_change_status_steel" class="custom-control-input">
+            <input type="checkbox" name="production_order_change_status_steel" id="auth_production_order_change_status_steel"
+                   class="custom-control-input">
             <label class="custom-control-label" for="auth_production_order_change_status_steel">
               <b>металл</b> менять статус заявки</label>
           </div>
           <div class="custom-control custom-checkbox mb-2">
-            <input type="checkbox" name="production_order_change_status_install" id="auth_production_order_change_status_install" class="custom-control-input">
+            <input type="checkbox" name="production_order_change_status_install" id="auth_production_order_change_status_install"
+                   class="custom-control-input">
             <label class="custom-control-label" for="auth_production_order_change_status_install">
               <b>монтаж</b> менять статус заявки</label>
           </div>
           <div class="custom-control custom-checkbox mb-2">
-            <input type="checkbox" name="production_order_change_status_supply" id="auth_production_order_change_status_supply" class="custom-control-input">
+            <input type="checkbox" name="production_order_change_status_supply" id="auth_production_order_change_status_supply"
+                   class="custom-control-input">
             <label class="custom-control-label" for="auth_production_order_change_status_supply">
               <b>склад</b> менять статус заявки</label>
           </div>

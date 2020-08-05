@@ -2,17 +2,19 @@
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/include.php');
 
-require_once($_SERVER['DOCUMENT_ROOT'] . '/src/session_start.php');
-require_once($_SERVER['DOCUMENT_ROOT'] . '/data/navigation_list_admin.php');
 
-require_once($_SERVER['DOCUMENT_ROOT'] . '/src/tmp_data.php');
-require_once($_SERVER['DOCUMENT_ROOT'] . '/src/alert_massage.php');
+
+require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_session_start.php');
+
+require_once($_SERVER['DOCUMENT_ROOT'] . '/src/data/navigation_list_admin.php');
+
+require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_tmp_data.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_alert_massage.php');
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-if (isset($_GET['action']) && $_GET['action'] === 'new_user_card')
-{
+if (isset($_GET['action']) && $_GET['action'] === 'new_user_card') {
 	$_SESSION['formId'] = md5(time());
 	$tmpLayoutContentData['formId'] = $_SESSION['formId'];
 
@@ -20,105 +22,96 @@ if (isset($_GET['action']) && $_GET['action'] === 'new_user_card')
 	$tmpLayoutData['title'] = 'Добавить пользователя';
 
 	$tmpLayoutData['content'] =
-		renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/templates/users/new_user_card.php', $tmpLayoutContentData);
+		renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/src/templates/adm_users/new_user_card.php', $tmpLayoutContentData);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] === 'edit_user_card')
-{
+if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] === 'edit_user_card') {
 	$_SESSION['formId'] = md5(time());
 	$tmpLayoutContentData['formId'] = $_SESSION['formId'];
 
 	$tmpLayoutData['title'] = 'Редактировать данные пользователя';
 
 	$tmpLayoutContentData['user'] =
-		dbSelectData($con, 'SELECT * FROM users WHERE id = ?', [$_GET['id']])[0] ?? [];
+		dbSelectData($con, 'SELECT * FROM adm_users WHERE id = ?', [$_GET['id']])[0] ?? [];
 
-	if (empty($tmpLayoutContentData['user']))
-	{
-		header('Location:' . $progConfig['host'] . '/users.php?action=users_list&error_massage=USER ID ERROR');
+	if (empty($tmpLayoutContentData['user'])) {
+		header('Location:' . $PROG_CONFIG['HOST'] . '/adm_users.php?action=users_list&error_massage=USER ID ERROR');
 		exit();
 	}
 
 	$tmpLayoutData['content'] =
-		renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/templates/users/edit_user_card.php', $tmpLayoutContentData);
+		renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/src/templates/adm_users/edit_user_card.php', $tmpLayoutContentData);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] === 'user_info_card')
-{
+if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] === 'user_info_card') {
 	$tmpLayoutData['title'] = 'Карта пользователя';
 
 	$tmpLayoutContentData['user'] =
-		dbSelectData($con, 'SELECT * FROM users WHERE id = ?', [$_GET['id']])[0] ?? [];
+		dbSelectData($con, 'SELECT * FROM adm_users WHERE id = ?', [$_GET['id']])[0] ?? [];
 
-	if (empty($tmpLayoutContentData['user']))
-	{
-		header('Location:' . $progConfig['host'] . '/users.php?action=users_list&error_massage=USER ID ERROR');
+	if (empty($tmpLayoutContentData['user'])) {
+		header('Location:' . $PROG_CONFIG['HOST'] . '/adm_users.php?action=users_list&error_massage=USER ID ERROR');
 		exit();
 	}
 
 	$tmpLayoutData['content'] =
-		renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/templates/users/user_info_card.php', $tmpLayoutContentData);
+		renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/src/templates/adm_users/user_info_card.php', $tmpLayoutContentData);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-if (isset($_GET['action']) && $_GET['action'] === 'users_list')
-{
+if (isset($_GET['action']) && $_GET['action'] === 'users_list') {
 	$tmpLayoutData['navList']['usersList']['isActive'] = true;
 	$tmpLayoutData['title'] = 'Пользователи';
 
-	$sqlQuerySelect = 'SELECT * FROM users ';
+	$sqlQuerySelect = 'SELECT * FROM adm_users ';
 	$sqlQueryWhere = '';
 	$sqlParameters = [];
 	$sqlSortBy = 'ORDER by id DESC ';
 
 	$paginationData =
-		getPagination($progConfig, $progConfig['host'] . '/users.php', $con, 'SELECT COUNT(*) as pgn FROM users ' .
+		getPagination($PROG_CONFIG, $PROG_CONFIG['HOST'] . '/adm_users.php', $con, 'SELECT COUNT(*) as pgn FROM adm_users ' .
 			$sqlQueryWhere, $sqlParameters);
 
 	$tmpLayoutData['pagination'] = $paginationData['tmpPagination'];
 	$sqlPagination = $paginationData['sqlPagination'];
 
-	$tmpLayoutContentData['users'] =
+	$tmpLayoutContentData['adm_users'] =
 		dbSelectData($con, $sqlQuerySelect . $sqlQueryWhere . $sqlSortBy . $sqlPagination, $sqlParameters);
 
 	$tmpLayoutData['content'] =
-		renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/templates/users/users_list.php', $tmpLayoutContentData);
+		renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/src/templates/adm_users/users_list.php', $tmpLayoutContentData);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-if (isset($_POST['action']) && $_POST['action'] == 'new_user_data')
-{
+if (isset($_POST['action']) && $_POST['action'] == 'new_user_data') {
 	errorIfDoubleClick($_SESSION['formId'], $_POST['form_id'],
-		$progConfig['host'] . '/users.php?action=new_user_card');
+		$PROG_CONFIG['HOST'] . '/adm_users.php?action=new_user_card');
 
-	if (isValidNewUserData($progConfig, $progData) === false || isValidNewUserPassword($progConfig) === false)
-	{
-		header('Location:' . $progConfig['host'] . '/users.php?action=new_user_card&error_massage=ошибка входных данных');
+	if (isValidNewUserData($PROG_CONFIG, $progData) === false || isValidNewUserPassword($PROG_CONFIG) === false) {
+		header('Location:' . $PROG_CONFIG['HOST'] . '/adm_users.php?action=new_user_card&error_massage=ошибка входных данных');
 		exit();
 	}
 
-	if (dbSelectData($con, 'SELECT COUNT(*) as count FROM users WHERE login = ?', [$_POST['login']])[0]['count'] > 0)
-	{
-		header('Location:' . $progConfig['host'] .
-			'/users.php?action=new_user_card&error_massage=пользователь с таким логином уже существует');
+	if (dbSelectData($con, 'SELECT COUNT(*) as count FROM adm_users WHERE login = ?', [$_POST['login']])[0]['count'] > 0) {
+		header('Location:' . $PROG_CONFIG['HOST'] .
+			'/adm_users.php?action=new_user_card&error_massage=пользователь с таким логином уже существует');
 		exit();
 	}
 
-	if (dbSelectData($con, 'SELECT COUNT(*) as count FROM users WHERE last_name = ? AND first_name = ?',
-		[correctFormatUpper($_POST['last_name']), correctFormatUpper($_POST['first_name'])])[0]['count'])
-	{
-		header('Location:' . $progConfig['host'] .
-			'/users.php?action=new_user_card&error_massage=пользователь с таким имнем и фамилией уже существует');
+	if (dbSelectData($con, 'SELECT COUNT(*) as count FROM adm_users WHERE last_name = ? AND first_name = ?',
+		[correctFormatUpper($_POST['last_name']), correctFormatUpper($_POST['first_name'])])[0]['count']) {
+		header('Location:' . $PROG_CONFIG['HOST'] .
+			'/adm_users.php?action=new_user_card&error_massage=пользователь с таким имнем и фамилией уже существует');
 		exit();
 	}
 
@@ -130,7 +123,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'new_user_data')
 		'password' => correctFormat($_POST['password']),
 		'last_name' => correctFormatUpper($_POST['last_name']),
 		'first_name' => correctFormatUpper($_POST['first_name']),
-		'position' => (int) $_POST['position'],
+		'position' => (int)$_POST['position'],
 		'mobile_phone' => $_POST['mobile_phone'],
 		'email' => correctFormatLower($_POST['email']),
 		'reg_datetime' => date('Y-m-d H:i:s'),
@@ -182,17 +175,14 @@ if (isset($_POST['action']) && $_POST['action'] == 'new_user_data')
 				$_POST['production_order_cancel'] == 'on') ? 1 : 0
 	];
 
-	$newUser = dbInsertData($con, 'users', $newUserData);
+	$newUser = dbInsertData($con, 'adm_users', $newUserData);
 
-	if ($newUser)
-	{
-		header('Location:' . $progConfig['host'] . '/users.php?action=user_info_card' . '&id=' .
+	if ($newUser) {
+		header('Location:' . $PROG_CONFIG['HOST'] . '/adm_users.php?action=user_info_card' . '&id=' .
 			$newUser . '&alert_massage=сохранено');
 		exit();
-	}
-	else
-	{
-		header('Location:' . $progConfig['host'] . '/users.php?action=new_user_card&error_massage=ошибка');
+	} else {
+		header('Location:' . $PROG_CONFIG['HOST'] . '/adm_users.php?action=new_user_card&error_massage=ошибка');
 		exit();
 	}
 }
@@ -200,29 +190,25 @@ if (isset($_POST['action']) && $_POST['action'] == 'new_user_data')
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-if (isset($_POST['action']) && isset($_POST['id']) && $_POST['action'] == 'edit_user_data')
-{
+if (isset($_POST['action']) && isset($_POST['id']) && $_POST['action'] == 'edit_user_data') {
 	errorIfDoubleClick($_SESSION['formId'], $_POST['form_id'],
-		$progConfig['host'] . '/users.php?action=edit_user_card&id=' . $_POST['id']);
+		$PROG_CONFIG['HOST'] . '/adm_users.php?action=edit_user_card&id=' . $_POST['id']);
 
-	if (isValidNewUserData($progConfig, $progData) === false)
-	{
-		header('Location:' . $progConfig['host'] . '/users.php?action=edit_user_card&id=' .
+	if (isValidNewUserData($PROG_CONFIG, $progData) === false) {
+		header('Location:' . $PROG_CONFIG['HOST'] . '/adm_users.php?action=edit_user_card&id=' .
 			$_POST['id'] . '&error_massage=ошибка входных данных');
 		exit();
 	}
 
-	if (dbSelectData($con, 'SELECT COUNT(*) as count FROM users WHERE login = ? AND id != ?', [$_POST['login'], $_POST['id']])[0]['count'] > 0)
-	{
-		header('Location:' . $progConfig['host'] . '/users.php?action=edit_user_card&id=' .
+	if (dbSelectData($con, 'SELECT COUNT(*) as count FROM adm_users WHERE login = ? AND id != ?', [$_POST['login'], $_POST['id']])[0]['count'] > 0) {
+		header('Location:' . $PROG_CONFIG['HOST'] . '/adm_users.php?action=edit_user_card&id=' .
 			$_POST['id'] . '&error_massage=пользователь с таким логином уже существует');
 		exit();
 	}
 
-	if (dbSelectData($con, 'SELECT COUNT(*) as count FROM users WHERE last_name = ? AND first_name = ? AND id != ?',
-		[correctFormatUpper($_POST['last_name']), correctFormatUpper($_POST['first_name']), $_POST['id']])[0]['count'])
-	{
-		header('Location:' . $progConfig['host'] . '/users.php?action=edit_user_card&id=' .
+	if (dbSelectData($con, 'SELECT COUNT(*) as count FROM adm_users WHERE last_name = ? AND first_name = ? AND id != ?',
+		[correctFormatUpper($_POST['last_name']), correctFormatUpper($_POST['first_name']), $_POST['id']])[0]['count']) {
+		header('Location:' . $PROG_CONFIG['HOST'] . '/adm_users.php?action=edit_user_card&id=' .
 			$_POST['id'] . '&error_massage=пользователь с таким имнем и фамилией уже существует');
 		exit();
 	}
@@ -232,7 +218,7 @@ if (isset($_POST['action']) && isset($_POST['id']) && $_POST['action'] == 'edit_
 		'password' => correctFormat($_POST['password']),
 		'last_name' => correctFormatUpper($_POST['last_name']),
 		'first_name' => correctFormatUpper($_POST['first_name']),
-		'position' => (int) $_POST['position'],
+		'position' => (int)$_POST['position'],
 		'mobile_phone' => $_POST['mobile_phone'],
 		'email' => correctFormatLower($_POST['email']),
 		'last_modify_datetime' => date('Y-m-d H:i:s'),
@@ -284,7 +270,7 @@ if (isset($_POST['action']) && isset($_POST['id']) && $_POST['action'] == 'edit_
 		'id' => $_POST['id']
 	];
 
-	$editUserQuery = 'UPDATE users SET 
+	$editUserQuery = 'UPDATE adm_users SET 
 		need_logout = ?, 
 		password = ?, 
 		last_name = ?, 
@@ -313,15 +299,12 @@ if (isset($_POST['action']) && isset($_POST['id']) && $_POST['action'] == 'edit_
 
 	$editUser = dbExecQuery($con, $editUserQuery, $editUserData);
 
-	if ($editUser)
-	{
-		header('Location:' . $progConfig['host'] . '/users.php?action=user_info_card&id=' .
+	if ($editUser) {
+		header('Location:' . $PROG_CONFIG['HOST'] . '/adm_users.php?action=user_info_card&id=' .
 			$editUserData['id'] . '&alert_massage=сохранено');
 		exit();
-	}
-	else
-	{
-		header('Location:' . $progConfig['host'] . '/users.php?action=edit_user_card&id=' .
+	} else {
+		header('Location:' . $PROG_CONFIG['HOST'] . '/adm_users.php?action=edit_user_card&id=' .
 			$editUserData['id'] . '&error_massage=ошибка');
 		exit();
 	}
@@ -330,17 +313,17 @@ if (isset($_POST['action']) && isset($_POST['id']) && $_POST['action'] == 'edit_
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'block_user_data')
-{
-	setUserIsBlockVal($con, $progConfig, $_GET['id'], 1);
+if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'block_user_data') {
+	setUserIsBlockVal($con, $PROG_CONFIG, $_GET['id'], 1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-if (isset($_GET['action']) && $_GET['action'] == 'unlock_user_data')
-{
-	setUserIsBlockVal($con, $progConfig, $_GET['id'], 0);
+if (isset($_GET['action']) && $_GET['action'] == 'unlock_user_data') {
+	setUserIsBlockVal($con, $PROG_CONFIG, $_GET['id'], 0);
 }
 
-echo renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/templates/layout.php', $tmpLayoutData);
+echo renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/src/templates/layout.php', $tmpLayoutData);
+
+
