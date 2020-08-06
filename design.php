@@ -4,20 +4,18 @@
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/include.php');
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_session_start.php');
-require_once($_SERVER['DOCUMENT_ROOT'] . '/src/data/navigation_list_admin.php');
-require_once($_SERVER['DOCUMENT_ROOT'] . '/src/data/navigation_list_user.php');
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_tmp_data.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_alert_massage.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_authorization_user.php');
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-$tmpLayoutData['navList'] = $navigationListUser;
 
 if (isset($_GET['action']) && $_GET['action'] == 'new_order') {
 
-	$tmpLayoutData['navList']['designNewOrder']['isActive'] = true;
+	$_SESSION['navList'] = setActiveNavTab($_SESSION['navList'], 'designNewOrder');
 	$tmpLayoutData['title'] = 'Новая заявка на дизайн';
 
 	$tmpLayoutData['content'] = renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/src/templates/design/new_order.php', $tmpLayoutContentData);
@@ -48,7 +46,8 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'order_in
 }
 
 if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
-	$tmpLayoutData['navList']['designOrdersList']['isActive'] = true;
+
+	$_SESSION['navList'] = setActiveNavTab($_SESSION['navList'], 'designOrdersList');
 	$tmpLayoutData['title'] = 'Заявки на дизайн';
 
 	$sqlQuerySelect = 'SELECT u.last_name, u.first_name, 
@@ -119,14 +118,11 @@ if (isset($_POST['action']) && $_POST['action'] == 'new_order') {
 	];
 
 
-	mysqli_query($con, 'START TRANSACTION');
-
 	$newOrder = dbInsertData($con, 'design_orders', $newOrderData);
 
 	$updateOrderNameIn = dbExecQuery($con, "UPDATE design_orders SET order_name_in = ? WHERE id = ?",
 		[getOrderName($newOrder), $newOrder]);
 
-	mysqli_query($con, 'COMMIT');
 
 }
 

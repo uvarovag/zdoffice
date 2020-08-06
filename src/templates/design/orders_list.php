@@ -20,8 +20,8 @@
 				$order['order_id'] ?>'; return false">
           <td><?= $order['order_name_in'] ?></td>
           <td><?= $order['order_name_out'] ?></td>
-          <td><?= sortStr($order['client_name'], $data['config']['MAX_SYMBOLS_TABLE_CELL']) ?></td>
-          <td><?= sortStr($order['last_name'] . ' ' . $order['first_name'], $data['config']['MAX_SYMBOLS_TABLE_CELL']) ?></td>
+          <td><?= shortStr($order['client_name'], $data['config']['MAX_SYMBOLS_TABLE_CELL']) ?></td>
+          <td><?= shortStr($order['last_name'] . ' ' . $order['first_name'], $data['config']['MAX_SYMBOLS_TABLE_CELL']) ?></td>
           <td><?= $data['progData']['PRIORITY_ORDERS'][$order['order_priority']]['icon'] ?? '???' ?></td>
           <td><?= $data['progData']['STATUS_LIST_DESIGN'][$order['current_status']]['icon'] ?? '???' ?></td>
         </tr>

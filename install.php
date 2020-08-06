@@ -72,4 +72,14 @@ $sql_table_design_orders = "CREATE TABLE design_orders (
 	datetime_status_999 												DATETIME
 )";
 
-var_dump(mysqli_query($con, $sql_table_design_orders));
+//var_dump(mysqli_query($con, $sql_table_design_orders));
+
+$sql_table_users_logs = "CREATE TABLE users_logs (
+	id 																					INT AUTO_INCREMENT PRIMARY KEY,
+	user_id																			INT NOT NULL,
+	log_datetime																DATETIME,
+	log_ip																			CHAR(32),
+	log_info																		CHAR(32)
+)";
+
+var_dump(mysqli_query($con, $sql_table_users_logs));

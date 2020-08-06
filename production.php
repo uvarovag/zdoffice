@@ -3,11 +3,12 @@
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/include.php');
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_session_start.php');
-require_once($_SERVER['DOCUMENT_ROOT'] . '/data/navigation_list_admin.php');
-require_once($_SERVER['DOCUMENT_ROOT'] . '/data/navigation_list_user.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/src/data/navigation_list_admin.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/src/data/navigation_list_user.php');
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_tmp_data.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_alert_massage.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_authorization_user.php');
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -24,4 +25,4 @@ if (isset($_GET['action']) && $_GET['action'] == 'new_order') {
 }
 
 
-echo renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/templates/layout.php', $tmpLayoutData);
+echo renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/src/templates/layout.php', $tmpLayoutData);

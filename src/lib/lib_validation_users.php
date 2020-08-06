@@ -11,6 +11,7 @@ function isValidNewUserData($progConfig, $progData) {
 		array_key_exists($_POST['position'], $progData['USERS_POSITIONS_LIST']) == false ||
 		filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) == false)
 		return false;
+
 	return true;
 }
 
@@ -20,5 +21,6 @@ function isValidNewUserPassword($progConfig) {
 
 	if (isValidLen($_POST['password'], $progConfig['MIN_LEN_A'], $progConfig['MAX_LEN_A']) == false)
 		return false;
+
 	return true;
 }

@@ -14,7 +14,6 @@ function renderTemplate($template, $data) {
 
 
 function getStringFromGetQuery($getArr) {
-
 	unset($getArr['page']);
 	unset($getArr['error_massage']);
 	unset($getArr['alert_massage']);
@@ -23,12 +22,12 @@ function getStringFromGetQuery($getArr) {
 	foreach ($getArr as $key => $value) {
 		$getQueryString = $getQueryString . $key . '=' . $value . '&';
 	}
+
 	return $getQueryString;
 }
 
 
 function getPagination($config, $url, $con, $sqlQuery, $sqlParametrs) {
-
 	$sqlPagination = ' ';
 	$tmpPagination = '';
 
@@ -64,24 +63,24 @@ function getPagination($config, $url, $con, $sqlQuery, $sqlParametrs) {
 	];
 }
 
-function getOrderName($orderId) {
-	$maxOrderNameBodyLenght = 4;
-	$orderIdLength = mb_strlen($orderId);
-	if ($orderIdLength > $maxOrderNameBodyLenght) {
-		return substr($orderId, $orderIdLength - $maxOrderNameBodyLenght,
-				$orderIdLength) . '-' . date('y-m');
-	} else {
 
-		return str_repeat('0',
-				$maxOrderNameBodyLenght - $orderIdLength) . $orderId . '-' . date('m-y');
-	}
-}
-
-function sortStr($str, $maxLength) {
+function shortStr($str, $maxLength) {
 	if (iconv_strlen($str) > $maxLength) {
-		return '<span data-toggle="tooltip" data-placement="top" title="' . $str . '">' . mb_strimwidth($str, 0, $maxLength) . '...</span>';
+		return '<span data-toggle="tooltip" data-placement="top" title="' . $str . '">' .
+			mb_strimwidth($str, 0, $maxLength) . '...</span>';
 	} else {
 		return $str;
 	}
 }
 
+function setActiveNavTab($navList, $tabName) {
+
+	foreach ($navList as $navKey => $navVal) {
+		if ($navKey === $tabName)
+			$navList[$navKey]['isActive'] = true;
+		else
+			$navList[$navKey]['isActive'] = false;
+	}
+
+	return $navList;
+}

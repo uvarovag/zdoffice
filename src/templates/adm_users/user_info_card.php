@@ -138,6 +138,18 @@
           </tr>
         </table>
       </div>
+      <div class="col-12 col-md-6">
+        <h3 class="mb-4">Логи</h3>
+        <table class="table mb-4 table-sm">
+					<?php foreach ($data['userLogs'] as $log): ?>
+            <tr>
+              <th><?= $log['log_info']; ?></th>
+              <th><?= $log['log_datetime']; ?></th>
+              <th><?= $log['log_ip']; ?></th>
+            </tr>
+					<?php endforeach; ?>
+        </table>
+      </div>
     </div>
     <a href="<?= $data['config']['HOST'] . '/adm_users.php?action=edit_user_card&id=' . $data['user']['id'] ?>"
        class="btn btn-primary" role="button" aria-pressed="true">Редактировать</a>

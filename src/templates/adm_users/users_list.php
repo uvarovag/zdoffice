@@ -21,12 +21,12 @@
 					<?php if ($user['is_block']): ?>
             <td><b class="text-danger" data-toggle="tooltip" data-placement="top" title="Пользователь заблокирован"><?= $user['login'] ?></b></td>
 					<?php else: ?>
-            <td><?= sortStr($user['login'], $data['config']['MAX_SYMBOLS_TABLE_CELL']) ?></td>
+            <td><?= shortStr($user['login'], $data['config']['MAX_SYMBOLS_TABLE_CELL']) ?></td>
 					<?php endif; ?>
-          <td><?= sortStr($user['last_name'] . ' ' . $user['first_name'], $data['config']['MAX_SYMBOLS_TABLE_CELL']) ?></td>
-          <td><?= sortStr($data['progData']['USERS_POSITIONS_LIST'][$user['position']] ?? '???', $data['config']['MAX_SYMBOLS_TABLE_CELL']) ?></td>
+          <td><?= shortStr($user['last_name'] . ' ' . $user['first_name'], $data['config']['MAX_SYMBOLS_TABLE_CELL']) ?></td>
+          <td><?= shortStr($data['progData']['USERS_POSITIONS_LIST'][$user['position']] ?? '???', $data['config']['MAX_SYMBOLS_TABLE_CELL']) ?></td>
           <td><?= $data['config']['PHONE_PREFIX'] . ' ' . $user['mobile_phone'] ?></td>
-          <td><?= sortStr($user['email'], $data['config']['MAX_SYMBOLS_TABLE_CELL']) ?></td>
+          <td><?= shortStr($user['email'], $data['config']['MAX_SYMBOLS_TABLE_CELL']) ?></td>
           <td><?= $user['reg_datetime'] ?></td>
         </tr>
 			<?php endforeach ?>

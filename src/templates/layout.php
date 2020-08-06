@@ -50,7 +50,7 @@
       <div class="collapse navbar-collapse" id="sidenav-collapse-main">
         <!-- Nav items -->
         <ul class="navbar-nav">
-					<?php foreach ($data['navList'] as $nav): ?>
+					<?php foreach ($_SESSION['navList'] as $nav): ?>
 						<?php if ($nav['isAvailable'] && $nav['isCaption'] === false): ?>
               <li class="nav-item">
                 <a class="nav-link <?php if ($nav['isActive']): ?> active<?php endif; ?>" href="<?= $nav['url'] ?>">
@@ -164,7 +164,7 @@
                 <!--                    <img alt="Image placeholder" src="/argon-dashboard/assets/img/theme/team-4.jpg">-->
                 <!--                  </span>-->
                 <div class="media-body  ml-2">
-                  <span class="mb-0 text-sm  font-weight-bold">Admin</span>
+                  <span class="mb-0 text-sm  font-weight-bold"><?= $_SESSION['user']['first_name']; ?></span>
                 </div>
               </div>
             </a>
@@ -172,7 +172,7 @@
               <!--              <div class="dropdown-header noti-title">-->
               <!--                <h6 class="text-overflow m-0">Welcome!</h6>-->
               <!--              </div>-->
-              <a href="#!" class="dropdown-item">
+              <a href="<?= $data['config']['HOST'] . '/logout.php'; ?>" class="dropdown-item">
                 <i class="ni ni-button-power text-red"></i>
                 <span>Выход</span>
               </a>
