@@ -54,7 +54,9 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] === 'user_in
 		dbSelectData($con, 'SELECT * FROM adm_users WHERE id = ?', [$_GET['id']])[0] ?? false;
 
 	$tmpLayoutContentData['userLogs'] =
-		dbSelectData($con, 'SELECT * FROM users_logs WHERE user_id = ? ORDER BY id DESC LIMIT 50', [$_GET['id']]) ?? [];
+		dbSelectData($con, 'SELECT * FROM users_logs WHERE user_id = ? ORDER BY id DESC LIMIT ' .
+			$PROG_CONFIG['MAX_ADM_USERS_LOGS'], [$_GET['id']]) ?? [];
+
 
 	if ($tmpLayoutContentData['user'] === false) {
 		redirectToIf(false, '',

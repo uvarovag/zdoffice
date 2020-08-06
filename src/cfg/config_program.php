@@ -8,6 +8,7 @@ $PROG_CONFIG = [
 	'PHONE_PREFIX' => 					'+998',
 	'MAX_TABLE_ROWS' => 				15,
 	'MAX_SYMBOLS_TABLE_CELL' => 15,
+	'MAX_ADM_USERS_LOGS' => 		50,
 	'MIN_LEN_A' => 							3, // login, password, last_name, firs_name, position
 	'MAX_LEN_A' => 							64, // !!!MAX 64!!! login, password, last_name, firs_name, position
 	'MIN_LEN_B' => 							10,
