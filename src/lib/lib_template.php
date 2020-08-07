@@ -73,14 +73,28 @@ function shortStr($str, $maxLength) {
 	}
 }
 
-function setActiveNavTab($navList, $tabName) {
+function deadlineBadge($date, $ifDays) {
+
+	$daysBefore = ceil((strtotime($date) - strtotime('now')) / 60 / 60 / 24);
+
+	if ($daysBefore > $ifDays) {
+		return '<span class="" data-toggle="tooltip" data-placement="top" 
+		title="осталось дней - ' . $daysBefore . '">' . $date . '</span>';
+	}
+	if ($daysBefore >= 0) {
+		return '<span class="badge badge-pill badge-warning" data-toggle="tooltip" data-placement="top" 
+		title="осталось дней - ' . abs($daysBefore) . '">' . $date . '</span>';
+	}
+	return '<span class="badge badge-pill badge-danger" data-toggle="tooltip" data-placement="top" 
+		title="просрочено дней - ' . abs($daysBefore) . '">' . $date . '</span>';
+}
+
+function cleanActiveTabs($navList) {
 
 	foreach ($navList as $navKey => $navVal) {
-		if ($navKey === $tabName)
-			$navList[$navKey]['isActive'] = true;
-		else
-			$navList[$navKey]['isActive'] = false;
+		$navList[$navKey]['isActive'] = false;
 	}
 
 	return $navList;
 }
+

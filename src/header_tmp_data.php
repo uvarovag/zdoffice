@@ -2,7 +2,7 @@
 
 $tmpLayoutData = [
 	'config' => 			&$PROG_CONFIG,
-	'progData' => 		&$progData,
+	'progData' => 		&$PROG_DATA,
 	'title' => 				$PROG_CONFIG['PROG_NAME'],
 	'content' => 			'',
 	'pagination' => 	'',
@@ -12,7 +12,7 @@ $tmpLayoutData = [
 
 $tmpLayoutContentData = [
 	'config' => 			&$PROG_CONFIG,
-	'progData' => 		&$progData,
+	'progData' => 		&$PROG_DATA,
 	'title' => 		    &$tmpLayoutData['title'],
 	'formId' => 			'none'
 ];

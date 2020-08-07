@@ -4,19 +4,22 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/src/include.php');
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_session_start.php');
 
-
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_tmp_data.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_alert_massage.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_authorization_admin.php');
 
+$_SESSION['navList'] = cleanActiveTabs($_SESSION['navList']);
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+$PASSWORD_EMPTY_VALUE = 'none';
 
 if (isset($_GET['action']) && $_GET['action'] === 'new_user_card') {
 
 	$_SESSION['formId'] = md5(time());
 	$tmpLayoutContentData['formId'] = $_SESSION['formId'];
 
-	$_SESSION['navList'] = setActiveNavTab($_SESSION['navList'], 'newUserCard');
+	$_SESSION['navList']['newUserCard']['isActive'] = true;
 	$tmpLayoutData['title'] = 'Добавить пользователя';
 
 	$tmpLayoutData['content'] =
@@ -35,6 +38,8 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] === 'edit_us
 	$tmpLayoutContentData['user'] =
 		dbSelectData($con, 'SELECT * FROM adm_users WHERE id = ?', [$_GET['id']])[0] ?? false;
 
+	$tmpLayoutContentData['user']['password'] = $PASSWORD_EMPTY_VALUE;
+
 	if ($tmpLayoutContentData['user'] === false) {
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] . '/adm_users.php?action=users_list&error_massage=USER ID ERROR');
@@ -51,10 +56,15 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] === 'user_in
 	$tmpLayoutData['title'] = 'Карта пользователя';
 
 	$tmpLayoutContentData['user'] =
-		dbSelectData($con, 'SELECT * FROM adm_users WHERE id = ?', [$_GET['id']])[0] ?? false;
+		dbSelectData($con, 'SELECT *, 
+	DATE_FORMAT(reg_datetime, ' . $PROG_CONFIG['DATETIME_FORMAT'] . ') AS reg_datetime, 
+	DATE_FORMAT(last_modify_datetime, ' . $PROG_CONFIG['DATETIME_FORMAT'] . ') AS last_modify_datetime 
+	FROM adm_users WHERE id = ?', [$_GET['id']])[0] ?? false;
 
 	$tmpLayoutContentData['userLogs'] =
-		dbSelectData($con, 'SELECT * FROM users_logs WHERE user_id = ? ORDER BY id DESC LIMIT ' .
+		dbSelectData($con, 'SELECT *, 
+	DATE_FORMAT(log_datetime, ' . $PROG_CONFIG['DATETIME_FORMAT'] . ') AS log_datetime  
+	FROM users_logs WHERE user_id = ? ORDER BY id DESC LIMIT ' .
 			$PROG_CONFIG['MAX_ADM_USERS_LOGS'], [$_GET['id']]) ?? [];
 
 
@@ -71,10 +81,13 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] === 'user_in
 
 if (isset($_GET['action']) && $_GET['action'] === 'users_list') {
 
-	$_SESSION['navList'] = setActiveNavTab($_SESSION['navList'], 'usersList');
+	$_SESSION['navList']['usersList']['isActive'] = true;
 	$tmpLayoutData['title'] = 'Пользователи';
 
-	$sqlQuerySelect = 'SELECT * FROM adm_users ';
+	$sqlQuerySelect = 'SELECT *, 
+	DATE_FORMAT(reg_datetime, ' . $PROG_CONFIG['DATETIME_FORMAT'] . ') AS reg_datetime, 
+	DATE_FORMAT(last_modify_datetime, ' . $PROG_CONFIG['DATETIME_FORMAT'] . ') AS last_modify_datetime 
+	FROM adm_users ';
 	$sqlQueryWhere = '';
 	$sqlParameters = [];
 	$sqlSortBy = 'ORDER by id DESC ';
@@ -100,22 +113,25 @@ if (isset($_POST['action']) && $_POST['action'] === 'new_user_data') {
 	errorIfDoubleClick($_SESSION['formId'], $_POST['form_id'],
 		$PROG_CONFIG['HOST'] . '/adm_users.php?action=new_user_card');
 
-	if (isValidNewUserData($PROG_CONFIG, $progData) === false || isValidNewUserPassword($PROG_CONFIG) === false) {
+	if (isValidNewUserData($PROG_CONFIG, $PROG_DATA) === false || isValidNewUserPassword($PROG_CONFIG) === false) {
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] . '/adm_users.php?action=new_user_card&error_massage=ошибка входных данных');
 	}
 
-	if (dbSelectData($con, 'SELECT COUNT(*) as count FROM adm_users WHERE login = ?', [$_POST['login']])[0]['count'] > 0) {
+	$usersCount = dbSelectData($con, 'SELECT COUNT(*) as count FROM adm_users WHERE login = ?', [$_POST['login']])[0]['count'];
+
+	if ($usersCount > 0) {
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] .
 			'/adm_users.php?action=new_user_card&error_massage=пользователь с таким логином уже существует');
 	}
 
-	if (dbSelectData($con, 'SELECT COUNT(*) as count FROM adm_users WHERE last_name = ? AND first_name = ?',
-		[correctFormatUpper($_POST['last_name']), correctFormatUpper($_POST['first_name'])])[0]['count']) {
-		header('Location:' . $PROG_CONFIG['HOST'] .
-			'/adm_users.php?action=new_user_card&error_massage=пользователь с таким имнем и фамилией уже существует');
-		exit();
+	$usersCount = dbSelectData($con, 'SELECT COUNT(*) as count FROM adm_users WHERE last_name = ? AND first_name = ?',
+		[correctFormatUpper($_POST['last_name']), correctFormatUpper($_POST['first_name'])])[0]['count'];
+
+	if ($usersCount > 0) {
+		redirectToIf(false, '',
+			$PROG_CONFIG['HOST'] . '/adm_users.php?action=new_user_card&error_massage=пользователь с таким имнем и фамилией уже существует');
 	}
 
 	$newUserId = createNewAdmUser($con, 'adm_users');
@@ -132,7 +148,7 @@ if (isset($_POST['action']) && isset($_POST['id']) && $_POST['action'] == 'edit_
 	errorIfDoubleClick($_SESSION['formId'], $_POST['form_id'],
 		$PROG_CONFIG['HOST'] . '/adm_users.php?action=edit_user_card&id=' . $_POST['id']);
 
-	if (isValidNewUserData($PROG_CONFIG, $progData) === false) {
+	if (isValidNewUserData($PROG_CONFIG, $PROG_DATA) === false) {
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] . '/adm_users.php?action=edit_user_card&id=' .
 			$_POST['id'] . '&error_massage=ошибка входных данных');
@@ -156,9 +172,33 @@ if (isset($_POST['action']) && isset($_POST['id']) && $_POST['action'] == 'edit_
 			$_POST['id'] . '&error_massage=пользователь с таким имнем и фамилией уже существует');
 	}
 
+
+	mysqli_query($con, 'START TRANSACTION');
+
+	$editUserPassword = true;
+
+	if ($_POST['password'] !== $PASSWORD_EMPTY_VALUE) {
+
+		$editUserPasswordData = [
+			'password' => password_hash(correctFormat($_POST['password']), PASSWORD_ARGON2I),
+			'id' => $_POST['id']
+		];
+
+		$editUserPasswordQuery = 'UPDATE adm_users SET password = ? WHERE id = ?';
+
+		$editUserPassword = dbExecQuery($con, $editUserPasswordQuery, $editUserPasswordData);
+	}
+
 	$editUser = editAdmUserData($con, 'adm_users');
 
-	redirectToIf($editUser,
+	setUserNeedLogoutVal($con, 'adm_users', $_POST['id'], 1);
+
+	if ($editUserPassword && $editUser)
+		mysqli_query($con, 'COMMIT');
+	else
+		mysqli_query($con, 'ROLLBACK');
+
+	redirectToIf($editUserPassword && $editUser,
 		$PROG_CONFIG['HOST'] . '/adm_users.php?action=user_info_card&id=' . $_POST['id'] . '&alert_massage=сохранено',
 		$PROG_CONFIG['HOST'] . '/adm_users.php?action=edit_user_card&id=' . $_POST['id'] . '&error_massage=ошибка записи');
 }
@@ -166,13 +206,27 @@ if (isset($_POST['action']) && isset($_POST['id']) && $_POST['action'] == 'edit_
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'block_user_data') {
-	setUserIsBlockVal($con, $PROG_CONFIG, $_GET['id'], 1);
+
+	setUserNeedLogoutVal($con, 'adm_users', $_GET['id'], 1);
+
+	$unlockUser = setUserIsBlockVal($con, 'adm_users', $_GET['id'], 1);
+
+	redirectToIf($unlockUser,
+		$PROG_CONFIG['HOST'] . '/adm_users.php?action=user_info_card&id=' . $_GET['id'] . '&alert_massage=сохранено',
+		$PROG_CONFIG['HOST'] . '/adm_users.php?action=edit_user_card&id=' . $_GET['id'] . '&error_massage=ошибка записи');
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-if (isset($_GET['action']) && $_GET['action'] == 'unlock_user_data') {
-	setUserIsBlockVal($con, $PROG_CONFIG, $_GET['id'], 0);
+if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'unlock_user_data') {
+
+	setUserNeedLogoutVal($con, 'adm_users', $_GET['id'], 1);
+
+	$unlockUser = setUserIsBlockVal($con, 'adm_users', $_GET['id'], 0);
+
+	redirectToIf($unlockUser,
+		$PROG_CONFIG['HOST'] . '/adm_users.php?action=user_info_card&id=' . $_GET['id'] . '&alert_massage=сохранено',
+		$PROG_CONFIG['HOST'] . '/adm_users.php?action=edit_user_card&id=' . $_GET['id'] . '&error_massage=ошибка записи');
 }
 
 echo renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/src/templates/layout.php', $tmpLayoutData);

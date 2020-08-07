@@ -5,5 +5,3 @@ $USERS_POSITIONS_LIST = [
 	2 => 'дизайнер',
 	3 => 'начальник отдела'
 ];
-
-$DESIGNER_POSITION_ID = 2;

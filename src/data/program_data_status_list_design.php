@@ -7,7 +7,7 @@ $STATUS_LIST_DESIGN = [
 	],
 	100 =>	[
 		'name' => 'получено дизайнером',
-		'icon' => '<span class="badge badge-pill badge-info">получено дизайнером</span>'
+		'icon' => '<span class="badge badge-pill badge-warning">получено дизайнером</span>'
 	],
 	200 =>	[
 		'name' => 'начата работа',

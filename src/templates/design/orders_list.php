@@ -12,6 +12,7 @@
         <th scope="col">Дизайнер</th>
         <th scope="col">Приоритет</th>
         <th scope="col">Стадия</th>
+        <th scope="col">Дедлайн</th>
       </tr>
       </thead>
       <tbody>
@@ -24,6 +25,7 @@
           <td><?= shortStr($order['last_name'] . ' ' . $order['first_name'], $data['config']['MAX_SYMBOLS_TABLE_CELL']) ?></td>
           <td><?= $data['progData']['PRIORITY_ORDERS'][$order['order_priority']]['icon'] ?? '???' ?></td>
           <td><?= $data['progData']['STATUS_LIST_DESIGN'][$order['current_status']]['icon'] ?? '???' ?></td>
+          <td><?= deadlineBadge($order['deadline_date'], $data['config']['WARNING_DAYS_BEFORE_DEADLINE']) ?></td>
         </tr>
 			<?php endforeach ?>
       </tbody>

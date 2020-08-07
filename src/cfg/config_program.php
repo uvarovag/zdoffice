@@ -15,4 +15,8 @@ $PROG_CONFIG = [
 	'MAX_LEN_B' => 							1000,
 	'MIN_LEN_C' => 							0,
 	'MAX_LEN_C' => 							0,
+	'DESIGNER_POSITION_ID' => 	2,
+	'DATE_FORMAT' => 	'\'%d.%m.%Y\'',
+	'DATETIME_FORMAT' => 	'\'%d.%m.%Y %H:%i\'',
+	'WARNING_DAYS_BEFORE_DEADLINE' => 3
 ];

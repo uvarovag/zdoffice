@@ -4,7 +4,7 @@
   </div>
   <div class="card-body">
     <form action="<?= $data['config']['HOST'] . '/design.php' ?>" method="POST">
-      <input type="hidden" name="action" value="new_order">
+      <input type="hidden" name="action" value="new_order_data">
       <input type="hidden" name="form_id" value="<?= $data['formId'] ?>">
       <div class="row mb-4">
         <fieldset class="col-12 col-md-6">

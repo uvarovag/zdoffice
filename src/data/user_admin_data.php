@@ -6,7 +6,7 @@ $USER_ADMIN_DATA = [
 	'is_block' => 0,
 	'need_logout' => 0,
 	'login' => 'admin',
-	'password' => 'admin',
+	'password' => '$argon2i$v=19$m=65536,t=4,p=1$YlFaTVZnMmZvTHc3dTZ4OA$KRB6OtFUcqiCUxKIYvx/wpj2ADMZJmyLglurzFVSZh8',
 	'last_name' => 'admin',
 	'first_name' => 'admin',
 	'position' => 999,

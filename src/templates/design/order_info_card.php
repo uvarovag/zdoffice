@@ -16,10 +16,26 @@
             <th class="px-0"><?= $data['order']['order_name_in'] ?></th>
           </tr>
           <tr>
+            <th class="px-0">Менеджер</th>
+            <th class="px-0">
+            <?php if (isset($data['manager']['id'])): ?>
+              <a href="<?= $data['config']['HOST'] . '/users.php?action=user_info_card&id=' . $data['manager']['id'] ; ?>">
+								<?= $data['manager']['last_name'] . ' ' . $data['manager']['first_name'] ; ?>
+						<?php else: ?>
+                не назначен
+						<?php endif; ?>
+            </th>
+          </tr>
+          <tr>
             <th class="px-0">Дизайнер</th>
-            <th class="px-0"><?= $data['designerData'] ?
-                $data['designerData']['last_name'] . ' ' . $data['designerData']['first_name'] :
-                'не назначен'?></th>
+            <th class="px-0">
+							<?php if (isset($data['designer']['id'])): ?>
+              <a href="<?= $data['config']['HOST'] . '/users.php?action=user_info_card&id=' . $data['designer']['id'] ; ?>">
+								<?= $data['designer']['last_name'] . ' ' . $data['designer']['first_name'] ; ?>
+								<?php else: ?>
+                  не назначен
+								<?php endif; ?>
+            </th>
           </tr>
           <tr>
             <th class="px-0">Приоритет</th>
@@ -35,7 +51,9 @@
           </tr>
           <tr>
             <th class="px-0">Дедлайн</th>
-            <th class="px-0"><?= date('Y-m-d', strtotime($data['order']['deadline_date'])) ?></th>
+            <th class="px-0">
+              <?= deadlineBadge($data['order']['deadline_date'], $data['config']['WARNING_DAYS_BEFORE_DEADLINE']) ?>
+            </th>
           </tr>
         </table>
         <hr>
@@ -122,7 +140,7 @@
     </div>
 
 		<?php if (true): ?>
-      <form action="<?= $data['config']['HOST'] . '/design.php' ?>" method="GET">
+      <form action="<?= $data['config']['HOST'] . '/design.php' ?>" method="POST">
         <input type="hidden" name="action" value="change_designer">
         <input type="hidden" name="order_id" value="<?= $data['order']['id'] ?>">
         <h3>Назначить дизайнера</h3>
@@ -130,11 +148,11 @@
           <div class="form-group col-4 mb-4">
             <select name="designer_id" class="form-control" required>
               <option></option>
-							<?php foreach ($data['usersPositionDesigner'] as $user): ?>
-								<?php if ($user['id'] === $data['order']['designer_id']): ?>
-                  <option value="<?= $user['id'] ?>" selected><?= $user['last_name'] . ' ' . $user['first_name'] ?></option>
+							<?php foreach ($data['designerList'] as $designer): ?>
+								<?php if ($designer['id'] === $data['order']['designer_id']): ?>
+                  <option value="<?= $designer['id'] ?>" selected><?= $designer['last_name'] . ' ' . $designer['first_name'] ?></option>
 								<?php else: ?>
-                  <option value="<?= $user['id'] ?>"><?= $user['last_name'] . ' ' . $user['first_name'] ?></option>
+                  <option value="<?= $designer['id'] ?>"><?= $designer['last_name'] . ' ' . $designer['first_name'] ?></option>
 								<?php endif; ?>
 							<?php endforeach; ?>
             </select>
@@ -147,7 +165,7 @@
 		<?php endif; ?>
 
 		<?php if (true): ?>
-      <form action="<?= $data['config']['HOST'] . '/design.php' ?>" method="GET">
+      <form action="<?= $data['config']['HOST'] . '/design.php' ?>" method="POST">
         <input type="hidden" name="action" value="change_priority">
         <input type="hidden" name="order_id" value="<?= $data['order']['id'] ?>">
         <h3>Изменить приоритет</h3>
@@ -172,4 +190,4 @@
 		<?php endif; ?>
   </div>
 </div>
-
+</div>

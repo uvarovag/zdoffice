@@ -17,7 +17,7 @@ $navigationListUser = [
 	],
 	'designNewOrder' => [
 		'title' => 				'<i class="ni ni-fat-add text-primary"></i><span class="nav-link-text">Создать</span>',
-		'url' => 					$PROG_CONFIG['HOST'] . '/design.php?action=new_order',
+		'url' => 					$PROG_CONFIG['HOST'] . '/design.php?action=new_order_card',
 		'isCaption' => 		false,
 		'isActive' => 		false,
 		'isAvailable' =>	true

@@ -10,18 +10,21 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_tmp_data.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_alert_massage.php');
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////
+// password_hash('admin', PASSWORD_ARGON2I)
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/data/user_admin_data.php');
 
 $tmpLayoutData['title'] = 'Войти';
 
-if (isset($_POST['action']) && $_POST['action'] == 'login') {
-	// todo validation
+if (isset($_POST['action']) && $_POST['action'] === 'login') {
 
-	if ($_POST['login'] === $USER_ADMIN_DATA['login'] && $_POST['password'] === $USER_ADMIN_DATA['password']) {
+	if (isValidLoginPassword($PROG_CONFIG) === false)
+		redirectToIf(false, '', $PROG_CONFIG['HOST'] . '/login.php?error_massage=ошибка входных данных');
+
+	if ($_POST['login'] === $USER_ADMIN_DATA['login'] && password_verify($_POST['password'], $USER_ADMIN_DATA['password'])) {
 		$_SESSION['user'] = $USER_ADMIN_DATA;
 		$_SESSION['navList'] = $navigationListAdmin;
 
@@ -29,8 +32,9 @@ if (isset($_POST['action']) && $_POST['action'] == 'login') {
 			$PROG_CONFIG['HOST'] . '/adm_users.php?action=users_list&alert_massage=Привет ' . $_SESSION['user']['first_name'],
 			'');
 	}
-	$userDataQuery = 'SELECT * FROM adm_users WHERE BINARY login = ? AND BINARY password = ?';
-	$userData = dbSelectData($con, $userDataQuery, [$_POST['login'], $_POST['password']])[0] ?? false;
+
+	$userDataQuery = 'SELECT * FROM adm_users WHERE BINARY login = ?';
+	$userData = dbSelectData($con, $userDataQuery, [$_POST['login']])[0] ?? false;
 
 	if ($userData && $userData['is_deleted'] === 1) {
 		redirectToIf(false, '', $PROG_CONFIG['HOST'] . '/login.php?error_massage=пользователь удален');
@@ -39,7 +43,9 @@ if (isset($_POST['action']) && $_POST['action'] == 'login') {
 		redirectToIf(false, '', $PROG_CONFIG['HOST'] . '/login.php?error_massage=пользователь заблокирован');
 	}
 
-	if ($userData) {
+	if ($userData && password_verify($_POST['password'], $userData['password'])) {
+
+		setUserNeedLogoutVal($con, 'adm_users', $userData['id'], 0);
 		$_SESSION['user'] = $userData;
 		$_SESSION['navList'] = setNavListUser($navigationListUser, $_SESSION['user']);
 
@@ -50,7 +56,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'login') {
 			'');
 	}
 	else {
-		redirectToIf(false, '', $PROG_CONFIG['HOST'] . '/login.php?error_massage=неверный имя пользователя или пароль');
+		redirectToIf(false, '', $PROG_CONFIG['HOST'] . '/login.php?error_massage=неверные имя пользователя или пароль');
 	}
 }
 

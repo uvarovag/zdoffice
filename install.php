@@ -13,7 +13,7 @@ $sql_table_users = "CREATE TABLE adm_users (
 	is_block 																		TINYINT,
 	need_logout 																TINYINT,
 	login 																			CHAR(64) UNIQUE NOT NULL,
-	password 																		CHAR(64) NOT NULL,
+	password 																		CHAR(255) NOT NULL,
 	last_name 																	CHAR(64) NOT NULL,
 	first_name 																	CHAR(64) NOT NULL,
 	position 																		INT,
@@ -40,12 +40,13 @@ $sql_table_users = "CREATE TABLE adm_users (
 	auth_production_order_start 								TINYINT,
 	auth_production_order_cancel 								TINYINT
 )";
-//
+
 //var_dump(mysqli_query($con, $sql_table_users));
 
 $sql_table_design_orders = "CREATE TABLE design_orders (
 	id 																					INT AUTO_INCREMENT PRIMARY KEY,
 	designer_id 																INT,
+	create_user_id 															INT,
 	order_name_out															CHAR(32),
 	order_name_in 															CHAR(32),
 	order_priority 															TINYINT,
@@ -72,7 +73,7 @@ $sql_table_design_orders = "CREATE TABLE design_orders (
 	datetime_status_999 												DATETIME
 )";
 
-//var_dump(mysqli_query($con, $sql_table_design_orders));
+var_dump(mysqli_query($con, $sql_table_design_orders));
 
 $sql_table_users_logs = "CREATE TABLE users_logs (
 	id 																					INT AUTO_INCREMENT PRIMARY KEY,
@@ -82,4 +83,4 @@ $sql_table_users_logs = "CREATE TABLE users_logs (
 	log_info																		CHAR(32)
 )";
 
-var_dump(mysqli_query($con, $sql_table_users_logs));
+//var_dump(mysqli_query($con, $sql_table_users_logs));

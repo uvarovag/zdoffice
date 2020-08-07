@@ -26,7 +26,7 @@
             </div>
             <div class="form-group col-12 mb-4">
               <small class="text-gray">пароль (<?= 'en ' . $data['config']['MIN_LEN_A'] . '-' . $data['config']['MAX_LEN_A'] ?>)</small>
-              <input type="text" name="password" class="form-control" required
+              <input type="password" name="password" class="form-control" required
                      minlength="<?= $data['config']['MIN_LEN_A'] ?>" maxlength="<?= $data['config']['MAX_LEN_A'] ?>"
                      pattern="^[a-zA-Z0-9]+$"
                      value="<?= $data['user']['password'] ?>">

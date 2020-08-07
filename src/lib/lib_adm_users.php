@@ -3,11 +3,11 @@
 function createNewAdmUser($con, $tableName) {
 
 	$newUserData = [
-		'login' => correctFormat($_POST['login']),
 		'is_deleted' => 0,
 		'is_block' => 0,
 		'need_logout' => 0,
-		'password' => correctFormat($_POST['password']),
+		'login' => correctFormat($_POST['login']),
+		'password' => password_hash($_POST['password'], PASSWORD_ARGON2I),
 		'last_name' => correctFormatUpper($_POST['last_name']),
 		'first_name' => correctFormatUpper($_POST['first_name']),
 		'position' => (int)$_POST['position'],
@@ -69,8 +69,6 @@ function createNewAdmUser($con, $tableName) {
 function editAdmUserData($con, $tableName) {
 
 	$editUserData = [
-		'need_logout' => 1,
-		'password' => correctFormat($_POST['password']),
 		'last_name' => correctFormatUpper($_POST['last_name']),
 		'first_name' => correctFormatUpper($_POST['first_name']),
 		'position' => (int)$_POST['position'],
@@ -126,8 +124,6 @@ function editAdmUserData($con, $tableName) {
 	];
 
 	$editUserQuery = 'UPDATE ' . $tableName . ' SET 
-		need_logout = ?, 
-		password = ?, 
 		last_name = ?, 
 		first_name = ?, 
 		position = ?, 
@@ -153,4 +149,28 @@ function editAdmUserData($con, $tableName) {
 		WHERE id = ?';
 
 	return dbExecQuery($con, $editUserQuery, $editUserData);
+}
+
+function setUserIsBlockVal($con, $tableName, $userId, $isBlockVal) {
+
+	$editUserData = [
+		'is_block' => $isBlockVal,
+		'id' => $userId
+	];
+
+	return dbExecQuery($con, 'UPDATE ' . $tableName . ' SET is_block = ? WHERE id = ?', $editUserData);
+}
+
+function setUserNeedLogoutVal($con, $tableName, $userId, $needLogoutVal) {
+
+	$editUserData = [
+		'need_logout' => $needLogoutVal,
+		'id' => $userId
+	];
+
+	return dbExecQuery($con, 'UPDATE ' . $tableName . ' SET need_logout = ? WHERE id = ?', $editUserData);
+}
+
+function getUserNeedLogoutVal($con, $tableName, $userId) {
+	return dbSelectData($con, 'SELECT need_logout FROM ' . $tableName . ' WHERE id = ?', [$userId])[0]['need_logout'] ?? 1;
 }
