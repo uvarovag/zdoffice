@@ -81,7 +81,11 @@ function deadlineBadge($date, $ifDays) {
 		return '<span class="" data-toggle="tooltip" data-placement="top" 
 		title="осталось дней - ' . $daysBefore . '">' . $date . '</span>';
 	}
-	if ($daysBefore >= 0) {
+	if ($daysBefore == 0) {
+		return '<span class="badge badge-pill badge-warning" data-toggle="tooltip" data-placement="top" 
+		title="сегодня">' . $date . '</span>';
+	}
+	if ($daysBefore > 0) {
 		return '<span class="badge badge-pill badge-warning" data-toggle="tooltip" data-placement="top" 
 		title="осталось дней - ' . abs($daysBefore) . '">' . $date . '</span>';
 	}
