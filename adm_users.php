@@ -107,10 +107,11 @@ if (isset($_GET['action']) && $_GET['action'] === 'users_list') {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-if (isset($_POST['action']) && $_POST['action'] === 'new_user_data') {
+if (isset($_POST['action']) && isset($_POST['form_id']) && $_POST['action'] === 'new_user_data') {
 
 	errorIfDoubleClick($_SESSION['formId'], $_POST['form_id'],
 		$PROG_CONFIG['HOST'] . '/adm_users.php?action=new_user_card');
+	$_SESSION['formId'] = 'none';
 
 	if (isValidNewUserData($PROG_CONFIG, $PROG_DATA) === false || isValidNewUserPassword($PROG_CONFIG) === false) {
 		redirectToIf(false, '',
@@ -141,10 +142,11 @@ if (isset($_POST['action']) && $_POST['action'] === 'new_user_data') {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-if (isset($_POST['action']) && isset($_POST['id']) && $_POST['action'] == 'edit_user_data') {
+if (isset($_POST['action']) && isset($_POST['form_id']) && isset($_POST['id']) && $_POST['action'] == 'edit_user_data') {
 
 	errorIfDoubleClick($_SESSION['formId'], $_POST['form_id'],
 		$PROG_CONFIG['HOST'] . '/adm_users.php?action=edit_user_card&id=' . $_POST['id']);
+	$_SESSION['formId'] = 'none';
 
 	if (isValidNewUserData($PROG_CONFIG, $PROG_DATA) === false) {
 		redirectToIf(false, '',

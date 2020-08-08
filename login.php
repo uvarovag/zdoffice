@@ -27,6 +27,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'login') {
 	if ($_POST['login'] === $USER_ADMIN_DATA['login'] && password_verify($_POST['password'], $USER_ADMIN_DATA['password'])) {
 		$_SESSION['user'] = $USER_ADMIN_DATA;
 		$_SESSION['navList'] = $navigationListAdmin;
+		$_SESSION['formId'] = 'none';
 
 		redirectToIf(true,
 			$PROG_CONFIG['HOST'] . '/adm_users.php?action=users_list&alert_massage=Привет ' . $_SESSION['user']['first_name'],
@@ -48,6 +49,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'login') {
 		setUserNeedLogoutVal($con, 'adm_users', $userData['id'], 0);
 		$_SESSION['user'] = $userData;
 		$_SESSION['navList'] = setNavListUser($navigationListUser, $_SESSION['user']);
+		$_SESSION['formId'] = 'none';
 
 		addUserLog($con, 'users_logs', $_SESSION['user']['id'], 'login');
 

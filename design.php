@@ -14,6 +14,9 @@ $_SESSION['navList'] = cleanActiveTabs($_SESSION['navList']);
 
 if (isset($_GET['action']) && $_GET['action'] == 'new_order_card') {
 
+	$_SESSION['formId'] = md5(time());
+	$tmpLayoutContentData['formId'] = $_SESSION['formId'];
+
 	$_SESSION['navList']['designNewOrder']['isActive'] = true;
 	$tmpLayoutData['title'] = 'Новая заявка на дизайн';
 
@@ -99,7 +102,11 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-if (isset($_POST['action']) && $_POST['action'] == 'new_order_data') {
+if (isset($_POST['action']) && isset($_POST['form_id']) && $_POST['action'] == 'new_order_data') {
+
+	errorIfDoubleClick($_SESSION['formId'], $_POST['form_id'],
+		$PROG_CONFIG['HOST'] . '/design.php?action=new_order_card');
+	$_SESSION['formId'] = 'none';
 
 	if (isValidNewDesignOrderData($PROG_CONFIG) === false) {
 		redirectToIf(false, '',
