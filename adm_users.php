@@ -36,14 +36,14 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] === 'edit_us
 	$tmpLayoutData['title'] = 'Редактировать данные пользователя';
 
 	$tmpLayoutContentData['user'] =
-		dbSelectData($con, 'SELECT * FROM adm_users WHERE id = ?', [$_GET['id']])[0] ?? false;
+		dbSelectData($con, 'SELECT * FROM adm_users WHERE id = ?', [$_GET['id']])[0] ?? [];
 
-	$tmpLayoutContentData['user']['password'] = $PASSWORD_EMPTY_VALUE;
-
-	if ($tmpLayoutContentData['user'] === false) {
+	if (empty($tmpLayoutContentData['user'])) {
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] . '/adm_users.php?action=users_list&error_massage=USER ID ERROR');
 	}
+
+	$tmpLayoutContentData['user']['password'] = $PASSWORD_EMPTY_VALUE;
 
 	$tmpLayoutData['content'] =
 		renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/src/templates/adm_users/edit_user_card.php', $tmpLayoutContentData);
@@ -59,7 +59,7 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] === 'user_in
 		dbSelectData($con, 'SELECT *, 
 	DATE_FORMAT(reg_datetime, ' . $PROG_CONFIG['DATETIME_FORMAT'] . ') AS reg_datetime, 
 	DATE_FORMAT(last_modify_datetime, ' . $PROG_CONFIG['DATETIME_FORMAT'] . ') AS last_modify_datetime 
-	FROM adm_users WHERE id = ?', [$_GET['id']])[0] ?? false;
+	FROM adm_users WHERE id = ?', [$_GET['id']])[0] ?? [];
 
 	$tmpLayoutContentData['userLogs'] =
 		dbSelectData($con, 'SELECT *, 
@@ -67,8 +67,7 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] === 'user_in
 	FROM users_logs WHERE user_id = ? ORDER BY id DESC LIMIT ' .
 			$PROG_CONFIG['MAX_ADM_USERS_LOGS'], [$_GET['id']]) ?? [];
 
-
-	if ($tmpLayoutContentData['user'] === false) {
+	if (empty($tmpLayoutContentData['user'])) {
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] . '/adm_users.php?action=users_list&error_massage=USER ID ERROR');
 	}
@@ -118,18 +117,17 @@ if (isset($_POST['action']) && $_POST['action'] === 'new_user_data') {
 			$PROG_CONFIG['HOST'] . '/adm_users.php?action=new_user_card&error_massage=ошибка входных данных');
 	}
 
-	$usersCount = dbSelectData($con, 'SELECT COUNT(*) as count FROM adm_users WHERE login = ?', [$_POST['login']])[0]['count'];
+	$user = dbSelectData($con, 'SELECT * FROM adm_users WHERE login = ?', [$_POST['login']])[0] ?? [];
 
-	if ($usersCount > 0) {
+	if (isset($user['id'])) {
 		redirectToIf(false, '',
-			$PROG_CONFIG['HOST'] .
-			'/adm_users.php?action=new_user_card&error_massage=пользователь с таким логином уже существует');
+			$PROG_CONFIG['HOST'] . '/adm_users.php?action=new_user_card&error_massage=пользователь с таким логином уже существует');
 	}
 
-	$usersCount = dbSelectData($con, 'SELECT COUNT(*) as count FROM adm_users WHERE last_name = ? AND first_name = ?',
-		[correctFormatUpper($_POST['last_name']), correctFormatUpper($_POST['first_name'])])[0]['count'];
+	$user = dbSelectData($con, 'SELECT * FROM adm_users WHERE last_name = ? AND first_name = ?',
+		[correctFormatUpper($_POST['last_name']), correctFormatUpper($_POST['first_name'])])[0] ?? [];
 
-	if ($usersCount > 0) {
+	if (isset($user['id'])) {
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] . '/adm_users.php?action=new_user_card&error_massage=пользователь с таким имнем и фамилией уже существует');
 	}
@@ -154,19 +152,18 @@ if (isset($_POST['action']) && isset($_POST['id']) && $_POST['action'] == 'edit_
 			$_POST['id'] . '&error_massage=ошибка входных данных');
 	}
 
-	$usersCount = dbSelectData($con, 'SELECT COUNT(*) as count FROM adm_users WHERE login = ? AND id != ?',
-		[$_POST['login'], $_POST['id']])[0]['count'];
+	$user = dbSelectData($con, 'SELECT * FROM adm_users WHERE login = ? AND id != ?', [$_POST['login'], $_POST['id']])[0] ?? [];
 
-	if ($usersCount > 0) {
+	if (isset($user['id'])) {
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] . '/adm_users.php?action=edit_user_card&id=' .
 			$_POST['id'] . '&error_massage=пользователь с таким логином уже существует');
 	}
 
-	$usersCount = dbSelectData($con, 'SELECT COUNT(*) as count FROM adm_users WHERE last_name = ? AND first_name = ? AND id != ?',
-		[correctFormatUpper($_POST['last_name']), correctFormatUpper($_POST['first_name']), $_POST['id']])[0]['count'];
+	$user = dbSelectData($con, 'SELECT * FROM adm_users WHERE last_name = ? AND first_name = ? AND id != ?',
+		[correctFormatUpper($_POST['last_name']), correctFormatUpper($_POST['first_name']), $_POST['id']])[0] ?? [];
 
-	if ($usersCount > 0) {
+	if (isset($user['id'])) {
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] . '/adm_users.php?action=edit_user_card&id=' .
 			$_POST['id'] . '&error_massage=пользователь с таким имнем и фамилией уже существует');

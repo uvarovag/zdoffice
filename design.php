@@ -12,7 +12,6 @@ $_SESSION['navList'] = cleanActiveTabs($_SESSION['navList']);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-
 if (isset($_GET['action']) && $_GET['action'] == 'new_order_card') {
 
 	$_SESSION['navList']['designNewOrder']['isActive'] = true;
@@ -45,9 +44,9 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'order_in
 		DATE_FORMAT(datetime_status_290, ' . $PROG_CONFIG['DATETIME_FORMAT'] . ') AS datetime_status_290, 
 		DATE_FORMAT(datetime_status_300, ' . $PROG_CONFIG['DATETIME_FORMAT'] . ') AS datetime_status_300, 
 		DATE_FORMAT(datetime_status_999, ' . $PROG_CONFIG['DATETIME_FORMAT'] . ') AS datetime_status_999 
-		FROM design_orders WHERE id = ?', [$_GET['id']])[0] ?? false;
+		FROM design_orders WHERE id = ?', [$_GET['id']])[0] ?? [];
 
-	if ($tmpLayoutContentData['order'] === false) {
+	if (empty($tmpLayoutContentData['order'])) {
 		redirectToIf(false, '', $PROG_CONFIG['HOST'] . '/design.php?action=orders_list&error_massage=ORDER ID ERROR');
 	}
 
