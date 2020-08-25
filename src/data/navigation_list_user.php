@@ -9,7 +9,7 @@ $navigationListUser = [
 		'isAvailable' =>	true
 	],
 	'designOrdersListMy' => [
-		'title' => 				'<i class="ni ni-bullet-list-67 text-primary"></i><span class="nav-link-text">Мои заявки</span>',
+		'title' => 				'<i class="ni ni-spaceship text-primary"></i><span class="nav-link-text">Мои заявки</span>',
 		'url' => 					$PROG_CONFIG['HOST'] . '/design.php?action=orders_list',
 		'isCaption' => 		false,
 		'isActive' => 		false,
