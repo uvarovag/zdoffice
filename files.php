@@ -61,7 +61,6 @@ if (isset($_POST['action']) && isset($_POST['form_id']) && $_POST['action'] == '
 	if (in_array(mime_content_type($_FILES['file']['tmp_name']), $SYS_CONFIG['FORBIDDEN_MIMI_TYPES']))
 		redirectToIf(false, '', $_POST['redirect_error'] . '&error_massage=недопустимый формат файла ' . __LINE__);
 
-
 	$pathDir = $SYS_CONFIG['DOWNLOAD_DIR'] . '/' . date('Y') . '/' . date('m') . '/' . date('d');
 	$pathFile = $pathDir . '/' . substr(md5(time()), 5, 15) . '.' . pathinfo($_FILES['file']['name'])['extension'];
 
@@ -74,7 +73,7 @@ if (isset($_POST['action']) && isset($_POST['form_id']) && $_POST['action'] == '
 		'order_type' => $_POST['order_type'],
 		'size' => $_FILES['file']['size'],
 		'note' => correctFormat($_POST['note']),
-		'name' => correctFormatLower(basename($_FILES['file']['name'])),
+		'name' => correctFormatLower($_FILES['file']['name']),
 		'path' => $pathFile
 	];
 
