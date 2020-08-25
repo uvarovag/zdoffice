@@ -250,7 +250,9 @@
         </div>
 
       </div>
-      <input class="btn btn-primary" type="submit" value="Сохранить">
+      <div class="mb-4">
+        <input class="btn btn-primary" type="submit" value="Сохранить">
+      </div>
     </form>
   </div>
 </div>
