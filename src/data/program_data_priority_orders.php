@@ -14,3 +14,9 @@ $PRIORITY_ORDERS = [
 		'icon' => '<span class="badge badge-pill badge-danger">критичный</span>'
 	]
 ];
+
+$PRIORITY_ID = [
+	'NORM' => 1,
+	'HIGH' => 2,
+	'DANGER' => 3
+];

@@ -5,6 +5,7 @@ $tmpLayoutData = [
 	'progData' => 		&$PROG_DATA,
 	'title' => 				$PROG_CONFIG['PROG_NAME'],
 	'content' => 			'',
+	'modal' =>				'',
 	'pagination' => 	'',
 	'alertMassage' => false,
 	'errorMassage' => false

@@ -22,7 +22,7 @@
 
 /*
   current_status
- 	datetime_status_000 												DATETIME,
+ 	datetime_status_0 												DATETIME,
 	datetime_status_100 												DATETIME,
 	datetime_status_200 												DATETIME,
 	datetime_status_210 												DATETIME,
@@ -121,7 +121,7 @@ $STATUS_ID_PRODUCTION = [
 	'READY_80' 		=> 280,
 	'READY_90' 		=> 290,
 	'DONE' 				=> 300,
-	'ISSUED' 			=> 300,
+	'ISSUED' 			=> 400,
 	'WAIT_CANCEL' => 998,
 	'CANCEL' 			=> 999
 ];

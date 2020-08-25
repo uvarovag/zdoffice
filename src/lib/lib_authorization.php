@@ -1,12 +1,18 @@
 <?php
 
-function setNavListUser($navList, $user) {
+function setNavListUser($navList, $user, $progData) {
+
+	$navList['designOrdersListMy']['url'] = $navList['designOrdersListMy']['url'] . '&designer_id=' . $user['id'];
+
 	if ($user['auth_design_order_new'] === 0)
 		unset($navList['designNewOrder']);
 	if ($user['auth_design_order_view'] === 0)
 		unset($navList['designOrdersList']);
 	if ($user['auth_design_order_new'] === 0 && $user['auth_design_order_view'] === 0)
 		unset($navList['captionDesign']);
+
+	if ($user['auth_design_order_view'] === 0 || $user['position'] != $progData['USERS_POSITIONS_ID']['DESIGNER'])
+		unset($navList['designOrdersListMy']);
 
 	if ($user['auth_production_order_new'] === 0)
 		unset($navList['productionNewOrder']);

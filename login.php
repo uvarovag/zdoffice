@@ -2,19 +2,17 @@
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/include.php');
 
-require_once($_SERVER['DOCUMENT_ROOT'] . '/src/data/navigation_list_admin.php');
-require_once($_SERVER['DOCUMENT_ROOT'] . '/src/data/navigation_list_user.php');
-
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_session_start.php');
+
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_tmp_data.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_alert_massage.php');
 
-
-// password_hash('admin', PASSWORD_ARGON2I)
+date_default_timezone_set($PROG_CONFIG['TIMEZONE']);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////
 
+require_once($_SERVER['DOCUMENT_ROOT'] . '/src/data/navigation_list_admin.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/src/data/navigation_list_user.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/data/user_admin_data.php');
 
 $tmpLayoutData['title'] = 'Войти';
@@ -30,7 +28,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'login') {
 		$_SESSION['formId'] = 'none';
 
 		redirectToIf(true,
-			$PROG_CONFIG['HOST'] . '/adm_users.php?action=users_list&alert_massage=Привет ' . $_SESSION['user']['first_name'],
+			$PROG_CONFIG['HOST'] . '/adm_users.php?action=info&alert_massage=Привет ' . $_SESSION['user']['first_name'],
 			'');
 	}
 
@@ -48,16 +46,15 @@ if (isset($_POST['action']) && $_POST['action'] === 'login') {
 
 		setUserNeedLogoutVal($con, 'adm_users', $userData['id'], 0);
 		$_SESSION['user'] = $userData;
-		$_SESSION['navList'] = setNavListUser($navigationListUser, $_SESSION['user']);
+		$_SESSION['navList'] = setNavListUser($navigationListUser, $_SESSION['user'], $PROG_DATA);
 		$_SESSION['formId'] = 'none';
 
 		addUserLog($con, 'users_logs', $_SESSION['user']['id'], 'login');
 
 		redirectToIf(true,
-			$PROG_CONFIG['HOST'] . '/design.php?action=orders_list&alert_massage=Привет ' . $_SESSION['user']['first_name'],
+			$PROG_CONFIG['HOST'] . '/index.php?alert_massage=Привет ' . $_SESSION['user']['first_name'],
 			'');
-	}
-	else {
+	} else {
 		redirectToIf(false, '', $PROG_CONFIG['HOST'] . '/login.php?error_massage=неверные имя пользователя или пароль');
 	}
 }

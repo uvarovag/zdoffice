@@ -15,16 +15,16 @@
           <h3 class="mb-4">Данные контрагента</h3>
           <table class="table">
             <tr>
-              <th class="px-0">Контрагент</th>
-              <th class="px-0"><?= $data['order']['client_name'] ?></th>
+              <td class="px-0">Контрагент</td>
+              <td class="px-0"><?= $data['order']['client_name'] ?></td>
             </tr>
             <tr>
-              <th class="px-0">Телефон</th>
-              <th class="px-0"><?= $data['order']['mobile_phone'] ?></th>
+              <td class="px-0">Телефон</td>
+              <td class="px-0"><?= $data['order']['mobile_phone'] ?></td>
             </tr>
             <tr>
-              <th class="px-0">Почта</th>
-              <th class="px-0"><?= $data['order']['email'] ?></th>
+              <td class="px-0">Почта</td>
+              <td class="px-0"><?= $data['order']['email'] ?></td>
             </tr>
           </table>
         </div>
@@ -34,52 +34,73 @@
           <h3 class="mb-4">Данные заказа</h3>
           <table class="table">
             <tr>
-              <th class="px-0">Внешний ID</th>
-              <th class="px-0"><?= $data['order']['order_name_out'] ?></th>
+              <td class="px-0">Внешний ID</td>
+              <td class="px-0"><?= $data['order']['order_name_out'] ?></td>
             </tr>
             <tr>
-              <th class="px-0">Внутренний ID</th>
-              <th class="px-0"><?= $data['order']['order_name_in'] ?></th>
+              <td class="px-0">Внутренний ID</td>
+              <td class="px-0"><?= $data['order']['order_name_in'] ?></td>
             </tr>
             <tr>
-              <th class="px-0">Менеджер</th>
-              <th class="px-0">
+              <td class="px-0">Менеджер</td>
+              <td class="px-0">
 								<?php if (isset($data['manager']['id'])): ?>
                 <a href="<?= $data['config']['HOST'] . '/users.php?action=user_info_card&id=' . $data['manager']['id']; ?>">
 									<?= $data['manager']['last_name'] . ' ' . $data['manager']['first_name']; ?>
 									<?php else: ?>
                     не назначен
 									<?php endif; ?>
-              </th>
+              </td>
             </tr>
             <tr>
-              <th class="px-0">Дизайнер</th>
-              <th class="px-0">
+              <td class="px-0">Дизайнер</td>
+              <td class="px-0">
 								<?php if (isset($data['designer']['id'])): ?>
                 <a href="<?= $data['config']['HOST'] . '/users.php?action=user_info_card&id=' . $data['designer']['id']; ?>">
 									<?= $data['designer']['last_name'] . ' ' . $data['designer']['first_name']; ?>
 									<?php else: ?>
                     не назначен
 									<?php endif; ?>
-              </th>
+              </td>
             </tr>
+
+						<?php if (isset($data['confirmStartUser']['id'])): ?>
+              <tr>
+                <td class="px-0">Запустил в работу</td>
+                <td class="px-0">
+                  <a href="<?= $data['config']['HOST'] . '/users.php?action=user_info_card&id=' . $data['confirmStartUser']['id']; ?>">
+										<?= $data['confirmStartUser']['last_name'] . ' ' . $data['confirmStartUser']['first_name']; ?>
+                </td>
+              </tr>
+						<?php endif; ?>
+
+						<?php if (isset($data['confirmCancelUser']['id'])): ?>
+              <tr>
+                <td class="px-0">Подтвердил отмену</td>
+                <td class="px-0">
+                  <a href="<?= $data['config']['HOST'] . '/users.php?action=user_info_card&id=' . $data['confirmCancelUser']['id']; ?>">
+										<?= $data['confirmCancelUser']['last_name'] . ' ' . $data['confirmCancelUser']['first_name']; ?>
+                </td>
+              </tr>
+						<?php endif; ?>
+
             <tr>
-              <th class="px-0">Приоритет</th>
-              <th class="px-0"><?= $data['progData']['PRIORITY_ORDERS'][$data['order']['order_priority']]['icon'] ?? '???' ?></th>
+              <td class="px-0">Приоритет</td>
+              <td class="px-0"><?= $data['progData']['PRIORITY_ORDERS'][$data['order']['order_priority']]['icon'] ?? '???' ?></td>
             </tr>
+
+						<?php if (currentGeneralStatus($data['order']) !== false): ?>
+              <tr>
+                <td class="px-0">Стадия</td>
+                <td class="px-0">
+									<?= $data['progData']['STATUS_LIST_PRODUCTION'][currentGeneralStatus($data['order'])]['icon'] ?? '???' ?>
+                </td>
+              </tr>
+						<?php endif; ?>
+
             <tr>
-              <th class="px-0">Стадия</th>
-              <th class="px-0"><?= $data['progData']['STATUS_LIST_DESIGN'][$data['order']['current_status']]['icon'] ?? '???' ?></th>
-            </tr>
-            <tr>
-              <th class="px-0">Дедлайн</th>
-              <th class="px-0">
-								<?= deadlineBadge($data['order']['deadline_date'], $data['config']['WARNING_DAYS_BEFORE_DEADLINE']) ?>
-              </th>
-            </tr>
-            <tr>
-              <th class="px-0">Формат</th>
-              <th class="px-0"><?= $data['order']['design_format'] ?></th>
+              <td class="px-0">Кол-во</td>
+              <td class="px-0"><?= $data['order']['task_quantity'] ?></td>
             </tr>
           </table>
         </div>
@@ -90,40 +111,12 @@
           <p><?= $data['order']['task_text'] ?></p>
         </div>
 
-				<?php if ($data['order']['current_status'] == $data['progData']['STATUS_ID_DESIGN']['WAIT'] &&
-					$_SESSION['user']['auth_design_order_select_designer']): ?>
+				<?php if ($_SESSION['user']['auth_production_order_change_priority'] &&
+					currentGeneralStatus($data['order']) !== false &&
+					currentGeneralStatus($data['order']) < $data['progData']['STATUS_ID_PRODUCTION']['DONE']): ?>
           <div class="mb-4">
             <hr>
-            <form action="<?= $data['config']['HOST'] . '/design.php' ?>" method="POST">
-              <input type="hidden" name="action" value="change_designer">
-              <input type="hidden" name="order_id" value="<?= $data['order']['id'] ?>">
-              <h3>Назначить дизайнера</h3>
-              <div class="form-row">
-                <div class="m-0 form-group col-8">
-                  <select name="designer_id" class="form-control" required>
-                    <option></option>
-										<?php foreach ($data['designerList'] as $designer): ?>
-											<?php if ($designer['id'] === $data['order']['designer_id']): ?>
-                        <option value="<?= $designer['id'] ?>" selected><?= $designer['last_name'] . ' ' . $designer['first_name'] ?></option>
-											<?php else: ?>
-                        <option value="<?= $designer['id'] ?>"><?= $designer['last_name'] . ' ' . $designer['first_name'] ?></option>
-											<?php endif; ?>
-										<?php endforeach; ?>
-                  </select>
-                </div>
-                <div class="m-0 form-group col-4">
-                  <input class="btn btn-primary" type="submit" value="Сохранить">
-                </div>
-              </div>
-            </form>
-          </div>
-				<?php endif; ?>
-
-				<?php if ($data['order']['current_status'] < $data['progData']['STATUS_ID_DESIGN']['DONE'] &&
-					$_SESSION['user']['auth_design_order_change_priority']): ?>
-          <div class="mb-4">
-            <hr>
-            <form action="<?= $data['config']['HOST'] . '/design.php' ?>" method="POST">
+            <form action="<?= $data['config']['HOST'] . '/production.php' ?>" method="POST">
               <input type="hidden" name="action" value="change_priority">
               <input type="hidden" name="order_id" value="<?= $data['order']['id'] ?>">
               <h3>Изменить приоритет</h3>
@@ -148,68 +141,85 @@
           </div>
 				<?php endif; ?>
 
-				<?php if ($data['order']['current_status'] > $data['progData']['STATUS_ID_DESIGN']['WAIT'] &&
-					$data['order']['current_status'] < $data['progData']['STATUS_ID_DESIGN']['DONE'] &&
-					$_SESSION['user']['auth_design_order_change_status'] &&
-          $data['order']['designer_id'] == $_SESSION['user']['id']): ?>
-          <div class="mb-4">
-            <hr>
-            <form action="<?= $data['config']['HOST'] . '/design.php' ?>" method="POST">
-              <input type="hidden" name="action" value="change_status">
-              <input type="hidden" name="order_id" value="<?= $data['order']['id'] ?>">
-              <h3>Изменить стадию</h3>
-              <div class="form-row">
-                <div class="form-group col-8">
-                  <select name="status" class="form-control" required>
-                    <option></option>
-										<?php foreach ($data['progData']['STATUS_LIST_DESIGN'] as $statusKey => $statusVal): ?>
-											<?php if ($statusKey < $data['progData']['STATUS_ID_DESIGN']['START'] ||
-												$statusKey > $data['progData']['STATUS_ID_DESIGN']['DONE']): continue ?>
-											<?php endif; ?>
-											<?php if ($statusKey > $data['order']['current_status']): ?>
-                        <option value="<?= $statusKey ?>"><?= $statusVal['name'] ?></option>
-											<?php endif; ?>
-										<?php endforeach; ?>
-                  </select>
-                </div>
-                <div class="m-0 form-group col-4">
-                  <input class="btn btn-primary" type="submit" value="Сохранить">
-                </div>
-              </div>
-            </form>
-          </div>
-				<?php endif; ?>
-
-				<?php if ($data['order']['current_status'] < $data['progData']['STATUS_ID_DESIGN']['DONE'] &&
-					$_SESSION['user']['id'] == $data['order']['create_user_id']): ?>
+				<?php if ($_SESSION['user']['id'] == $data['order']['create_user_id'] &&
+					currentGeneralStatus($data['order']) !== false &&
+					currentGeneralStatus($data['order']) < $data['progData']['STATUS_ID_PRODUCTION']['DONE']): ?>
           <div class="mb-4 d-inline-block">
-            <form class="d-inline-block mr-2" action="<?= $data['config']['HOST'] . '/design.php' ?>" method="POST">
-
+            <form class="d-inline-block mr-2" action="<?= $data['config']['HOST'] . '/production.php' ?>" method="POST">
               <input type="hidden" name="action" value="change_status">
-              <input type="hidden" name="status" value="999">
+              <input type="hidden" name="status" value="<?= $data['progData']['STATUS_ID_PRODUCTION']['WAIT_CANCEL']; ?>">
               <input type="hidden" name="order_id" value="<?= $data['order']['id'] ?>">
-              <input class="btn btn-danger" type="submit" value="Отменить">
+              <input type="hidden" name="department" value="all">
+              <input type="hidden" name="redirect_success"
+                     value="<?= $data['config']['HOST'] . '/production.php?action=order_info_card&id=' .
+										 $data['order']['id']; ?>">
+              <input type="hidden" name="redirect_error"
+                     value="<?= $data['config']['HOST'] . '/production.php?action=order_info_card&id=' .
+										 $data['order']['id']; ?>">
+              <input class="btn btn-danger" type="submit" value="Запросить отмену">
             </form>
           </div>
 				<?php endif; ?>
-				<?php if ($data['order']['current_status'] < $data['progData']['STATUS_ID_DESIGN']['DONE'] &&
-					$data['order']['error_priority'] == 2): ?>
-          <a href="<?= $data['config']['HOST'] . '/design.php?' . http_build_query([
+
+				<?php if ($_SESSION['user']['auth_production_order_cancel'] &&
+					currentGeneralStatus($data['order']) === $data['progData']['STATUS_ID_PRODUCTION']['WAIT_CANCEL']): ?>
+          <div class="mb-4 d-inline-block">
+            <form class="d-inline-block mr-2" action="<?= $data['config']['HOST'] . '/production.php' ?>" method="POST">
+              <input type="hidden" name="action" value="change_status">
+              <input type="hidden" name="status" value="<?= $data['progData']['STATUS_ID_PRODUCTION']['CANCEL']; ?>">
+              <input type="hidden" name="order_id" value="<?= $data['order']['id'] ?>">
+              <input type="hidden" name="department" value="all">
+              <input type="hidden" name="redirect_success"
+                     value="<?= $data['config']['HOST'] . '/production.php?action=order_info_card&id=' .
+										 $data['order']['id']; ?>">
+              <input type="hidden" name="redirect_error"
+                     value="<?= $data['config']['HOST'] . '/production.php?action=order_info_card&id=' .
+										 $data['order']['id']; ?>">
+              <input class="btn btn-danger" type="submit" value="Подтвердить отмену">
+            </form>
+          </div>
+				<?php endif; ?>
+
+				<?php if ($_SESSION['user']['auth_production_order_start'] &&
+					currentGeneralStatus($data['order']) === $data['progData']['STATUS_ID_PRODUCTION']['WAIT_START']): ?>
+          <div class="mb-4 d-inline-block">
+            <form class="d-inline-block mr-2" action="<?= $data['config']['HOST'] . '/production.php' ?>" method="POST">
+              <input type="hidden" name="action" value="change_status">
+              <input type="hidden" name="status" value="<?= $data['progData']['STATUS_ID_PRODUCTION']['RECEIVED']; ?>">
+              <input type="hidden" name="order_id" value="<?= $data['order']['id'] ?>">
+              <input type="hidden" name="department" value="all">
+              <input type="hidden" name="redirect_success"
+                     value="<?= $data['config']['HOST'] . '/production.php?action=order_info_card&id=' .
+										 $data['order']['id']; ?>">
+              <input type="hidden" name="redirect_error"
+                     value="<?= $data['config']['HOST'] . '/production.php?action=order_info_card&id=' .
+										 $data['order']['id']; ?>">
+              <input class="btn btn-primary" type="submit" value="Запустить в работу">
+            </form>
+          </div>
+				<?php endif; ?>
+
+
+				<?php if ($data['order']['error_priority'] == 2 &&
+					currentGeneralStatus($data['order']) !== false &&
+					currentGeneralStatus($data['order']) < $data['progData']['STATUS_ID_PRODUCTION']['DONE']): ?>
+          <a href="<?= $data['config']['HOST'] . '/production.php?' . http_build_query([
 						'action' => 'cancel_error',
 						'order_id' => $data['order']['id'],
-						'redirect_success' => $data['config']['HOST'] . '/design.php?action=order_info_card&id=' .
+						'redirect_success' => $data['config']['HOST'] . '/production.php?action=order_info_card&id=' .
 							$data['order']['id'],
-						'redirect_error' => $data['config']['HOST'] . '/design.php?action=order_info_card&id=' .
+						'redirect_error' => $data['config']['HOST'] . '/production.php?action=order_info_card&id=' .
 							$data['order']['id']
 					]) ?>"
              class="btn btn-primary" role="button" aria-pressed="true">Снять ошибку</a>
-				<?php elseif ($data['order']['current_status'] < $data['progData']['STATUS_ID_DESIGN']['DONE']): ?>
-          <a href="<?= $data['config']['HOST'] . '/design.php?' . http_build_query([
+				<?php elseif (currentGeneralStatus($data['order']) !== false &&
+					currentGeneralStatus($data['order']) < $data['progData']['STATUS_ID_PRODUCTION']['DONE']): ?>
+          <a href="<?= $data['config']['HOST'] . '/production.php?' . http_build_query([
 						'action' => 'add_error',
 						'order_id' => $data['order']['id'],
-						'redirect_success' => $data['config']['HOST'] . '/design.php?action=order_info_card&id=' .
+						'redirect_success' => $data['config']['HOST'] . '/production.php?action=order_info_card&id=' .
 							$data['order']['id'],
-						'redirect_error' => $data['config']['HOST'] . '/design.php?action=order_info_card&id=' .
+						'redirect_error' => $data['config']['HOST'] . '/production.php?action=order_info_card&id=' .
 							$data['order']['id']
 					]) ?>"
              class="btn btn-primary" role="button" aria-pressed="true">Добавить ошибку</a>
@@ -217,22 +227,69 @@
       </div>
       <div class="col-12 col-md-6">
         <div class="nav-wrapper">
-          <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
-            <li class="nav-item">
-              <a class="nav-link mb-sm-3 mb-md-0 <?= $data['activeTab'] == 'notes' ? 'active' : '' ?>" id="tabs-icons-text-1-tab" data-toggle="tab"
-                 href="#tabs-icons-text-1" role="tab"
-                 aria-controls="tabs-icons-text-1" aria-selected="true">Заметки</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link mb-sm-3 mb-md-0 <?= $data['activeTab'] == 'files' ? 'active' : '' ?>" id="tabs-icons-text-2-tab" data-toggle="tab"
-                 href="#tabs-icons-text-2" role="tab"
-                 aria-controls="tabs-icons-text-2" aria-selected="false">Файлы</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-3-tab" data-toggle="tab" href="#tabs-icons-text-3" role="tab"
-                 aria-controls="tabs-icons-text-2" aria-selected="false">Таймлайн</a>
-            </li>
-          </ul>
+
+          <div>
+            <ul class="nav nav-pills nav-fill d-flex" id="tabs-icons-text" role="tablist">
+              <li class="nav-item">
+                <a class="mb-3 nav-link <?= $data['activeTab'] == 'notes' ? 'active' : '' ?>" id="tabs-icons-text-1-tab" data-toggle="tab"
+                   href="#tabs-icons-text-1" role="tab"
+                   aria-controls="tabs-icons-text-1" aria-selected="true">Заметки</a>
+              </li>
+              <li class="nav-item">
+                <a class="mb-3 nav-link <?= $data['activeTab'] == 'files' ? 'active' : '' ?>" id="tabs-icons-text-2-tab" data-toggle="tab"
+                   href="#tabs-icons-text-2" role="tab"
+                   aria-controls="tabs-icons-text-2" aria-selected="false">Файлы</a>
+              </li>
+
+							<?php if ($data['order']['const_datetime_status_0']): ?>
+                <li class="nav-item">
+                  <a class="mb-3 nav-link <?= $data['activeTab'] == 'const' ? 'active' : '' ?>" id="tabs-icons-text-3-tab" data-toggle="tab"
+                     href="#tabs-icons-text-3" role="tab"
+                     aria-controls="tabs-icons-text-3" aria-selected="false">Конструктор</a>
+                </li>
+							<?php endif; ?>
+
+							<?php if ($data['order']['adv_datetime_status_0']): ?>
+                <li class="nav-item">
+                  <a class="mb-3 nav-link <?= $data['activeTab'] == 'adv' ? 'active' : '' ?>" id="tabs-icons-text-4-tab" data-toggle="tab"
+                     href="#tabs-icons-text-4" role="tab"
+                     aria-controls="tabs-icons-text-4" aria-selected="false">Реклама</a>
+                </li>
+							<?php endif; ?>
+
+							<?php if ($data['order']['furn_datetime_status_0']): ?>
+                <li class="nav-item">
+                  <a class="mb-3 nav-link <?= $data['activeTab'] == 'furn' ? 'active' : '' ?>" id="tabs-icons-text-5-tab" data-toggle="tab"
+                     href="#tabs-icons-text-5" role="tab"
+                     aria-controls="tabs-icons-text-5" aria-selected="false">Мебель</a>
+                </li>
+							<?php endif; ?>
+
+							<?php if ($data['order']['steel_datetime_status_0']): ?>
+                <li class="nav-item">
+                  <a class="mb-3 nav-link <?= $data['activeTab'] == 'steel' ? 'active' : '' ?>" id="tabs-icons-text-6-tab" data-toggle="tab"
+                     href="#tabs-icons-text-6" role="tab"
+                     aria-controls="tabs-icons-text-6" aria-selected="false">Металл</a>
+                </li>
+							<?php endif; ?>
+
+							<?php if ($data['order']['install_datetime_status_0']): ?>
+                <li class="nav-item">
+                  <a class="mb-3 nav-link <?= $data['activeTab'] == 'install' ? 'active' : '' ?>" id="tabs-icons-text-7-tab" data-toggle="tab"
+                     href="#tabs-icons-text-7" role="tab"
+                     aria-controls="tabs-icons-text-7" aria-selected="false">Монтаж</a>
+                </li>
+							<?php endif; ?>
+
+							<?php if ($data['order']['supply_datetime_status_0']): ?>
+                <li class="nav-item <?= $data['activeTab'] == 'supply' ? 'active' : '' ?>">
+                  <a class="mb-3 nav-link" id="tabs-icons-text-8-tab" data-toggle="tab" href="#tabs-icons-text-8" role="tab"
+                     aria-controls="tabs-icons-text-8" aria-selected="false">Склад</a>
+                </li>
+							<?php endif; ?>
+            </ul>
+          </div>
+
         </div>
         <div class="card shadow">
           <div class="card-body">
@@ -279,9 +336,9 @@
 													<?php if ($_SESSION['user']['id'] == $file['user_id']): ?>
                             <a class="dropdown-item text-danger" href="<?= $data['config']['HOST'] . '/files.php?' .
 														http_build_query(['action' => 'del_file', 'id' => $file['id'],
-															'redirect_success' => $data['config']['HOST'] . '/design.php?action=order_info_card&active_tab=files&id=' .
+															'redirect_success' => $data['config']['HOST'] . '/production.php?action=order_info_card&active_tab=files&id=' .
 																$data['order']['id'],
-															'redirect_error' => $data['config']['HOST'] . '/design.php?action=order_info_card&active_tab=files&id=' .
+															'redirect_error' => $data['config']['HOST'] . '/production.php?action=order_info_card&active_tab=files&id=' .
 																$data['order']['id']]); ?>">Удалить</a>
 													<?php endif; ?>
                         </div>
@@ -298,12 +355,12 @@
                   <input type="hidden" name="action" value="upl_file">
                   <input type="hidden" name="form_id" value="<?= $data['formId']; ?>">
                   <input type="hidden" name="order_id" value="<?= $data['order']['id']; ?>">
-                  <input type="hidden" name="order_type" value="<?= $data['progData']['ORDER_TYPES']['DESIGN'] ?>">
+                  <input type="hidden" name="order_type" value="<?= $data['progData']['ORDER_TYPES']['PRODUCTION'] ?>">
                   <input type="hidden" name="redirect_success"
-                         value="<?= $data['config']['HOST'] . '/design.php?action=order_info_card&active_tab=files&id=' .
+                         value="<?= $data['config']['HOST'] . '/production.php?action=order_info_card&active_tab=files&id=' .
 												 $data['order']['id']; ?>">
                   <input type="hidden" name="redirect_error"
-                         value="<?= $data['config']['HOST'] . '/design.php?action=order_info_card&active_tab=files&id=' .
+                         value="<?= $data['config']['HOST'] . '/production.php?action=order_info_card&active_tab=files&id=' .
 												 $data['order']['id']; ?>">
                   <div class="form-group">
                     <small class="">Комментарий к файлу</small>
@@ -319,66 +376,415 @@
                 </form>
               </div>
 
-              <div class="tab-pane fade" id="tabs-icons-text-3" role="tabpanel" aria-labelledby="tabs-icons-text-3-tab">
-                <table class="table table-sm">
-                  <tr>
-                    <th class="px-0"><?= $data['progData']['STATUS_LIST_DESIGN'][0]['name'] ?? '???' ?></th>
-                    <th class="px-0"><?= $data['order']['datetime_status_000'] ?></th>
-                  </tr>
-                  <tr>
-                    <th class="px-0"><?= $data['progData']['STATUS_LIST_DESIGN'][100]['name'] ?? '???' ?></th>
-                    <th class="px-0"><?= $data['order']['datetime_status_100'] ?></th>
-                  </tr>
-                  <tr>
-                    <th class="px-0"><?= $data['progData']['STATUS_LIST_DESIGN'][200]['name'] ?? '???' ?></th>
-                    <th class="px-0"><?= $data['order']['datetime_status_200'] ?></th>
-                  </tr>
-                  <tr>
-                    <th class="px-0"><?= $data['progData']['STATUS_LIST_DESIGN'][210]['name'] ?? '???' ?></th>
-                    <th class="px-0"><?= $data['order']['datetime_status_210'] ?></th>
-                  </tr>
-                  <tr>
-                    <th class="px-0"><?= $data['progData']['STATUS_LIST_DESIGN'][220]['name'] ?? '???' ?></th>
-                    <th class="px-0"><?= $data['order']['datetime_status_220'] ?></th>
-                  </tr>
-                  <tr>
-                    <th class="px-0"><?= $data['progData']['STATUS_LIST_DESIGN'][230]['name'] ?? '???' ?></th>
-                    <th class="px-0"><?= $data['order']['datetime_status_230'] ?></th>
-                  </tr>
-                  <tr>
-                    <th class="px-0"><?= $data['progData']['STATUS_LIST_DESIGN'][240]['name'] ?? '???' ?></th>
-                    <th class="px-0"><?= $data['order']['datetime_status_240'] ?></th>
-                  </tr>
-                  <tr>
-                    <th class="px-0"><?= $data['progData']['STATUS_LIST_DESIGN'][250]['name'] ?? '???' ?></th>
-                    <th class="px-0"><?= $data['order']['datetime_status_250'] ?></th>
-                  </tr>
-                  <tr>
-                    <th class="px-0"><?= $data['progData']['STATUS_LIST_DESIGN'][260]['name'] ?? '???' ?></th>
-                    <th class="px-0"><?= $data['order']['datetime_status_260'] ?></th>
-                  </tr>
-                  <tr>
-                    <th class="px-0"><?= $data['progData']['STATUS_LIST_DESIGN'][270]['name'] ?? '???' ?></th>
-                    <th class="px-0"><?= $data['order']['datetime_status_270'] ?></th>
-                  </tr>
-                  <tr>
-                    <th class="px-0"><?= $data['progData']['STATUS_LIST_DESIGN'][280]['name'] ?? '???' ?></th>
-                    <th class="px-0"><?= $data['order']['datetime_status_280'] ?></th>
-                  </tr>
-                  <tr>
-                    <th class="px-0"><?= $data['progData']['STATUS_LIST_DESIGN'][290]['name'] ?? '???' ?></th>
-                    <th class="px-0"><?= $data['order']['datetime_status_290'] ?></th>
-                  </tr>
-                  <tr>
-                    <th class="px-0"><?= $data['progData']['STATUS_LIST_DESIGN'][300]['name'] ?? '???' ?></th>
-                    <th class="px-0"><?= $data['order']['datetime_status_300'] ?></th>
-                  </tr>
-                  <tr>
-                    <th class="px-0"><?= $data['progData']['STATUS_LIST_DESIGN'][999]['name'] ?? '???' ?></th>
-                    <th class="px-0"><?= $data['order']['datetime_status_999'] ?></th>
-                  </tr>
-                </table>
-              </div>
+							<?php if ($data['order']['const_datetime_status_0']): ?>
+                <div class="tab-pane fade <?= $data['activeTab'] == 'const' ? 'show active' : '' ?>" id="tabs-icons-text-3" role="tabpanel"
+                     aria-labelledby="tabs-icons-text-3-tab">
+
+                  <table class="table table-sm table-borderless mb-4">
+                    <tr>
+                      <td class="px-0">Стадия</td>
+                      <td class="px-0"><?= $data['progData']['STATUS_LIST_PRODUCTION'][$data['order']['const_current_status']]['icon'] ?? '???' ?></td>
+                    </tr>
+                    <tr>
+                      <td class="px-0">Дедлайн</td>
+                      <td class="px-0">
+												<?= deadlineBadge($data['order']['const_deadline_date'], $data['config']['WARNING_DAYS_BEFORE_DEADLINE']) ?>
+                      </td>
+                    </tr>
+                  </table>
+
+									<?php if ($_SESSION['user']['auth_production_order_change_status_const'] &&
+										$data['order']['const_current_status'] > $data['progData']['STATUS_ID_PRODUCTION']['WAIT_START'] &&
+										$data['order']['const_current_status'] < $data['progData']['STATUS_ID_PRODUCTION']['ISSUED']): ?>
+                    <hr>
+                    <div class="mb-4">
+                      <form action="<?= $data['config']['HOST'] . '/production.php' ?>" method="POST">
+                        <input type="hidden" name="action" value="change_status">
+                        <input type="hidden" name="order_id" value="<?= $data['order']['id'] ?>">
+                        <input type="hidden" name="department" value="const">
+                        <input type="hidden" name="redirect_success"
+                               value="<?= $data['config']['HOST'] . '/production.php?action=order_info_card&active_tab=const&id=' .
+															 $data['order']['id']; ?>">
+                        <input type="hidden" name="redirect_error"
+                               value="<?= $data['config']['HOST'] . '/production.php?action=order_info_card&active_tab=const&id=' .
+															 $data['order']['id']; ?>">
+                        <small class="text-gray">Изменить стадию</small>
+                        <div class="form-row">
+                          <div class="form-group col-8">
+                            <select name="status" class="form-control" required>
+                              <option></option>
+															<?php foreach ($data['progData']['STATUS_LIST_PRODUCTION'] as $statusKey => $statusVal): ?>
+																<?php if ($statusKey < $data['progData']['STATUS_ID_PRODUCTION']['START'] ||
+																	$statusKey > $data['progData']['STATUS_ID_PRODUCTION']['ISSUED']): continue ?>
+																<?php endif; ?>
+																<?php if ($statusKey > $data['order']['const_current_status']): ?>
+                                  <option value="<?= $statusKey ?>"><?= $statusVal['name'] ?></option>
+																<?php endif; ?>
+															<?php endforeach; ?>
+                            </select>
+                          </div>
+                          <div class="m-0 form-group col-4">
+                            <input class="btn btn-primary" type="submit" value="Сохранить">
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+									<?php endif; ?>
+
+                  <table class="table table-sm">
+										<?php foreach ($data['progData']['STATUS_LIST_PRODUCTION'] as $statusKey => $statusVal): ?>
+                      <tr>
+                        <td class="px-0"><?= $statusVal['name'] ?? '???' ?></td>
+                        <td class="px-0"><?= $data['order']['const_datetime_status_' . $statusKey] ?></td>
+                      </tr>
+										<?php endforeach; ?>
+                  </table>
+                </div>
+							<?php endif; ?>
+
+
+							<?php if ($data['order']['adv_datetime_status_0']): ?>
+                <div class="tab-pane fade <?= $data['activeTab'] == 'adv' ? 'show active' : '' ?>" id="tabs-icons-text-4" role="tabpanel"
+                     aria-labelledby="tabs-icons-text-4-tab">
+
+                  <table class="table table-sm table-borderless mb-4">
+                    <tr>
+                      <td class="px-0">Стадия</td>
+                      <td class="px-0"><?= $data['progData']['STATUS_LIST_PRODUCTION'][$data['order']['adv_current_status']]['icon'] ?? '???' ?></td>
+                    </tr>
+                    <tr>
+                      <td class="px-0">Дедлайн</td>
+                      <td class="px-0">
+												<?= deadlineBadge($data['order']['adv_deadline_date'], $data['config']['WARNING_DAYS_BEFORE_DEADLINE']) ?>
+                      </td>
+                    </tr>
+                  </table>
+
+									<?php if ($_SESSION['user']['auth_production_order_change_status_adv'] &&
+										$data['order']['adv_current_status'] > $data['progData']['STATUS_ID_PRODUCTION']['WAIT_START'] &&
+										$data['order']['adv_current_status'] < $data['progData']['STATUS_ID_PRODUCTION']['ISSUED']): ?>
+                    <hr>
+                    <div class="mb-4">
+                      <form action="<?= $data['config']['HOST'] . '/production.php' ?>" method="POST">
+                        <input type="hidden" name="action" value="change_status">
+                        <input type="hidden" name="order_id" value="<?= $data['order']['id'] ?>">
+                        <input type="hidden" name="department" value="adv">
+                        <input type="hidden" name="redirect_success"
+                               value="<?= $data['config']['HOST'] . '/production.php?action=order_info_card&active_tab=adv&id=' .
+															 $data['order']['id']; ?>">
+                        <input type="hidden" name="redirect_error"
+                               value="<?= $data['config']['HOST'] . '/production.php?action=order_info_card&active_tab=adv&id=' .
+															 $data['order']['id']; ?>">
+                        <small class="text-gray">Изменить стадию</small>
+                        <div class="form-row">
+                          <div class="form-group col-8">
+                            <select name="status" class="form-control" required>
+                              <option></option>
+															<?php foreach ($data['progData']['STATUS_LIST_PRODUCTION'] as $statusKey => $statusVal): ?>
+																<?php if ($statusKey < $data['progData']['STATUS_ID_PRODUCTION']['START'] ||
+																	$statusKey > $data['progData']['STATUS_ID_PRODUCTION']['ISSUED']): continue ?>
+																<?php endif; ?>
+																<?php if ($statusKey > $data['order']['adv_current_status']): ?>
+                                  <option value="<?= $statusKey ?>"><?= $statusVal['name'] ?></option>
+																<?php endif; ?>
+															<?php endforeach; ?>
+                            </select>
+                          </div>
+                          <div class="m-0 form-group col-4">
+                            <input class="btn btn-primary" type="submit" value="Сохранить">
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+									<?php endif; ?>
+
+                  <table class="table table-sm">
+										<?php foreach ($data['progData']['STATUS_LIST_PRODUCTION'] as $statusKey => $statusVal): ?>
+                      <tr>
+                        <td class="px-0"><?= $statusVal['name'] ?? '???' ?></td>
+                        <td class="px-0"><?= $data['order']['adv_datetime_status_' . $statusKey] ?></td>
+                      </tr>
+										<?php endforeach; ?>
+                  </table>
+                </div>
+							<?php endif; ?>
+
+							<?php if ($data['order']['furn_datetime_status_0']): ?>
+                <div class="tab-pane fade <?= $data['activeTab'] == 'furn' ? 'show active' : '' ?>" id="tabs-icons-text-5" role="tabpanel"
+                     aria-labelledby="tabs-icons-text-5-tab">
+
+                  <table class="table table-sm table-borderless mb-4">
+                    <tr>
+                      <td class="px-0">Стадия</td>
+                      <td class="px-0"><?= $data['progData']['STATUS_LIST_PRODUCTION'][$data['order']['furn_current_status']]['icon'] ?? '???' ?></td>
+                    </tr>
+                    <tr>
+                      <td class="px-0">Дедлайн</td>
+                      <td class="px-0">
+												<?= deadlineBadge($data['order']['furn_deadline_date'], $data['config']['WARNING_DAYS_BEFORE_DEADLINE']) ?>
+                      </td>
+                    </tr>
+                  </table>
+
+									<?php if ($_SESSION['user']['auth_production_order_change_status_furn'] &&
+										$data['order']['furn_current_status'] > $data['progData']['STATUS_ID_PRODUCTION']['WAIT_START'] &&
+										$data['order']['furn_current_status'] < $data['progData']['STATUS_ID_PRODUCTION']['ISSUED']): ?>
+                    <hr>
+                    <div class="mb-4">
+                      <form action="<?= $data['config']['HOST'] . '/production.php' ?>" method="POST">
+                        <input type="hidden" name="action" value="change_status">
+                        <input type="hidden" name="order_id" value="<?= $data['order']['id'] ?>">
+                        <input type="hidden" name="department" value="furn">
+                        <input type="hidden" name="redirect_success"
+                               value="<?= $data['config']['HOST'] . '/production.php?action=order_info_card&active_tab=furn&id=' .
+															 $data['order']['id']; ?>">
+                        <input type="hidden" name="redirect_error"
+                               value="<?= $data['config']['HOST'] . '/production.php?action=order_info_card&active_tab=furn&id=' .
+															 $data['order']['id']; ?>">
+                        <small class="text-gray">Изменить стадию</small>
+                        <div class="form-row">
+                          <div class="form-group col-8">
+                            <select name="status" class="form-control" required>
+                              <option></option>
+															<?php foreach ($data['progData']['STATUS_LIST_PRODUCTION'] as $statusKey => $statusVal): ?>
+																<?php if ($statusKey < $data['progData']['STATUS_ID_PRODUCTION']['START'] ||
+																	$statusKey > $data['progData']['STATUS_ID_PRODUCTION']['ISSUED']): continue ?>
+																<?php endif; ?>
+																<?php if ($statusKey > $data['order']['furn_current_status']): ?>
+                                  <option value="<?= $statusKey ?>"><?= $statusVal['name'] ?></option>
+																<?php endif; ?>
+															<?php endforeach; ?>
+                            </select>
+                          </div>
+                          <div class="m-0 form-group col-4">
+                            <input class="btn btn-primary" type="submit" value="Сохранить">
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+									<?php endif; ?>
+
+                  <table class="table table-sm">
+										<?php foreach ($data['progData']['STATUS_LIST_PRODUCTION'] as $statusKey => $statusVal): ?>
+                      <tr>
+                        <td class="px-0"><?= $statusVal['name'] ?? '???' ?></td>
+                        <td class="px-0"><?= $data['order']['furn_datetime_status_' . $statusKey] ?></td>
+                      </tr>
+										<?php endforeach; ?>
+                  </table>
+                </div>
+							<?php endif; ?>
+
+
+							<?php if ($data['order']['steel_datetime_status_0']): ?>
+                <div class="tab-pane fade <?= $data['activeTab'] == 'steel' ? 'show active' : '' ?>" id="tabs-icons-text-6" role="tabpanel"
+                     aria-labelledby="tabs-icons-text-6-tab">
+
+                  <table class="table table-sm table-borderless mb-4">
+                    <tr>
+                      <td class="px-0">Стадия</td>
+                      <td class="px-0"><?= $data['progData']['STATUS_LIST_PRODUCTION'][$data['order']['steel_current_status']]['icon'] ?? '???' ?></td>
+                    </tr>
+                    <tr>
+                      <td class="px-0">Дедлайн</td>
+                      <td class="px-0">
+												<?= deadlineBadge($data['order']['steel_deadline_date'], $data['config']['WARNING_DAYS_BEFORE_DEADLINE']) ?>
+                      </td>
+                    </tr>
+                  </table>
+
+									<?php if ($_SESSION['user']['auth_production_order_change_status_steel'] &&
+										$data['order']['steel_current_status'] > $data['progData']['STATUS_ID_PRODUCTION']['WAIT_START'] &&
+										$data['order']['steel_current_status'] < $data['progData']['STATUS_ID_PRODUCTION']['ISSUED']): ?>
+                    <hr>
+                    <div class="mb-4">
+                      <form action="<?= $data['config']['HOST'] . '/production.php' ?>" method="POST">
+                        <input type="hidden" name="action" value="change_status">
+                        <input type="hidden" name="order_id" value="<?= $data['order']['id'] ?>">
+                        <input type="hidden" name="department" value="steel">
+                        <input type="hidden" name="redirect_success"
+                               value="<?= $data['config']['HOST'] . '/production.php?action=order_info_card&active_tab=steel&id=' .
+															 $data['order']['id']; ?>">
+                        <input type="hidden" name="redirect_error"
+                               value="<?= $data['config']['HOST'] . '/production.php?action=order_info_card&active_tab=steel&id=' .
+															 $data['order']['id']; ?>">
+                        <small class="text-gray">Изменить стадию</small>
+                        <div class="form-row">
+                          <div class="form-group col-8">
+                            <select name="status" class="form-control" required>
+                              <option></option>
+															<?php foreach ($data['progData']['STATUS_LIST_PRODUCTION'] as $statusKey => $statusVal): ?>
+																<?php if ($statusKey < $data['progData']['STATUS_ID_PRODUCTION']['START'] ||
+																	$statusKey > $data['progData']['STATUS_ID_PRODUCTION']['ISSUED']): continue ?>
+																<?php endif; ?>
+																<?php if ($statusKey > $data['order']['steel_current_status']): ?>
+                                  <option value="<?= $statusKey ?>"><?= $statusVal['name'] ?></option>
+																<?php endif; ?>
+															<?php endforeach; ?>
+                            </select>
+                          </div>
+                          <div class="m-0 form-group col-4">
+                            <input class="btn btn-primary" type="submit" value="Сохранить">
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+									<?php endif; ?>
+
+                  <table class="table table-sm">
+										<?php foreach ($data['progData']['STATUS_LIST_PRODUCTION'] as $statusKey => $statusVal): ?>
+                      <tr>
+                        <td class="px-0"><?= $statusVal['name'] ?? '???' ?></td>
+                        <td class="px-0"><?= $data['order']['steel_datetime_status_' . $statusKey] ?></td>
+                      </tr>
+										<?php endforeach; ?>
+                  </table>
+                </div>
+							<?php endif; ?>
+
+							<?php if ($data['order']['install_datetime_status_0']): ?>
+                <div class="tab-pane fade <?= $data['activeTab'] == 'install' ? 'show active' : '' ?>" id="tabs-icons-text-7" role="tabpanel"
+                     aria-labelledby="tabs-icons-text-7-tab">
+
+                  <table class="table table-sm table-borderless mb-4">
+                    <tr>
+                      <td class="px-0">Стадия</td>
+                      <td class="px-0"><?= $data['progData']['STATUS_LIST_PRODUCTION'][$data['order']['install_current_status']]['icon'] ?? '???' ?></td>
+                    </tr>
+                    <tr>
+                      <td class="px-0">Дедлайн</td>
+                      <td class="px-0">
+												<?= deadlineBadge($data['order']['install_deadline_date'], $data['config']['WARNING_DAYS_BEFORE_DEADLINE']) ?>
+                      </td>
+                    </tr>
+                  </table>
+
+									<?php if ($_SESSION['user']['auth_production_order_change_status_install'] &&
+										$data['order']['install_current_status'] > $data['progData']['STATUS_ID_PRODUCTION']['WAIT_START'] &&
+										$data['order']['install_current_status'] < $data['progData']['STATUS_ID_PRODUCTION']['ISSUED']): ?>
+                    <hr>
+                    <div class="mb-4">
+                      <form action="<?= $data['config']['HOST'] . '/production.php' ?>" method="POST">
+                        <input type="hidden" name="action" value="change_status">
+                        <input type="hidden" name="order_id" value="<?= $data['order']['id'] ?>">
+                        <input type="hidden" name="department" value="install">
+                        <input type="hidden" name="redirect_success"
+                               value="<?= $data['config']['HOST'] . '/production.php?action=order_info_card&active_tab=install&id=' .
+															 $data['order']['id']; ?>">
+                        <input type="hidden" name="redirect_error"
+                               value="<?= $data['config']['HOST'] . '/production.php?action=order_info_card&active_tab=install&id=' .
+															 $data['order']['id']; ?>">
+                        <small class="text-gray">Изменить стадию</small>
+                        <div class="form-row">
+                          <div class="form-group col-8">
+                            <select name="status" class="form-control" required>
+                              <option></option>
+															<?php foreach ($data['progData']['STATUS_LIST_PRODUCTION'] as $statusKey => $statusVal): ?>
+																<?php if ($statusKey < $data['progData']['STATUS_ID_PRODUCTION']['START'] ||
+																	$statusKey > $data['progData']['STATUS_ID_PRODUCTION']['ISSUED']): continue ?>
+																<?php endif; ?>
+																<?php if ($statusKey > $data['order']['install_current_status']): ?>
+                                  <option value="<?= $statusKey ?>"><?= $statusVal['name'] ?></option>
+																<?php endif; ?>
+															<?php endforeach; ?>
+                            </select>
+                          </div>
+                          <div class="m-0 form-group col-4">
+                            <input class="btn btn-primary" type="submit" value="Сохранить">
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+									<?php endif; ?>
+
+                  <div class="mb-4">
+                    <hr>
+                    <h3 class="mb-4">Описание монтажа</h3>
+                    <p><?= $data['order']['install_task'] ?></p>
+                  </div>
+
+                  <div class="mb-5">
+                    <hr>
+                    <h3 class="mb-4">Адрес монтажа</h3>
+                    <p><?= $data['order']['install_address'] ?></p>
+                  </div>
+
+                  <table class="table table-sm">
+										<?php foreach ($data['progData']['STATUS_LIST_PRODUCTION'] as $statusKey => $statusVal): ?>
+                      <tr>
+                        <td class="px-0"><?= $statusVal['name'] ?? '???' ?></td>
+                        <td class="px-0"><?= $data['order']['install_datetime_status_' . $statusKey] ?></td>
+                      </tr>
+										<?php endforeach; ?>
+                  </table>
+                </div>
+							<?php endif; ?>
+
+							<?php if ($data['order']['supply_datetime_status_0']): ?>
+                <div class="tab-pane fade <?= $data['activeTab'] == 'supply' ? 'show active' : '' ?>" id="tabs-icons-text-8" role="tabpanel"
+                     aria-labelledby="tabs-icons-text-8-tab">
+
+                  <table class="table table-sm table-borderless mb-4">
+                    <tr>
+                      <td class="px-0">Стадия</td>
+                      <td class="px-0"><?= $data['progData']['STATUS_LIST_PRODUCTION'][$data['order']['supply_current_status']]['icon'] ?? '???' ?></td>
+                    </tr>
+                    <tr>
+                      <td class="px-0">Дедлайн</td>
+                      <td class="px-0">
+												<?= deadlineBadge($data['order']['supply_deadline_date'], $data['config']['WARNING_DAYS_BEFORE_DEADLINE']) ?>
+                      </td>
+                    </tr>
+                  </table>
+
+									<?php if ($_SESSION['user']['auth_production_order_change_status_supply'] &&
+										$data['order']['supply_current_status'] > $data['progData']['STATUS_ID_PRODUCTION']['WAIT_START'] &&
+										$data['order']['supply_current_status'] < $data['progData']['STATUS_ID_PRODUCTION']['ISSUED']): ?>
+                    <hr>
+                    <div class="mb-4">
+                      <form action="<?= $data['config']['HOST'] . '/production.php' ?>" method="POST">
+                        <input type="hidden" name="action" value="change_status">
+                        <input type="hidden" name="order_id" value="<?= $data['order']['id'] ?>">
+                        <input type="hidden" name="department" value="supply">
+                        <input type="hidden" name="redirect_success"
+                               value="<?= $data['config']['HOST'] . '/production.php?action=order_info_card&active_tab=supply&id=' .
+															 $data['order']['id']; ?>">
+                        <input type="hidden" name="redirect_error"
+                               value="<?= $data['config']['HOST'] . '/production.php?action=order_info_card&active_tab=supply&id=' .
+															 $data['order']['id']; ?>">
+                        <small class="text-gray">Изменить стадию</small>
+                        <div class="form-row">
+                          <div class="form-group col-8">
+                            <select name="status" class="form-control" required>
+                              <option></option>
+															<?php foreach ($data['progData']['STATUS_LIST_PRODUCTION'] as $statusKey => $statusVal): ?>
+																<?php if ($statusKey < $data['progData']['STATUS_ID_PRODUCTION']['START'] ||
+																	$statusKey > $data['progData']['STATUS_ID_PRODUCTION']['ISSUED']): continue ?>
+																<?php endif; ?>
+																<?php if ($statusKey > $data['order']['supply_current_status']): ?>
+                                  <option value="<?= $statusKey ?>"><?= $statusVal['name'] ?></option>
+																<?php endif; ?>
+															<?php endforeach; ?>
+                            </select>
+                          </div>
+                          <div class="m-0 form-group col-4">
+                            <input class="btn btn-primary" type="submit" value="Сохранить">
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+									<?php endif; ?>
+
+                  <table class="table table-sm">
+										<?php foreach ($data['progData']['STATUS_LIST_PRODUCTION'] as $statusKey => $statusVal): ?>
+                      <tr>
+                        <td class="px-0"><?= $statusVal['name'] ?? '???' ?></td>
+                        <td class="px-0"><?= $data['order']['supply_datetime_status_' . $statusKey] ?></td>
+                      </tr>
+										<?php endforeach; ?>
+                  </table>
+                </div>
+							<?php endif; ?>
 
             </div>
           </div>

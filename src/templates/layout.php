@@ -32,15 +32,17 @@
   <link rel="stylesheet" href="/argon-dashboard/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" type="text/css">
   <!-- Page plugins -->
   <!-- Argon CSS -->
-  <link rel="stylesheet" href="/argon-dashboard/assets/css/argon.css?v=1.2.0" type="text/css">
+  <link rel="stylesheet" href="/argon-dashboard/assets/css/argon.min.css?v=1" type="text/css">
+  <link rel="stylesheet" href="/argon-dashboard/assets/daterangepicker/daterangepicker-min.css?v=5" type="text/css">
 </head>
 <body>
+<?= $data['modal'] ?>
 <!-- Sidenav -->
 <nav class="sidenav navbar navbar-vertical fixed-left navbar-expand-xs navbar-light bg-white" id="sidenav-main">
   <div class="scrollbar-inner">
     <!-- Brand -->
     <div class="sidenav-header  align-items-center">
-      <a class="navbar-brand" href="#">
+      <a class="navbar-brand" href="<?= $data['config']['HOST'] . '/index.php'; ?>">
         <img src="/argon-dashboard/assets/img/brand/zd-blue.png" class="navbar-brand-img" alt="...">
         <h2 class="d-inline align-bottom <?= $data['config']['TEXT_STYLE'] ?>"><?= $data['config']['PROG_NAME'] ?></h2>
       </a>
@@ -172,6 +174,12 @@
               <!--              <div class="dropdown-header noti-title">-->
               <!--                <h6 class="text-overflow m-0">Welcome!</h6>-->
               <!--              </div>-->
+							<?php if (isset($_SESSION['user']['is_superuser']) === false): ?>
+                <a href="<?= $data['config']['HOST'] . '/users.php?action=user_info_card&id=' . $_SESSION['user']['id']; ?>" class="dropdown-item">
+                  <i class="ni ni-single-02 text-primary"></i>
+                  <span>Мои данные</span>
+                </a>
+							<?php endif; ?>
               <a href="<?= $data['config']['HOST'] . '/logout.php'; ?>" class="dropdown-item">
                 <i class="ni ni-button-power text-red"></i>
                 <span>Выход</span>
@@ -271,6 +279,9 @@
 <!-- Optional JS -->
 <script src="/argon-dashboard/assets/vendor/clipboard/dist/clipboard.min.js"></script>
 <script src="/argon-dashboard/assets/vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+<script src="/argon-dashboard/assets/daterangepicker/moment-min.js"></script>
+<script src="/argon-dashboard/assets/daterangepicker/daterangepicker.js"></script>
+<script src="/argon-dashboard/assets/js/office-main.js"></script>
 <!-- Argon JS -->
 <script src="/argon-dashboard/assets/js/argon.js?v=1.2.0"></script>
 </body>

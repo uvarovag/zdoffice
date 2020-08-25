@@ -18,11 +18,13 @@
 			<?php foreach ($data['adm_users'] as $user): ?>
         <tr onclick="window.location.href='<?= $data['config']['HOST'] . '/adm_users.php?action=user_info_card&id=' .
 				$user['id'] ?>'; return false">
-					<?php if ($user['is_block']): ?>
-            <td><b class="text-danger" data-toggle="tooltip" data-placement="top" title="Пользователь заблокирован"><?= $user['login'] ?></b></td>
-					<?php else: ?>
-            <td><?= shortStr($user['login'], $data['config']['MAX_SYMBOLS_TABLE_CELL']) ?></td>
-					<?php endif; ?>
+          <td>
+						<?php if ($user['is_block']): ?>
+              <b class="text-danger" data-toggle="tooltip" data-placement="top" title="Пользователь заблокирован"><?= $user['login'] ?></b>
+						<?php else: ?>
+							<?= shortStr($user['login'], $data['config']['MAX_SYMBOLS_TABLE_CELL']) ?>
+						<?php endif; ?>
+          </td>
           <td><?= shortStr($user['last_name'] . ' ' . $user['first_name'], $data['config']['MAX_SYMBOLS_TABLE_CELL']) ?></td>
           <td><?= shortStr($data['progData']['USERS_POSITIONS_LIST'][$user['position']] ?? '???', $data['config']['MAX_SYMBOLS_TABLE_CELL']) ?></td>
           <td><?= $data['config']['PHONE_PREFIX'] . ' ' . $user['mobile_phone'] ?></td>

@@ -58,3 +58,20 @@ $STATUS_LIST_DESIGN = [
 		'icon' => '<span class="badge badge-pill badge-danger">отменено</span>'
 	]
 ];
+
+$STATUS_ID_DESIGN = [
+	'WAIT' 			=> 0,
+	'RECEIVED'	=> 100,
+	'START'			=> 200,
+	'READY_10' 	=> 210,
+	'READY_20' 	=> 220,
+	'READY_30' 	=> 230,
+	'READY_40' 	=> 240,
+	'READY_50' 	=> 250,
+	'READY_60' 	=> 260,
+	'READY_70' 	=> 270,
+	'READY_80' 	=> 280,
+	'READY_90' 	=> 290,
+	'DONE' 			=> 300,
+	'CANCEL' 		=> 999,
+];

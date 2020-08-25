@@ -7,7 +7,7 @@ function createNewAdmUser($con, $tableName) {
 		'is_block' => 0,
 		'need_logout' => 0,
 		'login' => correctFormat($_POST['login']),
-		'password' => password_hash($_POST['password'], PASSWORD_ARGON2I),
+		'password' => password_hash($_POST['password'], PASSWORD_BCRYPT),
 		'last_name' => correctFormatUpper($_POST['last_name']),
 		'first_name' => correctFormatUpper($_POST['first_name']),
 		'position' => (int)$_POST['position'],

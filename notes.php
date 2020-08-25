@@ -11,6 +11,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_authorization_user.php');
 date_default_timezone_set($PROG_CONFIG['TIMEZONE']);
 $_SESSION['navList'] = cleanActiveTabs($_SESSION['navList']);
 
+///////////////////////////////////////////////////////////////////////////////////////////////
 
 if (isset($_POST['action']) && $_POST['action'] == 'new_note') {
 

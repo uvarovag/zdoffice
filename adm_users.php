@@ -8,11 +8,24 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_tmp_data.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_alert_massage.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_authorization_admin.php');
 
+date_default_timezone_set($PROG_CONFIG['TIMEZONE']);
 $_SESSION['navList'] = cleanActiveTabs($_SESSION['navList']);
+
+$PASSWORD_EMPTY_VALUE = 'none';
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-$PASSWORD_EMPTY_VALUE = 'none';
+if (isset($_GET['action']) && $_GET['action'] == 'info') {
+
+	$_SESSION['navList']['info']['isActive'] = true;
+	$tmpLayoutData['title'] = 'Информация';
+
+	$tmpLayoutData['content'] =
+		renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/src/templates/adm_users/info.php', $tmpLayoutContentData);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
 
 if (isset($_GET['action']) && $_GET['action'] === 'new_user_card') {
 
@@ -25,6 +38,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'new_user_card') {
 	$tmpLayoutData['content'] =
 		renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/src/templates/adm_users/new_user_card.php', $tmpLayoutContentData);
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -40,7 +54,7 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] === 'edit_us
 
 	if (empty($tmpLayoutContentData['user'])) {
 		redirectToIf(false, '',
-			$PROG_CONFIG['HOST'] . '/adm_users.php?action=users_list&error_massage=USER ID ERROR');
+			$PROG_CONFIG['HOST'] . '/adm_users.php?action=users_list&error_massage=' . $PROG_DATA['ERROR']['ID'] . ' ' . __LINE__);
 	}
 
 	$tmpLayoutContentData['user']['password'] = $PASSWORD_EMPTY_VALUE;
@@ -48,6 +62,7 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] === 'edit_us
 	$tmpLayoutData['content'] =
 		renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/src/templates/adm_users/edit_user_card.php', $tmpLayoutContentData);
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -69,12 +84,13 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] === 'user_in
 
 	if (empty($tmpLayoutContentData['user'])) {
 		redirectToIf(false, '',
-			$PROG_CONFIG['HOST'] . '/adm_users.php?action=users_list&error_massage=USER ID ERROR');
+			$PROG_CONFIG['HOST'] . '/adm_users.php?action=users_list&error_massage=' . $PROG_DATA['ERROR']['ID'] . ' ' . __LINE__);
 	}
 
 	$tmpLayoutData['content'] =
 		renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/src/templates/adm_users/user_info_card.php', $tmpLayoutContentData);
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -105,17 +121,20 @@ if (isset($_GET['action']) && $_GET['action'] === 'users_list') {
 		renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/src/templates/adm_users/users_list.php', $tmpLayoutContentData);
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 if (isset($_POST['action']) && isset($_POST['form_id']) && $_POST['action'] === 'new_user_data') {
 
 	errorIfDoubleClick($_SESSION['formId'], $_POST['form_id'],
-		$PROG_CONFIG['HOST'] . '/adm_users.php?action=new_user_card');
+		$PROG_CONFIG['HOST'] . '/adm_users.php?action=new_user_card&error_massage=' .
+		$PROG_DATA['ERROR']['DOUBLE_CLICK'] . ' ' . __LINE__);
+
 	$_SESSION['formId'] = 'none';
 
 	if (isValidNewUserData($PROG_CONFIG, $PROG_DATA) === false || isValidNewUserPassword($PROG_CONFIG) === false) {
 		redirectToIf(false, '',
-			$PROG_CONFIG['HOST'] . '/adm_users.php?action=new_user_card&error_massage=ошибка входных данных');
+			$PROG_CONFIG['HOST'] . '/adm_users.php?action=new_user_card&error_massage=' . $PROG_DATA['ERROR']['INPUT_DATA']);
 	}
 
 	$user = dbSelectData($con, 'SELECT * FROM adm_users WHERE login = ?', [$_POST['login']])[0] ?? [];
@@ -126,7 +145,7 @@ if (isset($_POST['action']) && isset($_POST['form_id']) && $_POST['action'] === 
 	}
 
 	$user = dbSelectData($con, 'SELECT * FROM adm_users WHERE last_name = ? AND first_name = ?',
-		[correctFormatUpper($_POST['last_name']), correctFormatUpper($_POST['first_name'])])[0] ?? [];
+			[correctFormatUpper($_POST['last_name']), correctFormatUpper($_POST['first_name'])])[0] ?? [];
 
 	if (isset($user['id'])) {
 		redirectToIf(false, '',
@@ -136,22 +155,27 @@ if (isset($_POST['action']) && isset($_POST['form_id']) && $_POST['action'] === 
 	$newUserId = createNewAdmUser($con, 'adm_users');
 
 	redirectToIf($newUserId,
-		$PROG_CONFIG['HOST'] . '/adm_users.php?action=user_info_card' . '&id=' . $newUserId . '&alert_massage=сохранено',
-		$PROG_CONFIG['HOST'] . '/adm_users.php?action=new_user_card&error_massage=ошибка записи');
+		$PROG_CONFIG['HOST'] .
+		'/adm_users.php?action=user_info_card' . '&id=' . $newUserId . '&alert_massage=' . $PROG_DATA['ALERT']['OK'],
+		$PROG_CONFIG['HOST'] .
+		'/adm_users.php?action=new_user_card&error_massage=' . $PROG_DATA['ERROR']['BD_WRITE']);
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 if (isset($_POST['action']) && isset($_POST['form_id']) && isset($_POST['id']) && $_POST['action'] == 'edit_user_data') {
 
 	errorIfDoubleClick($_SESSION['formId'], $_POST['form_id'],
-		$PROG_CONFIG['HOST'] . '/adm_users.php?action=edit_user_card&id=' . $_POST['id']);
+		$PROG_CONFIG['HOST'] . '/adm_users.php?action=edit_user_card&id=' .
+		$_POST['id'] . '&error_massage=' . $PROG_DATA['ERROR']['DOUBLE_CLICK'] . ' ' . __LINE__);
+
 	$_SESSION['formId'] = 'none';
 
 	if (isValidNewUserData($PROG_CONFIG, $PROG_DATA) === false) {
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] . '/adm_users.php?action=edit_user_card&id=' .
-			$_POST['id'] . '&error_massage=ошибка входных данных');
+			$_POST['id'] . '&error_massage=' . $PROG_DATA['ERROR']['INPUT_DATA']);
 	}
 
 	$user = dbSelectData($con, 'SELECT * FROM adm_users WHERE login = ? AND id != ?', [$_POST['login'], $_POST['id']])[0] ?? [];
@@ -163,14 +187,13 @@ if (isset($_POST['action']) && isset($_POST['form_id']) && isset($_POST['id']) &
 	}
 
 	$user = dbSelectData($con, 'SELECT * FROM adm_users WHERE last_name = ? AND first_name = ? AND id != ?',
-		[correctFormatUpper($_POST['last_name']), correctFormatUpper($_POST['first_name']), $_POST['id']])[0] ?? [];
+			[correctFormatUpper($_POST['last_name']), correctFormatUpper($_POST['first_name']), $_POST['id']])[0] ?? [];
 
 	if (isset($user['id'])) {
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] . '/adm_users.php?action=edit_user_card&id=' .
 			$_POST['id'] . '&error_massage=пользователь с таким имнем и фамилией уже существует');
 	}
-
 
 	mysqli_query($con, 'START TRANSACTION');
 
@@ -179,7 +202,7 @@ if (isset($_POST['action']) && isset($_POST['form_id']) && isset($_POST['id']) &
 	if ($_POST['password'] !== $PASSWORD_EMPTY_VALUE) {
 
 		$editUserPasswordData = [
-			'password' => password_hash(correctFormat($_POST['password']), PASSWORD_ARGON2I),
+			'password' => password_hash(correctFormat($_POST['password']), PASSWORD_BCRYPT),
 			'id' => $_POST['id']
 		];
 
@@ -198,9 +221,12 @@ if (isset($_POST['action']) && isset($_POST['form_id']) && isset($_POST['id']) &
 		mysqli_query($con, 'ROLLBACK');
 
 	redirectToIf($editUserPassword && $editUser,
-		$PROG_CONFIG['HOST'] . '/adm_users.php?action=user_info_card&id=' . $_POST['id'] . '&alert_massage=сохранено',
-		$PROG_CONFIG['HOST'] . '/adm_users.php?action=edit_user_card&id=' . $_POST['id'] . '&error_massage=ошибка записи');
+		$PROG_CONFIG['HOST'] .
+		'/adm_users.php?action=user_info_card&id=' . $_POST['id'] . '&alert_massage=' . $PROG_DATA['ALERT']['OK'],
+		$PROG_CONFIG['HOST'] .
+		'/adm_users.php?action=edit_user_card&id=' . $_POST['id'] . '&error_massage=' . $PROG_DATA['ERROR']['BD_WRITE']);
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -211,9 +237,12 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'block_us
 	$unlockUser = setUserIsBlockVal($con, 'adm_users', $_GET['id'], 1);
 
 	redirectToIf($unlockUser,
-		$PROG_CONFIG['HOST'] . '/adm_users.php?action=user_info_card&id=' . $_GET['id'] . '&alert_massage=сохранено',
-		$PROG_CONFIG['HOST'] . '/adm_users.php?action=edit_user_card&id=' . $_GET['id'] . '&error_massage=ошибка записи');
+		$PROG_CONFIG['HOST'] .
+		'/adm_users.php?action=user_info_card&id=' . $_GET['id'] . '&alert_massage=' . $PROG_DATA['ALERT']['OK'],
+		$PROG_CONFIG['HOST'] .
+		'/adm_users.php?action=edit_user_card&id=' . $_GET['id'] . '&error_massage=' . $PROG_DATA['ERROR']['BD_WRITE']);
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -224,8 +253,11 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'unlock_u
 	$unlockUser = setUserIsBlockVal($con, 'adm_users', $_GET['id'], 0);
 
 	redirectToIf($unlockUser,
-		$PROG_CONFIG['HOST'] . '/adm_users.php?action=user_info_card&id=' . $_GET['id'] . '&alert_massage=сохранено',
-		$PROG_CONFIG['HOST'] . '/adm_users.php?action=edit_user_card&id=' . $_GET['id'] . '&error_massage=ошибка записи');
+		$PROG_CONFIG['HOST'] .
+		'/adm_users.php?action=user_info_card&id=' . $_GET['id'] . '&alert_massage=' . $PROG_DATA['ALERT']['OK'],
+		$PROG_CONFIG['HOST'] .
+		'/adm_users.php?action=edit_user_card&id=' . $_GET['id'] . '&error_massage=' . $PROG_DATA['ERROR']['BD_WRITE']);
 }
+
 
 echo renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/src/templates/layout.php', $tmpLayoutData);
