@@ -349,14 +349,14 @@ if (isset($_POST['action']) && isset($_POST['form_id']) && $_POST['action'] == '
 
 	$newOrderData = [
 		'create_user_id' => $_SESSION['user']['id'],
-		'order_name_out' => correctFormatUpper($_POST['order_name_out']),////
+		'order_name_out' => correctFormatUpper($_POST['order_name_out']),
 		'order_priority' => $PROG_DATA['PRIORITY_ID']['NORM'],
-		'client_name' => correctFormatUpper($_POST['client_name']),/////
-		'mobile_phone' => correctFormat($_POST['mobile_phone']),////
-		'email' => correctFormatLower($_POST['email']),////
-		'task_text' => correctFormat($_POST['task_text']),/////
-		'design_format' => $_POST['design_format'],////
-		'deadline_date' => date('Y-m-d H:i:s', strtotime($_POST['deadline_date'])),////
+		'client_name' => correctFormatUpper($_POST['client_name']),
+		'mobile_phone' => correctFormat($_POST['mobile_phone']),
+		'email' => correctFormatLower($_POST['email']),
+		'task_text' => correctFormat($_POST['task_text']),
+		'design_format' => $_POST['design_format'],
+		'deadline_date' => date('Y-m-d H:i:s', strtotime($_POST['deadline_date'])),
 		'current_status' => $PROG_DATA['STATUS_ID_DESIGN']['WAIT'],
 		'datetime_status_0' => date('Y-m-d H:i:s')
 	];
@@ -463,9 +463,9 @@ if (isset($_GET['action']) && isset($_GET['order_id']) &&
 if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['status']) &&
 	$_POST['action'] == 'change_status') {
 
-	// права доступа на стадии от RECEIVED до CANCEL
-	if ($_POST['status'] > $PROG_DATA['STATUS_ID_DESIGN']['RECEIVED'] &&
-		$_POST['status'] < $PROG_DATA['STATUS_ID_DESIGN']['CANCEL']) {
+	// права доступа на стадии от START до DONE
+	if ($_POST['status'] >= $PROG_DATA['STATUS_ID_DESIGN']['START'] &&
+		$_POST['status'] <= $PROG_DATA['STATUS_ID_DESIGN']['DONE']) {
 
 		errorIfAccessDenied($_SESSION['user']['auth_design_order_change_status'],
 			$PROG_CONFIG['HOST'] . '/design.php?error_massage=' . $PROG_DATA['ERROR']['ACCESS_DENIED'] . ' ' . __LINE__);
@@ -489,7 +489,7 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['status
 	}
 
 	// нельзя отменять после выполнения
-	if ($orderData['current_status'] == $PROG_DATA['STATUS_ID_DESIGN']['DONE'] &&
+	if ($orderData['current_status'] >= $PROG_DATA['STATUS_ID_DESIGN']['DONE'] &&
 		$_POST['status'] == $PROG_DATA['STATUS_ID_DESIGN']['CANCEL']) {
 
 		redirectToIf(false, '',
@@ -507,8 +507,8 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['status
 	}
 
 	// менять статус только назначенный дизайнер
-	if ($_POST['status'] > $PROG_DATA['STATUS_ID_DESIGN']['RECEIVED'] &&
-		$_POST['status'] < $PROG_DATA['STATUS_ID_DESIGN']['CANCEL'] &&
+	if ($_POST['status'] >= $PROG_DATA['STATUS_ID_DESIGN']['START'] &&
+		$_POST['status'] <= $PROG_DATA['STATUS_ID_DESIGN']['DONE'] &&
 		$orderData['designer_id'] != $_SESSION['user']['id']) {
 
 		redirectToIf(false, '',

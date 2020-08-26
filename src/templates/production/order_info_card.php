@@ -112,8 +112,8 @@
         </div>
 
 				<?php if ($_SESSION['user']['auth_production_order_change_priority'] &&
-					currentGeneralStatus($data['order']) !== false &&
-					currentGeneralStatus($data['order']) < $data['progData']['STATUS_ID_PRODUCTION']['DONE']): ?>
+					currentMinStatus($data['order']) !== false &&
+					currentMinStatus($data['order']) < $data['progData']['STATUS_ID_PRODUCTION']['DONE']): ?>
           <div class="mb-4">
             <hr>
             <form action="<?= $data['config']['HOST'] . '/production.php' ?>" method="POST">
@@ -142,8 +142,8 @@
 				<?php endif; ?>
 
 				<?php if ($_SESSION['user']['id'] == $data['order']['create_user_id'] &&
-					currentGeneralStatus($data['order']) !== false &&
-					currentGeneralStatus($data['order']) < $data['progData']['STATUS_ID_PRODUCTION']['DONE']): ?>
+					currentMinStatus($data['order']) !== false &&
+					currentMinStatus($data['order']) < $data['progData']['STATUS_ID_PRODUCTION']['DONE']): ?>
           <div class="mb-4 d-inline-block">
             <form class="d-inline-block mr-2" action="<?= $data['config']['HOST'] . '/production.php' ?>" method="POST">
               <input type="hidden" name="action" value="change_status">
