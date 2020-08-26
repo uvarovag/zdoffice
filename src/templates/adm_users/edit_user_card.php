@@ -177,14 +177,14 @@
           </div>
         </div>
       </div>
-      <div class="mb-4">
-        <input class="btn btn-primary" type="submit" value="Сохранить">
+      <div class="">
+        <input class="btn btn-primary mb-4" type="submit" value="Сохранить">
 				<?php if ($data['user']['is_block']): ?>
           <a href="<?= $data['config']['HOST'] . '/adm_users.php?action=unlock_user_data&id=' . $data['user']['id'] ?>"
-             class="btn btn-success" role="button" aria-pressed="true">Разблокировать</a>
+             class="btn btn-success mb-4" role="button" aria-pressed="true">Разблокировать</a>
 				<?php else: ?>
           <a href="<?= $data['config']['HOST'] . '/adm_users.php?action=block_user_data&id=' . $data['user']['id'] ?>"
-             class="btn btn-danger" role="button" aria-pressed="true">Заблокировать</a>
+             class="btn btn-danger mb-4" role="button" aria-pressed="true">Заблокировать</a>
 				<?php endif; ?>
       </div>
     </form>
