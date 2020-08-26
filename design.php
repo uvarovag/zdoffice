@@ -53,20 +53,7 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'order_in
 	$tmpLayoutContentData['order'] =
 		dbSelectData($con, 'SELECT *, 
 		DATE_FORMAT(deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS deadline_date,
-		DATE_FORMAT(datetime_status_0, ' . $PROG_CONFIG['DATETIME_FORMAT'] . ') AS datetime_status_0, 
-		DATE_FORMAT(datetime_status_100, ' . $PROG_CONFIG['DATETIME_FORMAT'] . ') AS datetime_status_100, 
-		DATE_FORMAT(datetime_status_200, ' . $PROG_CONFIG['DATETIME_FORMAT'] . ') AS datetime_status_200, 
-		DATE_FORMAT(datetime_status_210, ' . $PROG_CONFIG['DATETIME_FORMAT'] . ') AS datetime_status_210, 
-		DATE_FORMAT(datetime_status_220, ' . $PROG_CONFIG['DATETIME_FORMAT'] . ') AS datetime_status_220, 
-		DATE_FORMAT(datetime_status_230, ' . $PROG_CONFIG['DATETIME_FORMAT'] . ') AS datetime_status_230, 
-		DATE_FORMAT(datetime_status_240, ' . $PROG_CONFIG['DATETIME_FORMAT'] . ') AS datetime_status_240, 
-		DATE_FORMAT(datetime_status_250, ' . $PROG_CONFIG['DATETIME_FORMAT'] . ') AS datetime_status_250, 
-		DATE_FORMAT(datetime_status_260, ' . $PROG_CONFIG['DATETIME_FORMAT'] . ') AS datetime_status_260, 
-		DATE_FORMAT(datetime_status_270, ' . $PROG_CONFIG['DATETIME_FORMAT'] . ') AS datetime_status_270, 
-		DATE_FORMAT(datetime_status_280, ' . $PROG_CONFIG['DATETIME_FORMAT'] . ') AS datetime_status_280, 
-		DATE_FORMAT(datetime_status_290, ' . $PROG_CONFIG['DATETIME_FORMAT'] . ') AS datetime_status_290, 
-		DATE_FORMAT(datetime_status_300, ' . $PROG_CONFIG['DATETIME_FORMAT'] . ') AS datetime_status_300, 
-		DATE_FORMAT(datetime_status_999, ' . $PROG_CONFIG['DATETIME_FORMAT'] . ') AS datetime_status_999 
+		' . addSuffixStatusList('datetime_status_', $PROG_DATA['STATUS_ID_DESIGN'], $PROG_CONFIG['DATETIME_FORMAT']) . ' 
 		FROM design_orders WHERE id = ?', [$_GET['id']])[0] ?? [];
 
 	if (empty($tmpLayoutContentData['order'])) {
