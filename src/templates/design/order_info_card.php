@@ -148,7 +148,7 @@
           </div>
 				<?php endif; ?>
 
-				<?php if ($data['order']['current_status'] >= $data['progData']['STATUS_ID_DESIGN']['START'] &&
+				<?php if ($data['order']['current_status'] >= $data['progData']['STATUS_ID_DESIGN']['RECEIVED'] &&
 					$data['order']['current_status'] < $data['progData']['STATUS_ID_DESIGN']['DONE'] &&
 					$_SESSION['user']['auth_design_order_change_status'] &&
 					$data['order']['designer_id'] == $_SESSION['user']['id']): ?>
