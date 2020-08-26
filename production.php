@@ -445,8 +445,6 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['depart
 			$_POST['order_id'] . '&error_massage=' . $PROG_DATA['ERROR']['ACCESS_DENIED'] . ' ' . __LINE__);
 	}
 
-	// если статус отшружено а статус выполнено не ставился, дата выполнения как отгружен
-
 	$sqlQueryUpdate = 'UPDATE production_orders ';
 
 	$sqlQuerySet = 'SET ';
