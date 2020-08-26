@@ -50,7 +50,7 @@
                 <small class="text-gray">телефон</small>
                 <div class="input-group">
                   <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1"><?= $data['config']['PHONE_PREFIX'] ?></span>
+                    <span class="input-group-text" id="basic-addon1"><?= $data['config']['PHONE_PREFIX']; ?></span>
                   </div>
                   <input type="tel" name="mobile_phone" class="form-control" required
                          pattern="\d{2}\s\d{3}\s\d{2}\s\d{2}"

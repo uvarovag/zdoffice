@@ -15,7 +15,7 @@
           <h3 class="mb-4">Данные</h3>
           <table class="table">
             <tr>
-              <td class="px-0">Логин</td>
+              <td class="px-0" width="60%">Логин</td>
               <td class="px-0"><?= $data['user']['login'] ?></td>
             </tr>
             <tr>
@@ -53,8 +53,8 @@
           <h3 class="mb-4">Дизайн</h3>
           <table class="table">
             <tr class="">
-              <td class="px-0">создать заявку</td>
-              <td class="px-0" width="25%"><?= $data['user']['auth_design_order_new'] ? '<i class="ni ni-fat-add text-success"></i>' :
+              <td class="px-0" width="60%">создать заявку</td>
+              <td class="px-0"><?= $data['user']['auth_design_order_new'] ? '<i class="ni ni-fat-add text-success"></i>' :
 									'<i class="ni ni-fat-delete text-danger"></i>'; ?></td>
             </tr>
             <tr class="">
@@ -85,8 +85,8 @@
           <h3 class="mb-4">Производство</h3>
           <table class="table mb-4">
             <tr class="">
-              <td class="px-0">создать заявку</td>
-              <td class="px-0" width="25%"><?= $data['user']['auth_production_order_new'] ? '<i class="ni ni-fat-add text-success"></i>' :
+              <td class="px-0" width="60%">создать заявку</td>
+              <td class="px-0"><?= $data['user']['auth_production_order_new'] ? '<i class="ni ni-fat-add text-success"></i>' :
 									'<i class="ni ni-fat-delete text-danger"></i>'; ?></td>
             </tr>
             <tr class="">

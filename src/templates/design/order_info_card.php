@@ -15,12 +15,12 @@
           <h3 class="mb-4">Данные контрагента</h3>
           <table class="table">
             <tr>
-              <td class="px-0">Контрагент</td>
+              <td class="px-0" width="40%">Контрагент</td>
               <td class="px-0"><?= $data['order']['client_name'] ?></td>
             </tr>
             <tr>
               <td class="px-0">Телефон</td>
-              <td class="px-0"><?= $data['order']['mobile_phone'] ?></td>
+              <td class="px-0"><?= $data['config']['PHONE_PREFIX']; ?> <?= $data['order']['mobile_phone'] ?></td>
             </tr>
             <tr>
               <td class="px-0">Почта</td>
@@ -34,7 +34,7 @@
           <h3 class="mb-4">Данные заказа</h3>
           <table class="table">
             <tr>
-              <td class="px-0">Внешний ID</td>
+              <td class="px-0" width="40%">Внешний ID</td>
               <td class="px-0"><?= $data['order']['order_name_out'] ?></td>
             </tr>
             <tr>

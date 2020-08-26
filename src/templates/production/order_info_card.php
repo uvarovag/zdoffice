@@ -15,12 +15,12 @@
           <h3 class="mb-4">Данные контрагента</h3>
           <table class="table">
             <tr>
-              <td class="px-0">Контрагент</td>
+              <td class="px-0" width="40%">Контрагент</td>
               <td class="px-0"><?= $data['order']['client_name'] ?></td>
             </tr>
             <tr>
               <td class="px-0">Телефон</td>
-              <td class="px-0"><?= $data['order']['mobile_phone'] ?></td>
+              <td class="px-0"><?= $data['config']['PHONE_PREFIX']; ?> <?= $data['order']['mobile_phone'] ?></td>
             </tr>
             <tr>
               <td class="px-0">Почта</td>
@@ -34,7 +34,7 @@
           <h3 class="mb-4">Данные заказа</h3>
           <table class="table">
             <tr>
-              <td class="px-0">Внешний ID</td>
+              <td class="px-0" width="40%">Внешний ID</td>
               <td class="px-0"><?= $data['order']['order_name_out'] ?></td>
             </tr>
             <tr>
@@ -382,7 +382,7 @@
 
                   <table class="table table-sm table-borderless mb-4">
                     <tr>
-                      <td class="px-0">Стадия</td>
+                      <td class="px-0" width="50%">Стадия</td>
                       <td class="px-0"><?= $data['progData']['STATUS_LIST_PRODUCTION'][$data['order']['const_current_status']]['icon'] ?? '???' ?></td>
                     </tr>
                     <tr>
@@ -434,7 +434,7 @@
                   <table class="table table-sm">
 										<?php foreach ($data['progData']['STATUS_LIST_PRODUCTION'] as $statusKey => $statusVal): ?>
                       <tr>
-                        <td class="px-0"><?= $statusVal['name'] ?? '???' ?></td>
+                        <td class="px-0" width="50%"><?= $statusVal['name'] ?? '???' ?></td>
                         <td class="px-0"><?= $data['order']['const_datetime_status_' . $statusKey] ?></td>
                       </tr>
 										<?php endforeach; ?>
@@ -449,7 +449,7 @@
 
                   <table class="table table-sm table-borderless mb-4">
                     <tr>
-                      <td class="px-0">Стадия</td>
+                      <td class="px-0" width="50%">Стадия</td>
                       <td class="px-0"><?= $data['progData']['STATUS_LIST_PRODUCTION'][$data['order']['adv_current_status']]['icon'] ?? '???' ?></td>
                     </tr>
                     <tr>
@@ -501,7 +501,7 @@
                   <table class="table table-sm">
 										<?php foreach ($data['progData']['STATUS_LIST_PRODUCTION'] as $statusKey => $statusVal): ?>
                       <tr>
-                        <td class="px-0"><?= $statusVal['name'] ?? '???' ?></td>
+                        <td class="px-0" width="50%"><?= $statusVal['name'] ?? '???' ?></td>
                         <td class="px-0"><?= $data['order']['adv_datetime_status_' . $statusKey] ?></td>
                       </tr>
 										<?php endforeach; ?>
@@ -515,7 +515,7 @@
 
                   <table class="table table-sm table-borderless mb-4">
                     <tr>
-                      <td class="px-0">Стадия</td>
+                      <td class="px-0" width="50%">Стадия</td>
                       <td class="px-0"><?= $data['progData']['STATUS_LIST_PRODUCTION'][$data['order']['furn_current_status']]['icon'] ?? '???' ?></td>
                     </tr>
                     <tr>
@@ -567,7 +567,7 @@
                   <table class="table table-sm">
 										<?php foreach ($data['progData']['STATUS_LIST_PRODUCTION'] as $statusKey => $statusVal): ?>
                       <tr>
-                        <td class="px-0"><?= $statusVal['name'] ?? '???' ?></td>
+                        <td class="px-0" width="50%"><?= $statusVal['name'] ?? '???' ?></td>
                         <td class="px-0"><?= $data['order']['furn_datetime_status_' . $statusKey] ?></td>
                       </tr>
 										<?php endforeach; ?>
@@ -582,7 +582,7 @@
 
                   <table class="table table-sm table-borderless mb-4">
                     <tr>
-                      <td class="px-0">Стадия</td>
+                      <td class="px-0" width="50%">Стадия</td>
                       <td class="px-0"><?= $data['progData']['STATUS_LIST_PRODUCTION'][$data['order']['steel_current_status']]['icon'] ?? '???' ?></td>
                     </tr>
                     <tr>
@@ -634,7 +634,7 @@
                   <table class="table table-sm">
 										<?php foreach ($data['progData']['STATUS_LIST_PRODUCTION'] as $statusKey => $statusVal): ?>
                       <tr>
-                        <td class="px-0"><?= $statusVal['name'] ?? '???' ?></td>
+                        <td class="px-0" width="50%"><?= $statusVal['name'] ?? '???' ?></td>
                         <td class="px-0"><?= $data['order']['steel_datetime_status_' . $statusKey] ?></td>
                       </tr>
 										<?php endforeach; ?>
@@ -648,7 +648,7 @@
 
                   <table class="table table-sm table-borderless mb-4">
                     <tr>
-                      <td class="px-0">Стадия</td>
+                      <td class="px-0" width="50%">Стадия</td>
                       <td class="px-0"><?= $data['progData']['STATUS_LIST_PRODUCTION'][$data['order']['install_current_status']]['icon'] ?? '???' ?></td>
                     </tr>
                     <tr>
@@ -712,7 +712,7 @@
                   <table class="table table-sm">
 										<?php foreach ($data['progData']['STATUS_LIST_PRODUCTION'] as $statusKey => $statusVal): ?>
                       <tr>
-                        <td class="px-0"><?= $statusVal['name'] ?? '???' ?></td>
+                        <td class="px-0" width="50%"><?= $statusVal['name'] ?? '???' ?></td>
                         <td class="px-0"><?= $data['order']['install_datetime_status_' . $statusKey] ?></td>
                       </tr>
 										<?php endforeach; ?>
@@ -726,7 +726,7 @@
 
                   <table class="table table-sm table-borderless mb-4">
                     <tr>
-                      <td class="px-0">Стадия</td>
+                      <td class="px-0" width="50%">Стадия</td>
                       <td class="px-0"><?= $data['progData']['STATUS_LIST_PRODUCTION'][$data['order']['supply_current_status']]['icon'] ?? '???' ?></td>
                     </tr>
                     <tr>
@@ -778,7 +778,7 @@
                   <table class="table table-sm">
 										<?php foreach ($data['progData']['STATUS_LIST_PRODUCTION'] as $statusKey => $statusVal): ?>
                       <tr>
-                        <td class="px-0"><?= $statusVal['name'] ?? '???' ?></td>
+                        <td class="px-0" width="50%"><?= $statusVal['name'] ?? '???' ?></td>
                         <td class="px-0"><?= $data['order']['supply_datetime_status_' . $statusKey] ?></td>
                       </tr>
 										<?php endforeach; ?>
