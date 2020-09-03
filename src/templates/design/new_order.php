@@ -12,7 +12,7 @@
             <h3>Данные контрагента</h3>
             <div class="form-row">
               <div class="form-group col-12 mb-4">
-                <small class="text-gray">id заказа (<?= 'en ' . $data['config']['MIN_LEN_A'] . '-' . $data['config']['MAX_LEN_A'] ?>)</small>
+                <small class="text-gray">Счет бонсенс (<?= 'en ' . $data['config']['MIN_LEN_A'] . '-' . $data['config']['MAX_LEN_A'] ?>)</small>
                 <input type="text" name="order_name_out" class="form-control" required
                        minlength="<?= $data['config']['MIN_LEN_A'] ?>" maxlength="<?= $data['config']['MAX_LEN_A'] ?>"
                        pattern="^[a-zA-Z0-9 ]+$">
@@ -36,7 +36,7 @@
               </div>
               <div class="form-group col-12 mb-4">
                 <small class="text-gray">почта</small>
-                <input type="email" name="email" class="form-control" required>
+                <input type="email" name="email" class="form-control">
               </div>
             </div>
           </div>

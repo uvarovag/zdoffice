@@ -3,7 +3,7 @@
 $PROG_CONFIG = [
 	'HOST' => $SYS_CONFIG['HOST'], // DONT TOUCH!!!
 	'TIMEZONE' => 'Asia/Tashkent',
-	'PROG_NAME' => 'office',
+	'PROG_NAME' => 'ZIYNAT DESIGN online application',
 	'BG_STYLE' => 'bg-primary',
 	'TEXT_STYLE' => 'text-primary',
 	'PHONE_PREFIX' => '+998',

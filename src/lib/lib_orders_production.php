@@ -20,6 +20,7 @@ function getActiveStatusArr($orderData) {
 	return $status;
 }
 
+// получить общий текущий статус
 function currentGeneralStatus($orderData) {
 
 	$status = getActiveStatusArr($orderData);
@@ -61,4 +62,15 @@ function currentMaxStatus($orderData) {
 	}
 
 	return $max;
+}
+
+function firstActiveDepartment($orderData) {
+
+	$status = getActiveStatusArr($orderData);
+
+	foreach ($status as $stKey => $stval) {
+		return $stKey;
+	}
+
+	return false;
 }

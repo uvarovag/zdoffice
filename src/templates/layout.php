@@ -41,10 +41,11 @@
 <nav class="sidenav navbar navbar-vertical fixed-left navbar-expand-xs navbar-light bg-white" id="sidenav-main">
   <div class="scrollbar-inner">
     <!-- Brand -->
-    <div class="sidenav-header  align-items-center">
+    <div class="sidenav-header  align-items-center mb-4">
       <a class="navbar-brand" href="<?= $data['config']['HOST'] . '/index.php'; ?>">
         <img src="/argon-dashboard/assets/img/brand/zd-blue.png" class="navbar-brand-img" alt="...">
-        <h2 class="d-inline align-bottom <?= $data['config']['TEXT_STYLE'] ?>"><?= $data['config']['PROG_NAME'] ?></h2>
+        <h2 class="d-inline align-bottom <?= $data['config']['TEXT_STYLE'] ?>">ZIYNAT DESIGN</h2><br/>
+        <p class="d-inline align-bottom <?= $data['config']['TEXT_STYLE'] ?>">online application</p>
       </a>
     </div>
     <div class="navbar-inner">
@@ -282,6 +283,7 @@
 <script src="/argon-dashboard/assets/daterangepicker/moment-min.js"></script>
 <script src="/argon-dashboard/assets/daterangepicker/daterangepicker.js"></script>
 <script src="/argon-dashboard/assets/js/office-main.js"></script>
+<script src="/js/forms.js?v=0309"></script>
 <!-- Argon JS -->
 <script src="/argon-dashboard/assets/js/argon.js?v=1.2.0"></script>
 </body>

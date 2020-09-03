@@ -150,8 +150,10 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	ud.last_name AS ud_last_name, ud.first_name AS ud_first_name, 
 	uc.last_name AS uc_last_name, uc.first_name AS uc_first_name, 
 	o.id, o.order_name_in, o.order_name_out, o.client_name, o.designer_id, o.create_user_id, 
-	o.current_status, o.order_priority, o.error_priority, DATE_FORMAT(o.deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS deadline_date 
-       FROM design_orders o ';
+	o.current_status, o.order_priority, o.error_priority, 
+	DATE_FORMAT(o.deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS deadline_date, 
+	DATE_FORMAT(o.datetime_status_0, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS datetime_status_0 
+	FROM design_orders o ';
 
 	$sqlQueryJoin1 = 'LEFT JOIN adm_users ud ON o.designer_id = ud.id ';
 	$sqlQueryJoin2 = 'LEFT JOIN adm_users uc ON o.create_user_id = uc.id ';

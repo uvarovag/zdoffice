@@ -17,7 +17,7 @@
             <h3>Данные контрагента</h3>
             <div class="form-row">
               <div class="form-group col-12 mb-4">
-                <small class="text-gray">id заказа (<?= 'en ' . $data['config']['MIN_LEN_A'] . '-' . $data['config']['MAX_LEN_A'] ?>)</small>
+                <small class="text-gray">Счет бонсенс (<?= 'en ' . $data['config']['MIN_LEN_A'] . '-' . $data['config']['MAX_LEN_A'] ?>)</small>
                 <input type="text" name="order_name_out" class="form-control" required
                        minlength="<?= $data['config']['MIN_LEN_A'] ?>" maxlength="<?= $data['config']['MAX_LEN_A'] ?>"
                        pattern="^[a-zA-Z0-9 ]+$">
@@ -41,7 +41,7 @@
               </div>
               <div class="form-group col-12 mb-4">
                 <small class="text-gray">почта</small>
-                <input type="email" name="email" class="form-control" required>
+                <input type="email" name="email" class="form-control">
               </div>
             </div>
             <hr>
@@ -82,19 +82,19 @@
               <div class="form-group col-4 mb-4">
                 <small class="text-gray">Участвует в проекте</small>
                 <div class="">
-                  <label class="custom-toggle mt-2">
-                    <input type="checkbox" name="const">
+                  <label class="custom-toggle my-2">
+                    <input class="at-least-one-enabled if-enabled-required" data-required=".input-const" data-dnone=".block-const" type="checkbox" name="const">
                     <span class="custom-toggle-slider rounded-circle"></span>
                   </label>
                 </div>
               </div>
-              <div class="form-group col-8 mb-4">
+              <div class="block-const d-none form-group col-8 mb-4">
                 <small class="text-gray">дата сдачи</small>
                 <div class="input-group">
                   <div class="input-group-prepend">
                     <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
                   </div>
-                  <input class="form-control datepicker" type="text" name="const_deadline" value="">
+                  <input class="input-const form-control datepicker" type="text" name="const_deadline" value="">
                 </div>
               </div>
             </div>
@@ -107,20 +107,20 @@
               <div class="form-group col-4 mb-4">
                 <small class="text-gray">Участвует в проекте</small>
                 <div class="">
-                  <label class="custom-toggle mt-2">
-                    <input type="checkbox" name="adv">
+                  <label class="custom-toggle my-2">
+                    <input class="at-least-one-enabled if-enabled-required" data-required=".input-advv" data-dnone=".block-advv" type="checkbox" name="adv">
                     <span class="custom-toggle-slider rounded-circle"></span>
                   </label>
                 </div>
               </div>
-              <div class="form-group col-8 mb-4">
+              <div class="block-advv d-none form-group col-8 mb-4">
                 <small class="text-gray">дата сдачи</small>
                 <div class="">
                   <div class="input-group">
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
                     </div>
-                    <input class="form-control datepicker" type="text" name="adv_deadline" value="">
+                    <input class="input-advv form-control datepicker" type="text" name="adv_deadline" value="">
                   </div>
                 </div>
               </div>
@@ -134,20 +134,20 @@
               <div class="form-group col-4 mb-4">
                 <small class="text-gray">Участвует в проекте</small>
                 <div class="">
-                  <label class="custom-toggle mt-2">
-                    <input type="checkbox" name="furn">
+                  <label class="custom-toggle my-2">
+                    <input class="at-least-one-enabled if-enabled-required" data-required=".input-furn" data-dnone=".block-furn" type="checkbox" name="furn">
                     <span class="custom-toggle-slider rounded-circle"></span>
                   </label>
                 </div>
               </div>
-              <div class="form-group col-8 mb-4">
+              <div class="block-furn d-none form-group col-8 mb-4">
                 <small class="text-gray">дата сдачи</small>
                 <div class="">
                   <div class="input-group">
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
                     </div>
-                    <input class="form-control datepicker" type="text" name="furn_deadline" value="">
+                    <input class="input-furn form-control datepicker" type="text" name="furn_deadline" value="">
                   </div>
                 </div>
               </div>
@@ -161,20 +161,20 @@
               <div class="form-group col-4 mb-4">
                 <small class="text-gray">Участвует в проекте</small>
                 <div class="">
-                  <label class="custom-toggle mt-2">
-                    <input type="checkbox" name="steel">
+                  <label class="custom-toggle my-2">
+                    <input class="at-least-one-enabled if-enabled-required" data-required=".input-steel" data-dnone=".block-steel" type="checkbox" name="steel">
                     <span class="custom-toggle-slider rounded-circle"></span>
                   </label>
                 </div>
               </div>
-              <div class="form-group col-8 mb-4">
+              <div class="block-steel d-none form-group col-8 mb-4">
                 <small class="text-gray">дата сдачи</small>
                 <div class="">
                   <div class="input-group">
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
                     </div>
-                    <input class="form-control datepicker" type="text" name="steel_deadline" value="">
+                    <input class="input-steel form-control datepicker" type="text" name="steel_deadline" value="">
                   </div>
                 </div>
               </div>
@@ -188,20 +188,20 @@
               <div class="form-group col-4 mb-4">
                 <small class="text-gray">Участвует в проекте</small>
                 <div class="">
-                  <label class="custom-toggle mt-2">
-                    <input type="checkbox" name="supply">
+                  <label class="custom-toggle my-2">
+                    <input class="at-least-one-enabled if-enabled-required" data-required=".input-supply" data-dnone=".block-supply" type="checkbox" name="supply">
                     <span class="custom-toggle-slider rounded-circle"></span>
                   </label>
                 </div>
               </div>
-              <div class="form-group col-8 mb-4">
+              <div class="block-supply d-none form-group col-8 mb-4">
                 <small class="text-gray">дата сдачи</small>
                 <div class="">
                   <div class="input-group">
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
                     </div>
-                    <input class="form-control datepicker" type="text" name="supply_deadline" value="">
+                    <input class="input-supply form-control datepicker" type="text" name="supply_deadline" value="">
                   </div>
                 </div>
               </div>
@@ -215,31 +215,31 @@
               <div class="form-group col-4 mb-4">
                 <small class="text-gray">Участвует в проекте</small>
                 <div class="">
-                  <label class="custom-toggle mt-2">
-                    <input type="checkbox" name="install">
+                  <label class="custom-toggle my-2">
+                    <input class="at-least-one-enabled if-enabled-required" data-required=".input-install" data-dnone=".block-install" type="checkbox" name="install">
                     <span class="custom-toggle-slider rounded-circle"></span>
                   </label>
                 </div>
               </div>
-              <div class="form-group col-8 mb-4">
+              <div class="block-install d-none form-group col-8 mb-4">
                 <small class="text-gray">дата сдачи</small>
                 <div class="">
                   <div class="input-group">
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
                     </div>
-                    <input class="form-control datepicker" type="text" name="install_deadline" value="">
+                    <input class="input-install form-control datepicker" type="text" name="install_deadline" value="">
                   </div>
                 </div>
               </div>
             </div>
-            <div class="mb-4">
+            <div class="block-install d-none mb-4">
               <small class="text-gray">Описание монтажа (<?= $data['config']['MIN_LEN_B'] . '-' . $data['config']['MAX_LEN_B'] ?>)</small>
               <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" name="install_task"
                         minlength="<?= $data['config']['MIN_LEN_B'] ?>"
                         maxlength="<?= $data['config']['MAX_LEN_B'] ?>"></textarea>
             </div>
-            <div class="mb-4">
+            <div class="block-install d-none mb-4">
               <small class="text-gray">Адрес монтажа (<?= $data['config']['MIN_LEN_C'] . '-' . $data['config']['MAX_LEN_C'] ?>)</small>
               <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" name="install_address"
                         minlength="<?= $data['config']['MIN_LEN_C'] ?>"
@@ -251,7 +251,8 @@
 
       </div>
       <div class="mb-4">
-        <input class="btn btn-primary" type="submit" value="Сохранить">
+        <small class="at-least-one-enabled_dnone text-danger d-block mb-2">Выбрать кто участвует в проекте</small>
+        <input class="btn btn-primary at-least-one-enabled_disabled" type="submit" value="Сохранить" disabled>
       </div>
     </form>
   </div>

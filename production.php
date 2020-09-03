@@ -167,18 +167,22 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 
 	$sqlQuerySelectPagination = 'SELECT COUNT(*) as pgn FROM production_orders o ';
 
-	$sqlQuerySelect = 'SELECT u.last_name, u.first_name, 
-       o.const_current_status, o.const_datetime_status_0,
-       o.adv_current_status, o.adv_datetime_status_0, 
-       o.furn_current_status, o.furn_datetime_status_0, 
-       o.steel_current_status, o.steel_datetime_status_0, 
-       o.install_current_status, o.install_datetime_status_0, 
-       o.supply_current_status, o.supply_datetime_status_0, 
+	// DATE_FORMAT(0000, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS 0000,
+	$sqlQuerySelect = 'SELECT 
+       ud.last_name AS ud_last_name, ud.first_name AS ud_first_name, 
+       uc.last_name AS uc_last_name, uc.first_name AS uc_first_name, 
+       o.const_current_status, DATE_FORMAT(const_datetime_status_0, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS const_datetime_status_0, 
+       o.adv_current_status, DATE_FORMAT(adv_datetime_status_0, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS adv_datetime_status_0, 
+       o.furn_current_status, DATE_FORMAT(furn_datetime_status_0, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS furn_datetime_status_0, 
+       o.steel_current_status, DATE_FORMAT(steel_datetime_status_0, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS steel_datetime_status_0, 
+       o.install_current_status, DATE_FORMAT(install_datetime_status_0, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS install_datetime_status_0, 
+       o.supply_current_status, DATE_FORMAT(supply_datetime_status_0, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS supply_datetime_status_0, 
        o.id, o.designer_id, o.order_name_in, o.order_name_out, o.client_name, 
        o.order_priority, o.error_priority 
        FROM production_orders o ';
 
-	$sqlQueryJoin1 = 'LEFT JOIN adm_users u ON o.designer_id = u.id ';
+	$sqlQueryJoin1 = 'LEFT JOIN adm_users ud ON o.designer_id = ud.id ';
+	$sqlQueryJoin2 = 'LEFT JOIN adm_users uc ON o.create_user_id = uc.id ';
 	$sqlQueryWhere = 'WHERE o.id > 0 ';
 	$sqlParameters = [];
 	$sqlSortBy = 'ORDER BY o.id * o.order_priority * o.sort_priority * o.error_priority DESC ';
@@ -191,7 +195,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	$sqlPagination = $paginationData['sqlPagination'];
 
 	$tmpLayoutContentData['orders'] =
-		dbSelectData($con, $sqlQuerySelect . $sqlQueryJoin1 . $sqlQueryWhere . $sqlSortBy . $sqlPagination, $sqlParameters) ?? [];
+		dbSelectData($con, $sqlQuerySelect . $sqlQueryJoin1 . $sqlQueryJoin2 . $sqlQueryWhere . $sqlSortBy . $sqlPagination, $sqlParameters) ?? [];
 
 	$tmpLayoutData['content'] =
 		renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/src/templates/production/orders_list.php', $tmpLayoutContentData);

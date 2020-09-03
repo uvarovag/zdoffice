@@ -6,9 +6,10 @@
     <table class="table table-hover">
       <thead>
       <tr>
-        <th scope="col">Внутренний ID</th>
-        <th scope="col">Внешний ID</th>
+        <th scope="col">Дата создания</th>
+        <th scope="col">Счет бонсенс</th>
         <th scope="col">Контрагент</th>
+        <th scope="col">Менеджер</th>
         <th scope="col">Дизайнер</th>
         <th scope="col">Приоритет</th>
         <th scope="col">Стадия</th>
@@ -19,15 +20,16 @@
         <tr class="<?= $order['error_priority'] == 2 ? 'table-danger' : '' ?>"
             onclick="window.location.href='<?= $data['config']['HOST'] . '/production.php?action=order_info_card&id=' .
 						$order['id'] ?>'; return false">
-          <td><?= $order['order_name_in'] ?></td>
+          <td>
+            <?= $order[firstActiveDepartment($order) . '_datetime_status_0'] ?? '???' ?>
+          </td>
           <td><?= shortStr($order['order_name_out'], $data['config']['MAX_SYMBOLS_TABLE_CELL']) ?></td>
           <td><?= shortStr($order['client_name'], $data['config']['MAX_SYMBOLS_TABLE_CELL']) ?></td>
           <td>
-            <?php if ($order['designer_id']): ?>
-            <?= shortStr($order['last_name'] . ' ' . $order['first_name'], $data['config']['MAX_SYMBOLS_TABLE_CELL']) ?>
-            <?php else: ?>
-            не назначен
-            <?php endif; ?>
+            <?= shortStr($order['uc_last_name'] . ' ' . $order['uc_first_name'], $data['config']['MAX_SYMBOLS_TABLE_CELL']) ?>
+          </td>
+          <td>
+            <?= shortStr($order['ud_last_name'] . ' ' . $order['ud_first_name'], $data['config']['MAX_SYMBOLS_TABLE_CELL']) ?>
           </td>
           <td>
             <?= $data['progData']['PRIORITY_ORDERS'][$order['order_priority']]['icon'] ?? '???' ?>

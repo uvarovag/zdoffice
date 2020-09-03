@@ -34,12 +34,12 @@
           <h3 class="mb-4">Данные заказа</h3>
           <table class="table">
             <tr>
-              <td class="px-0" width="40%">Внешний ID</td>
-              <td class="px-0"><?= $data['order']['order_name_out'] ?></td>
+              <td class="px-0">ID</td>
+              <td class="px-0"><?= $data['order']['order_name_in'] ?></td>
             </tr>
             <tr>
-              <td class="px-0">Внутренний ID</td>
-              <td class="px-0"><?= $data['order']['order_name_in'] ?></td>
+              <td class="px-0" width="40%">Счет бонсенс</td>
+              <td class="px-0"><?= $data['order']['order_name_out'] ?></td>
             </tr>
             <tr>
               <td class="px-0">Менеджер</td>
@@ -275,7 +275,7 @@
 													<?= $file['name']; ?>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                          <a class="dropdown-item" href="<?= $data['config']['HOST'] . $file['path']; ?>">Скачать</a>
+                          <a class="dropdown-item" target="_blank" href="<?= $data['config']['HOST'] . $file['path']; ?>">Загрузить</a>
 													<?php if ($_SESSION['user']['id'] == $file['user_id']): ?>
                             <a class="dropdown-item text-danger" href="<?= $data['config']['HOST'] . '/files.php?' .
 														http_build_query(['action' => 'del_file', 'id' => $file['id'],

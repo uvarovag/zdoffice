@@ -13,8 +13,7 @@ function isValidNewProductionOrderData($progConfig) {
 
 	if (isValidLen($_POST['order_name_out'], $progConfig['MIN_LEN_A'], $progConfig['MAX_LEN_A']) == false ||
 		isValidLen($_POST['client_name'], $progConfig['MIN_LEN_A'], $progConfig['MAX_LEN_A']) == false ||
-		isValidLen($_POST['task_text'], $progConfig['MIN_LEN_B'], $progConfig['MAX_LEN_B']) == false ||
-		filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) == false)
+		isValidLen($_POST['task_text'], $progConfig['MIN_LEN_B'], $progConfig['MAX_LEN_B']) == false)
 		return false;
 
 	return true;
