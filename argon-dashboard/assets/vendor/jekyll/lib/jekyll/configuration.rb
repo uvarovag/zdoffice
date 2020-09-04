@@ -133,7 +133,7 @@ module Jekyll
       Jekyll.logger.log_level = :error if quiet?(override)
 
       # Get configuration from <source>/_config.yml or <source>/<config_file>
-      config_files = override.delete('config')
+      config_files = override.delete('CONFIG')
       if config_files.to_s.empty?
         default = %w[yml yaml].find(Proc.new { 'yml' }) do |ext|
           File.exists? Jekyll.sanitized_path(source(override), "_config.#{ext}")

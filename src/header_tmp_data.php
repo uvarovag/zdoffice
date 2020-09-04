@@ -1,8 +1,8 @@
 <?php
 
 $tmpLayoutData = [
-	'config' => 			&$PROG_CONFIG,
-	'progData' => 		&$PROG_DATA,
+	'CONFIG' => 			&$PROG_CONFIG,
+	'PROG_DATA' => 		&$PROG_DATA,
 	'title' => 				$PROG_CONFIG['PROG_NAME'],
 	'content' => 			'',
 	'modal' =>				'',
@@ -12,8 +12,8 @@ $tmpLayoutData = [
 ];
 
 $tmpLayoutContentData = [
-	'config' => 			&$PROG_CONFIG,
-	'progData' => 		&$PROG_DATA,
+	'CONFIG' => 			&$PROG_CONFIG,
+	'PROG_DATA' => 		&$PROG_DATA,
 	'title' => 		    &$tmpLayoutData['title'],
 	'formId' => 			'none'
 ];

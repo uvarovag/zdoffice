@@ -33,10 +33,10 @@ if ($data['pagesQuantity'] <= $maxPaginationItem) {
     <ul class="pagination justify-content-center m-0 p-0">
 			<?php if (($data['currentPage'] - 1) < 1): ?>
     <li class="page-item disabled">
-    <a class="page-link" href="<?= $data['url'] . 'page=' . $data['currentPage'] ?>" aria-label="Previous">
+    <a class="page-link" href="<?= $data['url'] . 'page=' . $data['currentPage']; ?>" aria-label="Previous">
 		<?php else: ?>
       <li class="page-item">
-        <a class="page-link" href="<?= $data['url'] . 'page=' . ($data['currentPage'] - 1) ?>" aria-label="Previous">
+        <a class="page-link" href="<?= $data['url'] . 'page=' . ($data['currentPage'] - 1); ?>" aria-label="Previous">
 					<?php endif; ?>
           <span aria-hidden="true">&laquo;</span>
           <span class="sr-only">Назад</span>
@@ -44,17 +44,17 @@ if ($data['pagesQuantity'] <= $maxPaginationItem) {
       </li>
 			<?php for ($pageNumber = $firstPage; $pageNumber <= $lastPage; $pageNumber++): ?>
 				<?php if ($data['currentPage'] == $pageNumber): ?>
-          <li class="page-item active"><a class="page-link" href="<?= $data['url'] . 'page=' . $pageNumber ?>"><?= $pageNumber ?></a></li>
+          <li class="page-item active"><a class="page-link" href="<?= $data['url'] . 'page=' . $pageNumber; ?>"><?= $pageNumber; ?></a></li>
 				<?php else: ?>
-          <li class="page-item"><a class="page-link" href="<?= $data['url'] . 'page=' . $pageNumber ?>"><?= $pageNumber ?></a></li>
+          <li class="page-item"><a class="page-link" href="<?= $data['url'] . 'page=' . $pageNumber; ?>"><?= $pageNumber; ?></a></li>
 				<?php endif; ?>
-			<?php endfor ?>
+			<?php endfor; ?>
 			<?php if (($data['currentPage'] + 1) > $lastPage): ?>
       <li class="page-item disabled">
-        <a class="page-link" href="<?= $data['url'] . 'page=' . $data['currentPage'] ?>" aria-label="Next">
+        <a class="page-link" href="<?= $data['url'] . 'page=' . $data['currentPage']; ?>" aria-label="Next">
 					<?php else: ?>
       <li class="page-item">
-        <a class="page-link" href="<?= $data['url'] . 'page=' . ($data['currentPage'] + 1) ?>" aria-label="Next">
+        <a class="page-link" href="<?= $data['url'] . 'page=' . ($data['currentPage'] + 1); ?>" aria-label="Next">
 					<?php endif; ?>
           <span aria-hidden="true">&raquo;</span>
           <span class="sr-only">Вперед</span>

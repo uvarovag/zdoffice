@@ -1,6 +1,6 @@
 <?php
 
-function isValidNewUserData($progConfig, $progData) {
+function isValidNewUserData($progConfig, $PROG_DATA) {
 	if (isset($_POST['login']) == false || isset($_POST['last_name']) == false || isset($_POST['first_name']) == false ||
 		isset($_POST['position']) == false || isset($_POST['mobile_phone']) == false || isset($_POST['email']) == false)
 		return false;
@@ -8,7 +8,7 @@ function isValidNewUserData($progConfig, $progData) {
 	if (isValidLen($_POST['login'], $progConfig['MIN_LEN_A'], $progConfig['MAX_LEN_A']) == false ||
 		isValidLen($_POST['last_name'], $progConfig['MIN_LEN_A'], $progConfig['MAX_LEN_A']) == false ||
 		isValidLen($_POST['first_name'], $progConfig['MIN_LEN_A'], $progConfig['MAX_LEN_A']) == false ||
-		array_key_exists($_POST['position'], $progData['USERS_POSITIONS_LIST']) == false ||
+		array_key_exists($_POST['position'], $PROG_DATA['USERS_POSITIONS_LIST']) == false ||
 		filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) == false)
 		return false;
 

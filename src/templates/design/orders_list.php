@@ -1,20 +1,20 @@
 <div class="card">
-  <form class="card-body" action="<?= $data['config']['HOST'] . '/design.php'; ?>" method="GET">
+  <form class="card-body" action="<?= $data['CONFIG']['HOST'] . '/design.php'; ?>" method="GET">
     <input type="hidden" name="action" value="orders_list">
     <div class="form-row mb-0">
-      <div class="form-group col-2">
+      <div class="form-group col">
         <select class="form-control form-control-sm" name="create_user_id">
           <option value="all" selected disabled>менеджер</option>
           <option <?= $data['formData']['createUserId'] == 'all' ? 'selected' : ''; ?>
                   value="all">все
           </option>
-					<?php foreach ($data['create_users'] as $user):; ?>
+					<?php foreach ($data['createUsers'] as $user): ?>
             <option <?= $data['formData']['createUserId'] == $user['id'] ? 'selected' : ''; ?>
                     value="<?= $user['id']; ?>"><?= $user['last_name'] . ' ' . $user['first_name']; ?></option>
 					<?php endforeach; ?>
         </select>
       </div>
-      <div class="form-group col-2">
+      <div class="form-group col">
         <select class="form-control form-control-sm" name="designer_id">
           <option value="all" selected disabled>дизайнер</option>
           <option <?= $data['formData']['designerId'] == 'all' ? 'selected' : ''; ?>
@@ -23,25 +23,25 @@
           <option <?= $data['formData']['designerId'] == 'null' ? 'selected' : ''; ?>
                   value="null">не назначен
           </option>
-					<?php foreach ($data['designers'] as $designer):; ?>
+					<?php foreach ($data['designers'] as $designer): ?>
             <option <?= $data['formData']['designerId'] == $designer['id'] ? 'selected' : ''; ?>
                     value="<?= $designer['id']; ?>"><?= $designer['last_name'] . ' ' . $designer['first_name']; ?></option>
 					<?php endforeach; ?>
         </select>
       </div>
-      <div class="form-group col-2">
+      <div class="form-group col">
         <select class="form-control form-control-sm" name="priority">
           <option value="all" selected disabled>приоритет</option>
           <option <?= $data['formData']['priority'] == 'all' ? 'selected' : ''; ?>
                   value="all">все
           </option>
-					<?php foreach ($data['progData']['PRIORITY_ORDERS'] as $priorityKey => $priorityVal):; ?>
+					<?php foreach ($data['PROG_DATA']['PRIORITY_ORDERS'] as $priorityKey => $priorityVal): ?>
             <option <?= $data['formData']['priority'] == $priorityKey ? 'selected' : ''; ?>
                     value="<?= $priorityKey; ?>"><?= $priorityVal['name']; ?></option>
 					<?php endforeach; ?>
         </select>
       </div>
-      <div class="form-group col-2">
+      <div class="form-group col">
         <select class="form-control form-control-sm" name="status">
           <option value="all" selected disabled>стадия</option>
           <option <?= $data['formData']['status'] == 'all' ? 'selected' : ''; ?>
@@ -64,15 +64,15 @@
           </option>
         </select>
       </div>
-      <div class="form-group col">
+      <div class="form-group col-2">
         <input type="number" class="form-control form-control-sm" name="deadline"
                value="<?= $data['formData']['deadline']; ?>" placeholder="дней до дедлайна">
       </div>
     </div>
     <div class="form-row">
-      <div class="form-group col-7 mb-0">
+      <div class="form-group col mb-0">
         <input type="text" class="form-control form-control-sm" name="search"
-               value="<?= $data['formData']['search']; ?>" placeholder="внутренний id / внешний id / контрагент">
+               value="<?= $data['formData']['search']; ?>" placeholder="id / счет бонсенс / контрагент">
       </div>
       <div class="form-group col-3 mb-0 input-daterange datepicker">
         <div class="input-group">
@@ -82,7 +82,7 @@
                  value="<?= $data['formData']['dateTo']; ?>" placeholder="по">
         </div>
       </div>
-      <div class="form-group col mb-0">
+      <div class="form-group col-2 mb-0">
         <button type="submit" class="btn btn-sm btn-primary btn-block">Найти</button>
       </div>
     </div>
@@ -107,25 +107,25 @@
       </tr>
       </thead>
       <tbody>
-			<?php foreach ($data['orders'] as $order):; ?>
+			<?php foreach ($data['orders'] as $order): ?>
         <tr class="<?= $order['error_priority'] == 2 ? 'table-danger' : ''; ?>"
-            onclick="window.location.href='<?= $data['config']['HOST'] . '/design.php?action=order_info_card&id=' .
+            onclick="window.location.href='<?= $data['CONFIG']['HOST'] . '/design.php?action=order_info_card&id=' .
 						$order['id']; ?>'; return false">
           <td><?= $order['datetime_status_0']; ?></td>
-          <td><?= shortStr($order['order_name_out'], $data['config']['MAX_SYMBOLS_TABLE_CELL']); ?></td>
-          <td><?= shortStr($order['client_name'], $data['config']['MAX_SYMBOLS_TABLE_CELL']); ?></td>
+          <td><?= shortStr($order['order_name_out'], $data['CONFIG']['MAX_SYMBOLS_TABLE_CELL']); ?></td>
+          <td><?= shortStr($order['client_name'], $data['CONFIG']['MAX_SYMBOLS_TABLE_CELL']); ?></td>
           <td>
-            <?php if ($order['designer_id']):; ?>
-            <?= shortStr($order['ud_last_name'] . ' ' . $order['ud_first_name'], $data['config']['MAX_SYMBOLS_TABLE_CELL']); ?>
-            <?php else:; ?>
+            <?php if ($order['designer_id']): ?>
+            <?= shortStr($order['ud_last_name'] . ' ' . $order['ud_first_name'], $data['CONFIG']['MAX_SYMBOLS_TABLE_CELL']); ?>
+            <?php else: ?>
             не назначен
             <?php endif; ?>
           </td>
           <td>
-            <?= $data['progData']['PRIORITY_ORDERS'][$order['order_priority']]['icon'] ?? '???'; ?>
+            <?= $data['PROG_DATA']['PRIORITY_ORDERS'][$order['order_priority']]['icon'] ?? '???'; ?>
           </td>
-          <td><?= $data['progData']['STATUS_LIST_DESIGN'][$order['current_status']]['icon'] ?? '???'; ?></td>
-          <td><?= deadlineBadge($order['deadline_date'], $data['config']['WARNING_DAYS_BEFORE_DEADLINE']); ?></td>
+          <td><?= $data['PROG_DATA']['STATUS_LIST_DESIGN'][$order['current_status']]['icon'] ?? '???'; ?></td>
+          <td><?= deadlineBadge($order['deadline_date'], $data['CONFIG']['WARNING_DAYS_BEFORE_DEADLINE']); ?></td>
         </tr>
 			<?php endforeach; ?>
       </tbody>

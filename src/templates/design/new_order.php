@@ -1,33 +1,33 @@
 <div class="card">
   <div class="card-header bg-transparent">
-    <h2 class="mb-0"><?= $data['title'] ?></h2>
+    <h2 class="mb-0"><?= $data['title']; ?></h2>
   </div>
   <div class="card-body">
-    <form action="<?= $data['config']['HOST'] . '/design.php' ?>" method="POST">
+    <form action="<?= $data['CONFIG']['HOST'] . '/design.php'; ?>" method="POST">
       <input type="hidden" name="action" value="new_order_data">
-      <input type="hidden" name="form_id" value="<?= $data['formId'] ?>">
+      <input type="hidden" name="form_id" value="<?= $data['formId']; ?>">
       <div class="row">
         <div class="col-12 col-md-6">
           <div class="mb-4">
-            <h3>Данные контрагента</h3>
+            <h4>Данные контрагента</h4>
             <div class="form-row">
               <div class="form-group col-12 mb-4">
-                <small class="text-gray">Счет бонсенс (<?= 'en ' . $data['config']['MIN_LEN_A'] . '-' . $data['config']['MAX_LEN_A'] ?>)</small>
+                <small class="text-gray">Счет бонсенс (<?= 'en ' . $data['CONFIG']['MIN_LEN_A'] . '-' . $data['CONFIG']['MAX_LEN_A']; ?>)</small>
                 <input type="text" name="order_name_out" class="form-control" required
-                       minlength="<?= $data['config']['MIN_LEN_A'] ?>" maxlength="<?= $data['config']['MAX_LEN_A'] ?>"
+                       minlength="<?= $data['CONFIG']['MIN_LEN_A']; ?>" maxlength="<?= $data['CONFIG']['MAX_LEN_A']; ?>"
                        pattern="^[a-zA-Z0-9 ]+$">
               </div>
               <div class="form-group col-12 mb-4">
-                <small class="text-gray">контагент (<?= 'en ' . $data['config']['MIN_LEN_A'] . '-' . $data['config']['MAX_LEN_A'] ?>)</small>
+                <small class="text-gray">контагент (<?= 'en ' . $data['CONFIG']['MIN_LEN_A'] . '-' . $data['CONFIG']['MAX_LEN_A']; ?>)</small>
                 <input type="text" name="client_name" class="form-control" required
-                       minlength="<?= $data['config']['MIN_LEN_A'] ?>" maxlength="<?= $data['config']['MAX_LEN_A'] ?>"
+                       minlength="<?= $data['CONFIG']['MIN_LEN_A']; ?>" maxlength="<?= $data['CONFIG']['MAX_LEN_A']; ?>"
                        pattern="^[a-zA-Z0-9 ]+$">
               </div>
               <div class="form-group col-12 mb-4">
                 <small class="text-gray">телефон</small>
                 <div class="input-group">
                   <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1"><?= $data['config']['PHONE_PREFIX'] ?></span>
+                    <span class="input-group-text" id="basic-addon1"><?= $data['CONFIG']['PHONE_PREFIX']; ?></span>
                   </div>
                   <input type="tel" name="mobile_phone" class="form-control" required
                          pattern="\d{2}\s\d{3}\s\d{2}\s\d{2}"
@@ -44,12 +44,12 @@
 
         <div class="col-12 col-md-6">
           <div class="mb-4">
-            <h3>Данные заказа</h3>
+            <h4>Данные заказа</h4>
             <div class="mb-4">
-              <small class="text-gray">описание (<?= $data['config']['MIN_LEN_B'] . '-' . $data['config']['MAX_LEN_B'] ?>)</small>
+              <small class="text-gray">описание (<?= $data['CONFIG']['MIN_LEN_B'] . '-' . $data['CONFIG']['MAX_LEN_B']; ?>)</small>
               <textarea name="task_text" class="form-control" rows="5" required
-                        minlength="<?= $data['config']['MIN_LEN_B'] ?>"
-                        maxlength="<?= $data['config']['MAX_LEN_B'] ?>"></textarea>
+                        minlength="<?= $data['CONFIG']['MIN_LEN_B']; ?>"
+                        maxlength="<?= $data['CONFIG']['MAX_LEN_B']; ?>"></textarea>
             </div>
             <div class="form-row">
               <div class="form-group col-12 mb-4">

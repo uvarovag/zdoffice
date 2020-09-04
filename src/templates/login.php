@@ -17,7 +17,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="Start your development with a Dashboard for Bootstrap 4.">
   <meta name="author" content="Creative Tim">
-  <title><?= $data['title'] ?></title>
+  <title><?= $data['title']; ?></title>
   <!-- Favicon -->
   <link rel="icon" href="/argon-dashboard/assets/img/brand/zd-blue.png" type="image/png">
   <!-- Fonts -->
@@ -34,7 +34,7 @@
 <!-- Main content -->
 <div class="main-content">
   <!-- Header -->
-  <div class="header <?= $data['config']['BG_STYLE'] ?> py-7">
+  <div class="header <?= $data['CONFIG']['BG_STYLE']; ?> py-7">
     <div class="container">
       <div class="header-body text-center mb-7">
         <div class="row justify-content-center">
@@ -52,12 +52,12 @@
           <div class="card-body px-lg-5 py-lg-5">
             <div class="text-center text-muted mb-4">
 							<?php if ($data['errorMassage']): ?>
-                <p class="text-red"><?= $data['errorMassage'] ?></p>
+                <p class="text-red"><?= $data['errorMassage']; ?></p>
 							<?php else: ?>
-                <p><?= $data['config']['PROG_NAME'] ?></p>
+                <p><?= $data['CONFIG']['PROG_NAME']; ?></p>
 							<?php endif; ?>
             </div>
-            <form action="<?= $data['config']['HOST'] . '/login.php' ?>" method="post">
+            <form action="<?= $data['CONFIG']['HOST'] . '/login.php'; ?>" method="post">
               <input type="hidden" name="action" value="login">
               <div class="form-group mb-3">
                 <div class="input-group input-group-merge input-group-alternative">
@@ -66,7 +66,7 @@
                   </div>
                   <input class="form-control" placeholder="Логин" name="login" type="text" value=""
                          required pattern="^[a-zA-Z0-9]+$"
-                         minlength="<?= $data['config']['MIN_LEN_A'] ?>" maxlength="<?= $data['config']['MAX_LEN_A'] ?>">
+                         minlength="<?= $data['CONFIG']['MIN_LEN_A']; ?>" maxlength="<?= $data['CONFIG']['MAX_LEN_A']; ?>">
                 </div>
               </div>
               <div class="form-group">
@@ -76,7 +76,7 @@
                   </div>
                   <input class="form-control" placeholder="Пароль" name="password" type="password"
                          required pattern="^[a-zA-Z0-9]+$"
-                         minlength="<?= $data['config']['MIN_LEN_A'] ?>" maxlength="<?= $data['config']['MAX_LEN_A'] ?>">
+                         minlength="<?= $data['CONFIG']['MIN_LEN_A']; ?>" maxlength="<?= $data['CONFIG']['MAX_LEN_A']; ?>">
                 </div>
               </div>
               <div class="text-center">

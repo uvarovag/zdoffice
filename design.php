@@ -61,15 +61,14 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'order_in
 			'/design.php?action=orders_list&error_massage=' . $PROG_DATA['ERROR']['ID']);
 	}
 
-	$tmpLayoutContentData['designerList'] =
-		dbSelectData($con, 'SELECT id, last_name, first_name FROM adm_users WHERE position = ? AND is_block = 0 AND is_deleted = 0',
-			[$PROG_DATA['USERS_POSITIONS_ID']['DESIGNER']]) ?? [];
+	$tmpLayoutContentData['designers'] =
+		dbSelectData($con, 'SELECT * FROM adm_users WHERE auth_design_order_change_status = 1 AND is_block = 0 AND is_deleted = 0', []) ?? [];
 
 	$tmpLayoutContentData['designer'] = dbSelectData($con,
 			'SELECT id, last_name, first_name FROM adm_users WHERE id = ?',
 			[$tmpLayoutContentData['order']['designer_id'] ?? 0])[0] ?? [];
 
-	$tmpLayoutContentData['manager'] = dbSelectData($con,
+	$tmpLayoutContentData['createUser'] = dbSelectData($con,
 			'SELECT id, last_name, first_name FROM adm_users WHERE id = ?',
 			[$tmpLayoutContentData['order']['create_user_id']])[0] ?? [];
 
@@ -97,8 +96,8 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'order_in
 		dbSelectData($con, $filesQuery, [$tmpLayoutContentData['order']['id'], $PROG_DATA['ORDER_TYPES']['DESIGN']]);
 
 	$tmpLayoutModalData = [
-		'config' => &$PROG_CONFIG,
-		'progData' => $PROG_DATA,
+		'CONFIG' => &$PROG_CONFIG,
+		'PROG_DATA' => $PROG_DATA,
 		'formId' => $_SESSION['formId'],
 		'orderId' => $tmpLayoutContentData['order']['id'],
 		'orderType' => $PROG_DATA['ORDER_TYPES']['DESIGN'],
@@ -317,10 +316,10 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	$tmpLayoutData['pagination'] = $paginationData['tmpPagination'];
 	$sqlPagination = $paginationData['sqlPagination'];
 
-	$tmpLayoutContentData['create_users'] =
+	$tmpLayoutContentData['createUsers'] =
 		dbSelectData($con, 'SELECT * FROM adm_users WHERE auth_design_order_new = 1', []);
 	$tmpLayoutContentData['designers'] =
-		dbSelectData($con, 'SELECT * FROM adm_users WHERE position = ?', [$PROG_DATA['USERS_POSITIONS_ID']['DESIGNER']]);
+		dbSelectData($con, 'SELECT * FROM adm_users WHERE auth_design_order_change_status = 1', []);
 
 	$tmpLayoutContentData['orders'] =
 		dbSelectData($con, $sqlQuerySelect . $sqlQueryJoin1 . $sqlQueryJoin2 . $sqlQueryWhere . $sqlSortBy . $sqlPagination, $sqlParameters) ?? [];
@@ -393,7 +392,7 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['design
 
 	$userData = dbSelectData($con, 'SELECT position FROM adm_users WHERE id = ?', [$_POST['designer_id']])[0] ?? [];
 
-	if (isset($userData['position']) === false || $userData['position'] !== $PROG_DATA['USERS_POSITIONS_ID']['DESIGNER']) {
+	if (isset($userData['position']) === false || $userData['auth_design_order_change_status'] === 0) {
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] .
 			'/design.php?action=order_info_card&id=' . $_POST['order_id'] . '&error_massage=' . $PROG_DATA['ERROR']['ID']);
@@ -535,11 +534,10 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['status
 	else
 		mysqli_query($con, 'ROLLBACK');
 
+
 	redirectToIf($sortPriority && $orderStatus,
-		$PROG_CONFIG['HOST'] . '/design.php?action=order_info_card&id=' .
-		$_POST['order_id'] . '&alert_massage=' . $PROG_DATA['ALERT']['OK'],
-		$PROG_CONFIG['HOST'] . '/design.php?action=order_info_card&id=' .
-		$_POST['order_id'] . '&error_massage=' . $PROG_DATA['ERROR']['BD_WRITE']);
+		$_POST['redirect_success'] . '&alert_massage=' . $PROG_DATA['ALERT']['OK'],
+		$_POST['redirect_error'] . '&error_massage=' . $PROG_DATA['ERROR']['BD_WRITE']);
 }
 
 

@@ -120,19 +120,19 @@ while test $# -gt 0 ; do
   case $1 in
     -v)
       set -x
-      ;;
+      ;
     upload)
       rebund_upload
       exit 0
-      ;;
+      ;
     download)
       rebund_download
       exit 0
-      ;;
+      ;
     *)
       rebund_usage
       exit 1
-      ;;
+      ;
   esac
   shift
 done

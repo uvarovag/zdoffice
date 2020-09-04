@@ -21,7 +21,7 @@ var Popover = (function() {
 
 		var options = {
 			trigger: 'focus',
-			template: '<div class="popover ' + $popoverClass + '" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>'
+			template: '<div class="popover ' + $popoverClass + '" role="tooltip"><div class="arrow"></div><h4 class="popover-header"></h4><div class="popover-body"></div></div>'
 		};
 
 		$this.popover(options);

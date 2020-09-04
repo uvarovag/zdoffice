@@ -27,9 +27,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'new_order_card') {
 		$_SESSION['navList']['productionNewOrder']['isActive'] = true;
 	$tmpLayoutData['title'] = 'Новая заявка на производство';
 
-	$tmpLayoutContentData['designerList'] =
-		dbSelectData($con, 'SELECT id, last_name, first_name FROM adm_users WHERE position = ? AND is_block = 0 AND is_deleted = 0',
-			[$PROG_DATA['USERS_POSITIONS_ID']['DESIGNER']]) ?? [];
+	$tmpLayoutContentData['designers'] =
+		dbSelectData($con, 'SELECT * FROM adm_users WHERE auth_design_order_change_status = 1 AND is_block = 0 AND is_deleted = 0', []) ?? [];
 
 	$tmpLayoutData['content'] = renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/src/templates/production/new_order.php', $tmpLayoutContentData);
 }
@@ -78,15 +77,11 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'order_in
 			'/production.php?action=orders_list&error_massage=' . $PROG_DATA['ERROR']['ID']);
 	}
 
-	$tmpLayoutContentData['designerList'] =
-		dbSelectData($con, 'SELECT id, last_name, first_name FROM adm_users WHERE position = ? AND is_block = 0 AND is_deleted = 0',
-			[$PROG_DATA['USERS_POSITIONS_ID']['DESIGNER']]) ?? [];
-
 	$tmpLayoutContentData['designer'] = dbSelectData($con,
 			'SELECT id, last_name, first_name FROM adm_users WHERE id = ?',
 			[$tmpLayoutContentData['order']['designer_id'] ?? 0])[0] ?? [];
 
-	$tmpLayoutContentData['manager'] = dbSelectData($con,
+	$tmpLayoutContentData['createUser'] = dbSelectData($con,
 			'SELECT id, last_name, first_name FROM adm_users WHERE id = ?',
 			[$tmpLayoutContentData['order']['create_user_id'] ?? 0])[0] ?? [];
 
@@ -122,8 +117,8 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'order_in
 		dbSelectData($con, $filesQuery, [$tmpLayoutContentData['order']['id'], $PROG_DATA['ORDER_TYPES']['PRODUCTION']]);
 
 	$tmpLayoutModalData = [
-		'config' => &$PROG_CONFIG,
-		'progData' => $PROG_DATA,
+		'CONFIG' => &$PROG_CONFIG,
+		'PROG_DATA' => $PROG_DATA,
 		'formId' => $_SESSION['formId'],
 		'orderId' => $tmpLayoutContentData['order']['id'],
 		'orderType' => $PROG_DATA['ORDER_TYPES']['PRODUCTION'],
@@ -156,18 +151,18 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 		$_SESSION['navList']['productionOrdersList']['isActive'] = true;
 	$tmpLayoutData['title'] = 'Заявки на производство';
 
-//	$tmpLayoutContentData['formData']['createUserId'] = $_GET['create_user_id'] ?? '';
-//	$tmpLayoutContentData['formData']['designerId'] = $_GET['designer_id'] ?? '';
-//	$tmpLayoutContentData['formData']['priority'] = $_GET['priority'] ?? '';
-//	$tmpLayoutContentData['formData']['status'] = $_GET['status'] ?? '';
-//	$tmpLayoutContentData['formData']['deadline'] = $_GET['deadline'] ?? '';
-//	$tmpLayoutContentData['formData']['search'] = $_GET['search'] ?? '';
-//	$tmpLayoutContentData['formData']['dateFrom'] = $_GET['date_from'] ?? '';
-//	$tmpLayoutContentData['formData']['dateTo'] = $_GET['date_to'] ?? '';
+	$tmpLayoutContentData['formData']['department'] = $_GET['department'] ?? '';
+	$tmpLayoutContentData['formData']['createUserId'] = $_GET['create_user_id'] ?? '';
+	$tmpLayoutContentData['formData']['designerId'] = $_GET['designer_id'] ?? '';
+	$tmpLayoutContentData['formData']['priority'] = $_GET['priority'] ?? '';
+	$tmpLayoutContentData['formData']['status'] = $_GET['status'] ?? '';
+	$tmpLayoutContentData['formData']['deadline'] = $_GET['deadline'] ?? '';
+	$tmpLayoutContentData['formData']['search'] = $_GET['search'] ?? '';
+	$tmpLayoutContentData['formData']['dateFrom'] = $_GET['date_from'] ?? '';
+	$tmpLayoutContentData['formData']['dateTo'] = $_GET['date_to'] ?? '';
 
 	$sqlQuerySelectPagination = 'SELECT COUNT(*) as pgn FROM production_orders o ';
 
-	// DATE_FORMAT(0000, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS 0000,
 	$sqlQuerySelect = 'SELECT 
        ud.last_name AS ud_last_name, ud.first_name AS ud_first_name, 
        uc.last_name AS uc_last_name, uc.first_name AS uc_first_name, 
@@ -193,6 +188,11 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 
 	$tmpLayoutData['pagination'] = $paginationData['tmpPagination'];
 	$sqlPagination = $paginationData['sqlPagination'];
+
+	$tmpLayoutContentData['createUsers'] =
+		dbSelectData($con, 'SELECT * FROM adm_users WHERE auth_design_order_new = 1', []);
+	$tmpLayoutContentData['designers'] =
+		dbSelectData($con, 'SELECT * FROM adm_users WHERE auth_design_order_change_status = 1', []);
 
 	$tmpLayoutContentData['orders'] =
 		dbSelectData($con, $sqlQuerySelect . $sqlQueryJoin1 . $sqlQueryJoin2 . $sqlQueryWhere . $sqlSortBy . $sqlPagination, $sqlParameters) ?? [];
@@ -463,7 +463,6 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['depart
 	// steel
 	// install
 	// supply
-
 
 	if (($_POST['department'] == 'all' || $_POST['department'] == 'const') && $orderData['const_datetime_status_0']) {
 

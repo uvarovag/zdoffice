@@ -1,38 +1,38 @@
 <div class="card">
   <div class="card-header bg-transparent">
-    <h2 class="mb-0"><?= $data['title'] ?></h2>
+    <h2 class="mb-0"><?= $data['title']; ?></h2>
   </div>
   <div class="card-body">
-    <form action="<?= $data['config']['HOST'] . '/adm_users.php' ?>" method="POST">
+    <form action="<?= $data['CONFIG']['HOST'] . '/adm_users.php'; ?>" method="POST">
       <input type="hidden" name="action" value="new_user_data">
-      <input type="hidden" name="form_id" value="<?= $data['formId'] ?>">
+      <input type="hidden" name="form_id" value="<?= $data['formId']; ?>">
       <div class="row">
         <div class="col-12 col-md-6">
           <div class="mb-4">
-            <h3>Данные пользователя</h3>
+            <h4>Данные пользователя</h4>
             <div class="form-row">
               <div class="form-group col-12 mb-4">
-                <small class="text-gray">логин (<?= 'en ' . $data['config']['MIN_LEN_A'] . '-' . $data['config']['MAX_LEN_A'] ?>)</small>
+                <small class="text-gray">логин (<?= 'en ' . $data['CONFIG']['MIN_LEN_A'] . '-' . $data['CONFIG']['MAX_LEN_A']; ?>)</small>
                 <input type="text" name="login" class="form-control" required
-                       minlength="<?= $data['config']['MIN_LEN_A'] ?>" maxlength="<?= $data['config']['MAX_LEN_A'] ?>"
+                       minlength="<?= $data['CONFIG']['MIN_LEN_A']; ?>" maxlength="<?= $data['CONFIG']['MAX_LEN_A']; ?>"
                        pattern="^[a-zA-Z0-9]+$">
               </div>
               <div class="form-group col-12 mb-4">
-                <small class="text-gray">пароль (<?= 'en ' . $data['config']['MIN_LEN_A'] . '-' . $data['config']['MAX_LEN_A'] ?>)</small>
+                <small class="text-gray">пароль (<?= 'en ' . $data['CONFIG']['MIN_LEN_A'] . '-' . $data['CONFIG']['MAX_LEN_A']; ?>)</small>
                 <input type="password" name="password" class="form-control" required
-                       minlength="<?= $data['config']['MIN_LEN_A'] ?>" maxlength="<?= $data['config']['MAX_LEN_A'] ?>"
+                       minlength="<?= $data['CONFIG']['MIN_LEN_A']; ?>" maxlength="<?= $data['CONFIG']['MAX_LEN_A']; ?>"
                        pattern="^[a-zA-Z0-9]+$">
               </div>
               <div class="form-group col-12 mb-4">
-                <small class="text-gray">фамилия (<?= 'ru ' . $data['config']['MIN_LEN_A'] . '-' . $data['config']['MAX_LEN_A'] ?>)</small>
+                <small class="text-gray">фамилия (<?= 'ru ' . $data['CONFIG']['MIN_LEN_A'] . '-' . $data['CONFIG']['MAX_LEN_A']; ?>)</small>
                 <input type="text" name="last_name" class="form-control" required
-                       minlength="<?= $data['config']['MIN_LEN_A'] ?>" maxlength="<?= $data['config']['MAX_LEN_A'] ?>"
+                       minlength="<?= $data['CONFIG']['MIN_LEN_A']; ?>" maxlength="<?= $data['CONFIG']['MAX_LEN_A']; ?>"
                        pattern="^[а-яА-ЯёЁ0-9]+$">
               </div>
               <div class="form-group col-12 mb-4">
-                <small class="text-gray">имя (<?= 'ru ' . $data['config']['MIN_LEN_A'] . '-' . $data['config']['MAX_LEN_A'] ?>)</small>
+                <small class="text-gray">имя (<?= 'ru ' . $data['CONFIG']['MIN_LEN_A'] . '-' . $data['CONFIG']['MAX_LEN_A']; ?>)</small>
                 <input type="text" name="first_name" class="form-control" required
-                       minlength="<?= $data['config']['MIN_LEN_A'] ?>" maxlength="<?= $data['config']['MAX_LEN_A'] ?>"
+                       minlength="<?= $data['CONFIG']['MIN_LEN_A']; ?>" maxlength="<?= $data['CONFIG']['MAX_LEN_A']; ?>"
                        pattern="^[а-яА-ЯёЁ0-9]+$">
               </div>
             </div>
@@ -41,8 +41,8 @@
                 <small class="text-gray">должность</small>
                 <select name="position" required class="form-control">
                   <option></option>
-									<?php foreach ($data['progData']['USERS_POSITIONS_LIST'] as $posKey => $posVal): ?>
-                    <option value="<?= $posKey ?>"><?= $posVal ?></option>
+									<?php foreach ($data['PROG_DATA']['USERS_POSITIONS_LIST'] as $posKey => $posVal): ?>
+                    <option value="<?= $posKey; ?>"><?= $posVal; ?></option>
 									<?php endforeach; ?>
                 </select>
               </div>
@@ -50,7 +50,7 @@
                 <small class="text-gray">телефон</small>
                 <div class="input-group">
                   <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1"><?= $data['config']['PHONE_PREFIX']; ?></span>
+                    <span class="input-group-text" id="basic-addon1"><?= $data['CONFIG']['PHONE_PREFIX']; ?></span>
                   </div>
                   <input type="tel" name="mobile_phone" class="form-control" required
                          pattern="\d{2}\s\d{3}\s\d{2}\s\d{2}"
@@ -67,7 +67,7 @@
 
         <div class="col-12 col-md-6">
           <div class="mb-4">
-            <h3>Дизайн</h3>
+            <h4>Дизайн</h4>
             <div class="custom-control custom-checkbox mb-2">
               <input type="checkbox" name="design_order_new" id="auth_design_order_new" class="custom-control-input">
               <label class="custom-control-label" for="auth_design_order_new">создать заявку</label>
@@ -91,7 +91,7 @@
           </div>
           <div class="mb-4">
             <hr>
-            <h3>Производство</h3>
+            <h4>Производство</h4>
             <div class="custom-control custom-checkbox mb-2">
               <input type="checkbox" name="production_order_new" id="auth_production_order_new" class="custom-control-input">
               <label class="custom-control-label" for="auth_production_order_new">создать заявку</label>

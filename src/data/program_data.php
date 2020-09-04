@@ -8,6 +8,7 @@ function setProgData() {
 	require_once($_SERVER['DOCUMENT_ROOT'] . '/src/data/program_data_priority_orders.php');
 	require_once($_SERVER['DOCUMENT_ROOT'] . '/src/data/program_data_order_types.php');
 	require_once($_SERVER['DOCUMENT_ROOT'] . '/src/data/program_data_massages.php');
+	require_once($_SERVER['DOCUMENT_ROOT'] . '/src/data/program_data_departments_list.php');
 
 	$PROG_DATA = [
 		'USERS_POSITIONS_LIST' => $USERS_POSITIONS_LIST,
@@ -18,6 +19,8 @@ function setProgData() {
 
 		'STATUS_LIST_PRODUCTION' => $STATUS_LIST_PRODUCTION,
 		'STATUS_ID_PRODUCTION' => $STATUS_ID_PRODUCTION,
+
+		'DEPARTAMENTS_LIST' => $DEPARTAMENTS_LIST,
 
 		'PRIORITY_ORDERS' => $PRIORITY_ORDERS,
 		'PRIORITY_ID' => $PRIORITY_ID,

@@ -64,13 +64,15 @@ function currentMaxStatus($orderData) {
 	return $max;
 }
 
-function firstActiveDepartment($orderData) {
+function activeDepartments($orderData) {
 
 	$status = getActiveStatusArr($orderData);
 
+	$departments = [];
+
 	foreach ($status as $stKey => $stval) {
-		return $stKey;
+		$departments[] = $stKey;
 	}
 
-	return false;
+	return empty($departments) ? false : $departments;
 }

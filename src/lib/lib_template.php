@@ -32,7 +32,7 @@ function getPagination($config, $url, $con, $sqlQuery, $sqlParametrs) {
 	$tmpPagination = '';
 
 	$tmpPaginationData = [
-		'config' => $config,
+		'CONFIG' => $config,
 		'url' => $url . getStringFromGetQuery($_GET),
 		'pagesQuantity' => 0,
 		'currentPage' => 0

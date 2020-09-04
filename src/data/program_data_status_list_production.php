@@ -47,47 +47,47 @@ $STATUS_LIST_PRODUCTION = [
 	],
 	100 => [
 		'name' => 'получено производством',
-		'icon' => '<span class="badge badge-pill badge-warning">получено производством</span>'
+		'icon' => '<span class="badge badge-pill badge-primary">получено производством</span>'
 	],
 	200 => [
 		'name' => 'начата работа',
-		'icon' => '<span class="badge badge-pill badge-primary">начата работа</span>'
+		'icon' => '<span class="badge badge-pill badge-info">начата работа</span>'
 	],
 	210 => [
 		'name' => 'готовность 10%',
-		'icon' => '<span class="badge badge-pill badge-primary">готовность 10%</span>'
+		'icon' => '<span class="badge badge-pill badge-info">готовность 10%</span>'
 	],
 	220 => [
 		'name' => 'готовность 20%',
-		'icon' => '<span class="badge badge-pill badge-primary">готовность 20%</span>'
+		'icon' => '<span class="badge badge-pill badge-info">готовность 20%</span>'
 	],
 	230 => [
 		'name' => 'готовность 30%',
-		'icon' => '<span class="badge badge-pill badge-primary">готовность 30%</span>'
+		'icon' => '<span class="badge badge-pill badge-info">готовность 30%</span>'
 	],
 	240 => [
 		'name' => 'готовность 40%',
-		'icon' => '<span class="badge badge-pill badge-primary">готовность 40%</span>'
+		'icon' => '<span class="badge badge-pill badge-info">готовность 40%</span>'
 	],
 	250 => [
 		'name' => 'готовность 50%',
-		'icon' => '<span class="badge badge-pill badge-primary">готовность 50%</span>'
+		'icon' => '<span class="badge badge-pill badge-info">готовность 50%</span>'
 	],
 	260 => [
 		'name' => 'готовность 60%',
-		'icon' => '<span class="badge badge-pill badge-primary">готовность 60%</span>'
+		'icon' => '<span class="badge badge-pill badge-info">готовность 60%</span>'
 	],
 	270 => [
 		'name' => 'готовность 70%',
-		'icon' => '<span class="badge badge-pill badge-primary">готовность 70%</span>'
+		'icon' => '<span class="badge badge-pill badge-info">готовность 70%</span>'
 	],
 	280 => [
 		'name' => 'готовность 80%',
-		'icon' => '<span class="badge badge-pill badge-primary">готовность 80%</span>'
+		'icon' => '<span class="badge badge-pill badge-info">готовность 80%</span>'
 	],
 	290 => [
 		'name' => 'готовность 90%',
-		'icon' => '<span class="badge badge-pill badge-primary">готовность 90%</span>'
+		'icon' => '<span class="badge badge-pill badge-info">готовность 90%</span>'
 	],
 	300 => [
 		'name' => 'выполнено',

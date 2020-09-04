@@ -12,7 +12,7 @@ var noUiSlider = (function() {
 	// 		$slider = $('.input-slider'),
 	// 		$sliderId = $slider.attr('id'),
 	// 		$sliderMinValue = $slider.data('range-value-min');
-	// 		$sliderMaxValue = $slider.data('range-value-max');;
+	// 		$sliderMaxValue = $slider.data('range-value-max');
 
 
 	// // Methods

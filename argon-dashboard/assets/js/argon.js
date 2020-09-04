@@ -649,7 +649,7 @@ var Popover = (function() {
 
 		var options = {
 			trigger: 'focus',
-			template: '<div class="popover ' + $popoverClass + '" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>'
+			template: '<div class="popover ' + $popoverClass + '" role="tooltip"><div class="arrow"></div><h4 class="popover-header"></h4><div class="popover-body"></div></div>'
 		};
 
 		$this.popover(options);
@@ -988,7 +988,7 @@ var noUiSlider = (function() {
 	// 		$slider = $('.input-slider'),
 	// 		$sliderId = $slider.attr('id'),
 	// 		$sliderMinValue = $slider.data('range-value-min');
-	// 		$sliderMaxValue = $slider.data('range-value-max');;
+	// 		$sliderMaxValue = $slider.data('range-value-max');
 
 
 	// // Methods
