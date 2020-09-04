@@ -89,11 +89,11 @@
               <td class="px-0"><?= $data['PROG_DATA']['PRIORITY_ORDERS'][$data['order']['order_priority']]['icon'] ?? '???'; ?></td>
             </tr>
 
-						<?php if (currentGeneralStatus($data['order']) !== false): ?>
+						<?php if (currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTAMENTS_LIST']) !== false): ?>
               <tr>
                 <td class="px-0">Стадия</td>
                 <td class="px-0">
-                  <?= $data['PROG_DATA']['STATUS_LIST_PRODUCTION'][currentGeneralStatus($data['order'])]['icon'] ?? '???'; ?>
+                  <?= $data['PROG_DATA']['STATUS_LIST_PRODUCTION'][currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTAMENTS_LIST'])]['icon'] ?? '???'; ?>
                 </td>
               </tr>
 						<?php endif; ?>
@@ -128,8 +128,8 @@
 				<?php endif; ?>
 
 				<?php if ($_SESSION['user']['auth_production_order_change_priority'] &&
-					currentMinStatus($data['order']) !== false &&
-					currentMinStatus($data['order']) < $data['PROG_DATA']['STATUS_ID_PRODUCTION']['DONE']): ?>
+					currentMinStatus($data['order'], $data['PROG_DATA']['DEPARTAMENTS_LIST']) !== false &&
+					currentMinStatus($data['order'], $data['PROG_DATA']['DEPARTAMENTS_LIST']) < $data['PROG_DATA']['STATUS_ID_PRODUCTION']['DONE']): ?>
           <div class="mb-4">
             <hr>
             <form action="<?= $data['CONFIG']['HOST'] . '/production.php'; ?>" method="POST">
@@ -158,8 +158,8 @@
 				<?php endif; ?>
 
 				<?php if ($_SESSION['user']['id'] == $data['order']['create_user_id'] &&
-					currentMinStatus($data['order']) !== false &&
-					currentMinStatus($data['order']) < $data['PROG_DATA']['STATUS_ID_PRODUCTION']['DONE']): ?>
+					currentMinStatus($data['order'], $data['PROG_DATA']['DEPARTAMENTS_LIST']) !== false &&
+					currentMinStatus($data['order'], $data['PROG_DATA']['DEPARTAMENTS_LIST']) < $data['PROG_DATA']['STATUS_ID_PRODUCTION']['DONE']): ?>
           <div class="mb-4 d-inline-block">
             <form class="d-inline-block mr-2" action="<?= $data['CONFIG']['HOST'] . '/production.php'; ?>" method="POST">
               <input type="hidden" name="action" value="change_status">
@@ -178,7 +178,7 @@
 				<?php endif; ?>
 
 				<?php if ($_SESSION['user']['auth_production_order_cancel'] &&
-					currentGeneralStatus($data['order']) === $data['PROG_DATA']['STATUS_ID_PRODUCTION']['WAIT_CANCEL']): ?>
+					currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTAMENTS_LIST']) === $data['PROG_DATA']['STATUS_ID_PRODUCTION']['WAIT_CANCEL']): ?>
           <div class="mb-4 d-inline-block">
             <form class="d-inline-block mr-2" action="<?= $data['CONFIG']['HOST'] . '/production.php'; ?>" method="POST">
               <input type="hidden" name="action" value="change_status">
@@ -197,7 +197,7 @@
 				<?php endif; ?>
 
 				<?php if ($_SESSION['user']['auth_production_order_start'] &&
-					currentGeneralStatus($data['order']) === $data['PROG_DATA']['STATUS_ID_PRODUCTION']['WAIT_START']): ?>
+					currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTAMENTS_LIST']) === $data['PROG_DATA']['STATUS_ID_PRODUCTION']['WAIT_START']): ?>
           <div class="mb-4 d-inline-block">
             <form class="d-inline-block mr-2" action="<?= $data['CONFIG']['HOST'] . '/production.php'; ?>" method="POST">
               <input type="hidden" name="action" value="change_status">
@@ -217,8 +217,8 @@
 
 
 				<?php if ($data['order']['error_priority'] == 2 &&
-					currentGeneralStatus($data['order']) !== false &&
-					currentGeneralStatus($data['order']) < $data['PROG_DATA']['STATUS_ID_PRODUCTION']['DONE']): ?>
+					currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTAMENTS_LIST']) !== false &&
+					currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTAMENTS_LIST']) < $data['PROG_DATA']['STATUS_ID_PRODUCTION']['DONE']): ?>
           <a href="<?= $data['CONFIG']['HOST'] . '/production.php?' . http_build_query([
 						'action' => 'cancel_error',
 						'order_id' => $data['order']['id'],
@@ -228,8 +228,8 @@
 							$data['order']['id']
 					]); ?>"
              class="btn btn-primary" role="button" aria-pressed="true">Снять ошибку</a>
-				<?php elseif (currentGeneralStatus($data['order']) !== false &&
-					currentGeneralStatus($data['order']) < $data['PROG_DATA']['STATUS_ID_PRODUCTION']['DONE']): ?>
+				<?php elseif (currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTAMENTS_LIST']) !== false &&
+					currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTAMENTS_LIST']) < $data['PROG_DATA']['STATUS_ID_PRODUCTION']['DONE']): ?>
           <a href="<?= $data['CONFIG']['HOST'] . '/production.php?' . http_build_query([
 						'action' => 'add_error',
 						'order_id' => $data['order']['id'],

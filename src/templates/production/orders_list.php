@@ -5,7 +5,7 @@
       <div class="form-group col">
         <select class="form-control form-control-sm" name="department">
           <option value="all" selected disabled>отдел</option>
-          <option <?= $data['formData']['createUserId'] == 'all' ? 'selected' : ''; ?>
+          <option <?= $data['formData']['department'] == 'all' ? 'selected' : ''; ?>
                   value="all">все
           </option>
 					<?php foreach ($data['PROG_DATA']['DEPARTAMENTS_LIST'] as $depKey => $depVal): ?>
@@ -32,8 +32,6 @@
           <option <?= $data['formData']['designerId'] == 'all' ? 'selected' : ''; ?>
                   value="all">все
           </option>
-          <option <?= $data['formData']['designerId'] == 'null' ? 'selected' : ''; ?>
-                  value="null">не назначен
           </option>
 					<?php foreach ($data['designers'] as $designer): ?>
             <option <?= $data['formData']['designerId'] == $designer['id'] ? 'selected' : ''; ?>
@@ -54,7 +52,7 @@
         </select>
       </div>
       <div class="form-group col">
-        <select class="form-control form-control-sm" name="status">
+        <select class="form-control form-control-sm" name="status" disabled>
           <option value="all" selected disabled>стадия</option>
           <option <?= $data['formData']['status'] == 'all' ? 'selected' : ''; ?>
                   value="all">все
@@ -78,7 +76,7 @@
       </div>
       <div class="form-group col-2">
         <input type="number" class="form-control form-control-sm" name="deadline"
-               value="<?= $data['formData']['deadline']; ?>" placeholder="дней до дедлайна">
+               value="<?= $data['formData']['deadline']; ?>" placeholder="дней до дедлайна" disabled>
       </div>
     </div>
     <div class="form-row">
@@ -89,9 +87,9 @@
       <div class="form-group col-3 mb-0 input-daterange datepicker">
         <div class="input-group">
           <input type="text" aria-label="First name" class="form-control form-control-sm" name="date_from"
-                 value="<?= $data['formData']['dateFrom']; ?>" placeholder="c">
+                 value="<?= $data['formData']['dateFrom']; ?>" placeholder="c" disabled>
           <input type="text" aria-label="Last name" class="form-control form-control-sm" name="date_to"
-                 value="<?= $data['formData']['dateTo']; ?>" placeholder="по">
+                 value="<?= $data['formData']['dateTo']; ?>" placeholder="по" disabled>
         </div>
       </div>
       <div class="form-group col-2 mb-0">
@@ -113,7 +111,6 @@
         <th scope="col">Счет бонсенс</th>
         <th scope="col">Контрагент</th>
         <th scope="col">Менеджер</th>
-        <th scope="col">Дизайнер</th>
         <th scope="col">Приоритет</th>
         <th scope="col">Стадия</th>
       </tr>
@@ -124,7 +121,7 @@
             onclick="window.location.href='<?= $data['CONFIG']['HOST'] . '/production.php?action=order_info_card&id=' .
 						$order['id']; ?>'; return false">
           <td>
-            <?= $order[activeDepartments($order)[0] . '_datetime_status_0'] ?? '???'; ?>
+            <?= $order[activeDepartments($order, $data['PROG_DATA']['DEPARTAMENTS_LIST'])[0] . '_datetime_status_0'] ?? '???'; ?>
           </td>
           <td><?= shortStr($order['order_name_out'], $data['CONFIG']['MAX_SYMBOLS_TABLE_CELL']); ?></td>
           <td><?= shortStr($order['client_name'], $data['CONFIG']['MAX_SYMBOLS_TABLE_CELL']); ?></td>
@@ -132,14 +129,11 @@
             <?= shortStr($order['uc_last_name'] . ' ' . $order['uc_first_name'], $data['CONFIG']['MAX_SYMBOLS_TABLE_CELL']); ?>
           </td>
           <td>
-            <?= shortStr($order['ud_last_name'] . ' ' . $order['ud_first_name'], $data['CONFIG']['MAX_SYMBOLS_TABLE_CELL']); ?>
-          </td>
-          <td>
             <?= $data['PROG_DATA']['PRIORITY_ORDERS'][$order['order_priority']]['icon'] ?? '???'; ?>
           </td>
           <td>
-            <?php if(currentGeneralStatus($order) !== false): ?>
-            <?= $data['PROG_DATA']['STATUS_LIST_PRODUCTION'][currentGeneralStatus($order)]['icon'] ?? '???'; ?>
+            <?php if(currentGeneralStatus($order, $data['PROG_DATA']['DEPARTAMENTS_LIST']) !== false): ?>
+            <?= $data['PROG_DATA']['STATUS_LIST_PRODUCTION'][currentGeneralStatus($order, $data['PROG_DATA']['DEPARTAMENTS_LIST'])]['icon'] ?? '???'; ?>
             <?php endif; ?>
           </td>
         </tr>

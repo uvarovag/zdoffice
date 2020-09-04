@@ -147,9 +147,16 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	errorIfAccessDenied($_SESSION['user']['auth_production_order_view'],
 		$PROG_CONFIG['HOST'] . '/production.php?error_massage=' . $PROG_DATA['ERROR']['ACCESS_DENIED'] . ' ' . __LINE__);
 
-	if (isset($_SESSION['navList']['productionOrdersList']['isActive']))
+	$userAvailableDepartmentsArr = userAvailableDepartmentsArr($_SESSION['user'], $PROG_DATA['DEPARTAMENTS_LIST']);
+
+	if (isset($_SESSION['navList']['productionOrdersListMy']['isActive']) &&
+		isset($_GET['department']) && $userAvailableDepartmentsArr !== false &&
+		$userAvailableDepartmentsArr[0] == $_GET['department'])
+		$_SESSION['navList']['productionOrdersListMy']['isActive'] = true;
+	else if (isset($_SESSION['navList']['productionOrdersList']['isActive']))
 		$_SESSION['navList']['productionOrdersList']['isActive'] = true;
 	$tmpLayoutData['title'] = 'Заявки на производство';
+
 
 	$tmpLayoutContentData['formData']['department'] = $_GET['department'] ?? '';
 	$tmpLayoutContentData['formData']['createUserId'] = $_GET['create_user_id'] ?? '';
@@ -181,6 +188,52 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	$sqlQueryWhere = 'WHERE o.id > 0 ';
 	$sqlParameters = [];
 	$sqlSortBy = 'ORDER BY o.id * o.order_priority * o.sort_priority * o.error_priority DESC ';
+
+
+	$dateFilter = isset($_GET['date_from']) && isset($_GET['date_to']) && $_GET['date_from'] && $_GET['date_to'];
+
+	$departmentFilter = isset($_GET['department']) &&
+	array_key_exists($_GET['department'], $PROG_DATA['DEPARTAMENTS_LIST']) ? $_GET['department'] : false;
+
+
+	if ($departmentFilter) {
+		$sqlQueryWhere = $sqlQueryWhere . 'AND ' . $departmentFilter . '_datetime_status_0 IS NOT NULL ';
+	}
+
+	if (isset($_GET['create_user_id']) && $_GET['create_user_id'] != 'all') {
+		$sqlQueryWhere = $sqlQueryWhere . 'AND create_user_id = ? ';
+		$sqlParameters['create_user_id'] = $_GET['create_user_id'];
+	}
+
+	if (isset($_GET['designer_id']) && $_GET['designer_id'] != 'all') {
+		$sqlQueryWhere = $sqlQueryWhere . 'AND designer_id = ? ';
+		$sqlParameters['designer_id'] = $_GET['designer_id'];
+	}
+
+	if (isset($_GET['priority']) && $_GET['priority'] != 'all') {
+		$sqlQueryWhere = $sqlQueryWhere . 'AND order_priority = ? ';
+		$sqlParameters['priority'] = $_GET['priority'];
+	}
+
+	if (isset($_GET['status']) && $_GET['status'] != 'all' && $dateFilter == false) {
+		///// todo
+	}
+
+	if (isset($_GET['deadline']) && ($_GET['deadline'] || $_GET['deadline'] == '0')) {
+		// todo
+	}
+
+	if (isset($_GET['search']) && $_GET['search']) {
+		$sqlQueryWhere = $sqlQueryWhere . 'AND (order_name_in LIKE ? OR order_name_out LIKE ? OR client_name LIKE ?) ';
+		$sqlParameters['search_order_name_in'] = '%' . $_GET['search'] . '%';
+		$sqlParameters['search_order_name_out'] = '%' . $_GET['search'] . '%';
+		$sqlParameters['search_client_name'] = '%' . $_GET['search'] . '%';
+	}
+
+	if ($dateFilter) {
+		/////// todo
+	}
+
 
 	$paginationData =
 		getPagination($PROG_CONFIG, $PROG_CONFIG['HOST'] . '/production.php', $con, $sqlQuerySelectPagination .
@@ -392,7 +445,7 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['depart
 	// подтвердить отмену у кого есть права && статус 'ожидание подтверждения отмены - (998 WAIT_CANCEL)'
 	if ($_POST['status'] == $PROG_DATA['STATUS_ID_PRODUCTION']['CANCEL'] &&
 		($_SESSION['user']['auth_production_order_cancel'] == 0 ||
-			currentGeneralStatus($orderData) != $PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_CANCEL'])) {
+			currentGeneralStatus($orderData, $PROG_DATA['DEPARTAMENTS_LIST']) != $PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_CANCEL'])) {
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] . '/production.php?action=order_info_card&id=' .
 			$_POST['order_id'] . '&error_massage=' . $PROG_DATA['ERROR']['ACCESS_DENIED'] . ' ' . __LINE__);
@@ -401,7 +454,7 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['depart
 	// запустить в работу у кго есть права && статус 'ожидание подтверждения - (0 WAIT_START)'
 	if ($_POST['status'] == $PROG_DATA['STATUS_ID_PRODUCTION']['RECEIVED'] &&
 		($_SESSION['user']['auth_production_order_start'] == 0 ||
-			currentGeneralStatus($orderData) != $PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_START'])) {
+			currentGeneralStatus($orderData, $PROG_DATA['DEPARTAMENTS_LIST']) != $PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_START'])) {
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] . '/production.php?action=order_info_card&id=' .
 			$_POST['order_id'] . '&error_massage=' . $PROG_DATA['ERROR']['ACCESS_DENIED'] . ' ' . __LINE__);
