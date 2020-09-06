@@ -113,6 +113,7 @@
         <th scope="col">Менеджер</th>
         <th scope="col">Приоритет</th>
         <th scope="col">Стадия</th>
+        <th scope="col">Дедлайн</th>
       </tr>
       </thead>
       <tbody>
@@ -126,15 +127,30 @@
           <td><?= shortStr($order['order_name_out'], $data['CONFIG']['MAX_SYMBOLS_TABLE_CELL']); ?></td>
           <td><?= shortStr($order['client_name'], $data['CONFIG']['MAX_SYMBOLS_TABLE_CELL']); ?></td>
           <td>
+          <span>
             <?= shortStr($order['uc_last_name'] . ' ' . $order['uc_first_name'], $data['CONFIG']['MAX_SYMBOLS_TABLE_CELL']); ?>
+          </span>
           </td>
           <td>
-            <?= $data['PROG_DATA']['PRIORITY_ORDERS'][$order['order_priority']]['icon'] ?? '???'; ?>
+          <span>
+          <?= $data['PROG_DATA']['PRIORITY_ORDERS'][$order['order_priority']]['icon'] ?? '???'; ?>
+          </span>
           </td>
           <td>
-            <?php if(currentGeneralStatus($order, $data['PROG_DATA']['DEPARTAMENTS_LIST']) !== false): ?>
-            <?= $data['PROG_DATA']['STATUS_LIST_PRODUCTION'][currentGeneralStatus($order, $data['PROG_DATA']['DEPARTAMENTS_LIST'])]['icon'] ?? '???'; ?>
+          <span>
+            <?php if ($data['departmentFilter']): ?>
+							<?= $data['PROG_DATA']['STATUS_LIST_PRODUCTION'][$order[$data['departmentFilter'] . '_current_status']]['icon'] ?? '???'; ?>
+						<?php elseif (($generalStatus = currentGeneralStatus($order, $data['PROG_DATA']['DEPARTAMENTS_LIST'])) !== false): ?>
+							<?= $data['PROG_DATA']['STATUS_LIST_PRODUCTION'][$generalStatus]['icon'] ?? '???'; ?>
             <?php endif; ?>
+          </span>
+          </td>
+          <td>
+          <span>
+            <?php if ($data['departmentFilter']): ?>
+              <?= deadlineBadge($order[$data['departmentFilter'] . '_deadline_date'], $data['CONFIG']['WARNING_DAYS_BEFORE_DEADLINE']); ?>
+            <?php endif; ?>
+          </span>
           </td>
         </tr>
 			<?php endforeach; ?>

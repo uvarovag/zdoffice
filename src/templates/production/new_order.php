@@ -246,14 +246,12 @@
                         maxlength="<?= $data['CONFIG']['MAX_LEN_C']; ?>"></textarea>
             </div>
           </div>
-
         </div>
-
       </div>
       <div class="mb-4">
-        <small class="at-least-one-enabled_dnone text-danger d-block mb-2">Выбрать кто участвует в проекте</small>
         <input class="btn btn-primary at-least-one-enabled_disabled" type="submit" value="Сохранить" disabled>
       </div>
+      <small class="at-least-one-enabled_dnone text-danger">Выбрать кто участвует в проекте</small>
     </form>
   </div>
 </div>

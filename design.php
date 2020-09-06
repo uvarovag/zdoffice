@@ -5,6 +5,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/src/include.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_session_start.php');
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_tmp_data.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_notify.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_alert_massage.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_authorization_user.php');
 
@@ -184,9 +185,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	}
 
 	if (isset($_GET['status']) && $_GET['status'] != 'all' && $dateFilter == false) {
-		if ($_GET['status'] >= $PROG_DATA['STATUS_ID_DESIGN']['START'] &&
-			$_GET['status'] <= $PROG_DATA['STATUS_ID_DESIGN']['READY_90']) {
-
+		if ($_GET['status'] == $PROG_DATA['STATUS_ID_DESIGN']['START'] . '-' . $PROG_DATA['STATUS_ID_DESIGN']['READY_90']) {
 			$sqlQueryWhere = $sqlQueryWhere . 'AND current_status >= ? AND current_status <= ? ';
 			$sqlParameters['status_start'] = $PROG_DATA['STATUS_ID_DESIGN']['START'];
 			$sqlParameters['status_ready_90'] = $PROG_DATA['STATUS_ID_DESIGN']['READY_90'];
@@ -217,8 +216,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 			$sqlQueryWhere = $sqlQueryWhere . 'AND (datetime_status_100 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) ';
 			$sqlParameters['datetime_status_100_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
 			$sqlParameters['datetime_status_100_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-		} elseif (isset($_GET['status']) && $_GET['status'] >= $PROG_DATA['STATUS_ID_DESIGN']['START'] &&
-			$_GET['status'] <= $PROG_DATA['STATUS_ID_DESIGN']['READY_90']) {
+		} elseif (isset($_GET['status']) &&
+			$_GET['status'] == $PROG_DATA['STATUS_ID_DESIGN']['START'] . '-' . $PROG_DATA['STATUS_ID_DESIGN']['READY_90']) {
 			$sqlQueryWhere = $sqlQueryWhere . 'AND (
 			(datetime_status_200 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR
 			(datetime_status_210 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR
@@ -390,7 +389,7 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['design
 	errorIfAccessDenied($_SESSION['user']['auth_design_order_select_designer'],
 		$PROG_CONFIG['HOST'] . '/design.php?error_massage=' . $PROG_DATA['ERROR']['ACCESS_DENIED'] . ' ' . __LINE__);
 
-	$userData = dbSelectData($con, 'SELECT position FROM adm_users WHERE id = ?', [$_POST['designer_id']])[0] ?? [];
+	$userData = dbSelectData($con, 'SELECT * FROM adm_users WHERE id = ?', [$_POST['designer_id']])[0] ?? [];
 
 	if (isset($userData['position']) === false || $userData['auth_design_order_change_status'] === 0) {
 		redirectToIf(false, '',

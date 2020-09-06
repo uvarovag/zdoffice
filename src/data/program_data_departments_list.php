@@ -5,6 +5,6 @@ $DEPARTAMENTS_LIST = [
 	'adv' => 'цех реклама',
 	'furn' => 'цех мебель',
 	'steel' => 'цех металл',
-	'install' => 'склад',
-	'supply' => 'монтаж'
+	'install' => 'монтаж',
+	'supply' => 'склад'
 ];

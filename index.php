@@ -5,6 +5,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/src/include.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_session_start.php');
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_tmp_data.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_notify.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_alert_massage.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_authorization_user.php');
 

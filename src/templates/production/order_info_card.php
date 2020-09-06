@@ -89,12 +89,10 @@
               <td class="px-0"><?= $data['PROG_DATA']['PRIORITY_ORDERS'][$data['order']['order_priority']]['icon'] ?? '???'; ?></td>
             </tr>
 
-						<?php if (currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTAMENTS_LIST']) !== false): ?>
+						<?php if (($generalStatus = currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTAMENTS_LIST'])) !== false): ?>
               <tr>
                 <td class="px-0">Стадия</td>
-                <td class="px-0">
-                  <?= $data['PROG_DATA']['STATUS_LIST_PRODUCTION'][currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTAMENTS_LIST'])]['icon'] ?? '???'; ?>
-                </td>
+                <td class="px-0"><?= $data['PROG_DATA']['STATUS_LIST_PRODUCTION'][$generalStatus]['icon'] ?? '???'; ?></td>
               </tr>
 						<?php endif; ?>
 

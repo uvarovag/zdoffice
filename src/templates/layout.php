@@ -104,46 +104,22 @@
             </div>
           </li>
 
+          <!--          <li class="nav-item d-sm-none">-->
+          <!--            <a class="nav-link" href="#" data-action="search-show" data-target="#navbar-search-main">-->
+          <!--              <i class="ni ni-zoom-split-in"></i>-->
+          <!--            </a>-->
+          <!--          </li>-->
 
-
-
-<!--          <li class="nav-item d-sm-none">-->
-<!--            <a class="nav-link" href="#" data-action="search-show" data-target="#navbar-search-main">-->
-<!--              <i class="ni ni-zoom-split-in"></i>-->
-<!--            </a>-->
-<!--          </li>-->
-
-
-<!--          <li class="nav-item dropdown">-->
-<!--            <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
-<!--              <i class="ni ni-bell-55"></i><sup>13</sup>-->
-<!--            </a>-->
-<!--            <div class="dropdown-menu dropdown-menu-xl  dropdown-menu-right  py-0 overflow-hidden">-->
-<!---->
-<!--              <div class="px-3 py-3">-->
-<!--                <h6 class="text-sm text-muted m-0">You have <strong class="--><?//= $data['CONFIG']['TEXT_STYLE']; ?><!--">13</strong> notifications.</h6>-->
-<!--              </div>-->
-<!---->
-<!--              <div class="list-group list-group-flush">-->
-<!--                <a href="#!" class="list-group-item list-group-item-action">-->
-<!--                  <div class="row align-items-center">-->
-<!--                    <div class="col">-->
-<!--                      <div class="d-flex justify-content-between align-items-center">-->
-<!--                        <div>-->
-<!--                          <h4 class="mb-0 text-sm">John Snow</h4>-->
-<!--                        </div>-->
-<!--                      </div>-->
-<!--                      <p class="text-sm mb-0">Let's meet at Starbucks at 11:30. Wdyt?</p>-->
-<!--                    </div>-->
-<!--                  </div>-->
-<!--                </a>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </li>-->
-
-
-
-
+					<?php if ($data['notifyQuantity'] > 0): ?>
+            <li class="nav-item dropdown">
+              <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="ni ni-bell-55"></i><sup><b><?= $data['notifyQuantity']; ?></b></sup>
+              </a>
+              <div class="dropdown-menu dropdown-menu-xl  dropdown-menu-right  py-0 overflow-hidden">
+								<?= $data['notify']; ?>
+              </div>
+            </li>
+					<?php endif; ?>
 
           <!--          <li class="nav-item dropdown">-->
           <!--            <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->

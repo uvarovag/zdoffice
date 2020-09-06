@@ -5,6 +5,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/src/include.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_session_start.php');
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_tmp_data.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_notify.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_alert_massage.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_authorization_user.php');
 
@@ -78,19 +79,19 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'order_in
 	}
 
 	$tmpLayoutContentData['designer'] = dbSelectData($con,
-			'SELECT id, last_name, first_name FROM adm_users WHERE id = ?',
+			'SELECT * FROM adm_users WHERE id = ?',
 			[$tmpLayoutContentData['order']['designer_id'] ?? 0])[0] ?? [];
 
 	$tmpLayoutContentData['createUser'] = dbSelectData($con,
-			'SELECT id, last_name, first_name FROM adm_users WHERE id = ?',
+			'SELECT * FROM adm_users WHERE id = ?',
 			[$tmpLayoutContentData['order']['create_user_id'] ?? 0])[0] ?? [];
 
 	$tmpLayoutContentData['confirmStartUser'] = dbSelectData($con,
-			'SELECT id, last_name, first_name FROM adm_users WHERE id = ?',
+			'SELECT * FROM adm_users WHERE id = ?',
 			[$tmpLayoutContentData['order']['confirm_start_user_id'] ?? 0])[0] ?? [];
 
 	$tmpLayoutContentData['confirmCancelUser'] = dbSelectData($con,
-			'SELECT id, last_name, first_name FROM adm_users WHERE id = ?',
+			'SELECT * FROM adm_users WHERE id = ?',
 			[$tmpLayoutContentData['order']['confirm_cancel_user_id'] ?? 0])[0] ?? [];
 
 	$notesQuery = 'SELECT u.last_name, u.first_name, 
@@ -173,12 +174,21 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	$sqlQuerySelect = 'SELECT 
        ud.last_name AS ud_last_name, ud.first_name AS ud_first_name, 
        uc.last_name AS uc_last_name, uc.first_name AS uc_first_name, 
+       
        o.const_current_status, DATE_FORMAT(const_datetime_status_0, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS const_datetime_status_0, 
        o.adv_current_status, DATE_FORMAT(adv_datetime_status_0, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS adv_datetime_status_0, 
        o.furn_current_status, DATE_FORMAT(furn_datetime_status_0, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS furn_datetime_status_0, 
        o.steel_current_status, DATE_FORMAT(steel_datetime_status_0, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS steel_datetime_status_0, 
        o.install_current_status, DATE_FORMAT(install_datetime_status_0, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS install_datetime_status_0, 
        o.supply_current_status, DATE_FORMAT(supply_datetime_status_0, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS supply_datetime_status_0, 
+        
+       DATE_FORMAT(const_deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS const_deadline_date, 
+       DATE_FORMAT(adv_deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS adv_deadline_date, 
+       DATE_FORMAT(furn_deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS furn_deadline_date, 
+       DATE_FORMAT(steel_deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS steel_deadline_date, 
+       DATE_FORMAT(install_deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS install_deadline_date, 
+       DATE_FORMAT(supply_deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS supply_deadline_date, 
+       
        o.id, o.designer_id, o.order_name_in, o.order_name_out, o.client_name, 
        o.order_priority, o.error_priority 
        FROM production_orders o ';
@@ -241,6 +251,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 
 	$tmpLayoutData['pagination'] = $paginationData['tmpPagination'];
 	$sqlPagination = $paginationData['sqlPagination'];
+
+	$tmpLayoutContentData['departmentFilter'] = $departmentFilter;
 
 	$tmpLayoutContentData['createUsers'] =
 		dbSelectData($con, 'SELECT * FROM adm_users WHERE auth_design_order_new = 1', []);

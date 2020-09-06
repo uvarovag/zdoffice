@@ -12,7 +12,7 @@ function getActiveStatusArr($orderData, $departmentsList) {
 	return $status;
 }
 
-// получить общий текущий статус
+// общий текущий статус
 function currentGeneralStatus($orderData, $departmentsList) {
 
 	$status = getActiveStatusArr($orderData, $departmentsList);
@@ -56,6 +56,7 @@ function currentMaxStatus($orderData, $departmentsList) {
 	return $max;
 }
 
+// какие отделы учавствуют в заказе
 function activeDepartments($orderData, $departmentsList) {
 
 	$status = getActiveStatusArr($orderData, $departmentsList);
@@ -69,6 +70,7 @@ function activeDepartments($orderData, $departmentsList) {
 	return empty($departments) ? false : $departments;
 }
 
+// в каких отделах производства пользователь может менять стадию заказа
 function userAvailableDepartmentsArr($userData, $departmentsList) {
 
 	$availableDepartments = [];

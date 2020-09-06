@@ -10,7 +10,7 @@
       <input type="hidden" name="redirect_error"
              value="<?= $data['redirectError']; ?>">
       <div class="modal-header">
-        <h4 class="modal-title" id="exampleModalLabel">Новая заметка</h5>
+        <h4 class="modal-title" id="exampleModalLabel">Новая заметка</h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>

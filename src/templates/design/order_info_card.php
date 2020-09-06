@@ -152,7 +152,10 @@
 					$_SESSION['user']['id'] == $data['order']['create_user_id']): ?>
           <div class="mb-4 d-inline-block">
             <form class="d-inline-block mr-2" action="<?= $data['CONFIG']['HOST'] . '/design.php'; ?>" method="POST">
-
+              <input type="hidden" name="redirect_success" value="<?= $data['CONFIG']['HOST'] .
+              '/design.php?action=order_info_card&id=' . $data['order']['id']; ?>">
+              <input type="hidden" name="redirect_error" value="<?= $data['CONFIG']['HOST'] .
+              '/design.php?action=order_info_card&id=' . $data['order']['id']; ?>">
               <input type="hidden" name="action" value="change_status">
               <input type="hidden" name="status" value="999">
               <input type="hidden" name="order_id" value="<?= $data['order']['id']; ?>">
@@ -197,7 +200,8 @@
                  aria-controls="tabs-icons-text-files" aria-selected="false">Файлы</a>
             </li>
             <li class="mb-3 nav-item">
-              <a class="nav-link mb-sm-3 mb-md-0 <?= $data['activeTab'] == 'designer' ? 'active' : ''; ?>" id="tabs-icons-text-designer-tab" data-toggle="tab" href="#tabs-icons-text-designer" role="tab"
+              <a class="nav-link mb-sm-3 mb-md-0 <?= $data['activeTab'] == 'designer' ? 'active' : ''; ?>" id="tabs-icons-text-designer-tab" data-toggle="tab"
+                 href="#tabs-icons-text-designer" role="tab"
                  aria-controls="tabs-icons-text-designer" aria-selected="false">Дизайнер</a>
             </li>
           </ul>
