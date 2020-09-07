@@ -187,7 +187,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	}
 
 	if (isset($_GET['status']) && $_GET['status'] != 'all' && $dateFilter == false) {
-		if ($_GET['status'] == $PROG_DATA['STATUS_ID_DESIGN']['START'] . '-' . $PROG_DATA['STATUS_ID_DESIGN']['READY_90']) {
+		if ($_GET['status'] === $PROG_DATA['STATUS_ID_DESIGN']['START'] . '-' . $PROG_DATA['STATUS_ID_DESIGN']['READY_90']) {
 			$sqlQueryWhere = $sqlQueryWhere . 'AND current_status >= ? AND current_status <= ? ';
 			$sqlParameters['status_start'] = $PROG_DATA['STATUS_ID_DESIGN']['START'];
 			$sqlParameters['status_ready_90'] = $PROG_DATA['STATUS_ID_DESIGN']['READY_90'];
@@ -219,7 +219,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 			$sqlParameters['datetime_status_100_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
 			$sqlParameters['datetime_status_100_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
 		} elseif (isset($_GET['status']) &&
-			$_GET['status'] == $PROG_DATA['STATUS_ID_DESIGN']['START'] . '-' . $PROG_DATA['STATUS_ID_DESIGN']['READY_90']) {
+			$_GET['status'] === $PROG_DATA['STATUS_ID_DESIGN']['START'] . '-' . $PROG_DATA['STATUS_ID_DESIGN']['READY_90']) {
 			$sqlQueryWhere = $sqlQueryWhere . 'AND (
 			(datetime_status_200 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR
 			(datetime_status_210 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR

@@ -52,22 +52,28 @@
         </select>
       </div>
       <div class="form-group col">
-        <select class="form-control form-control-sm" name="status" disabled>
+        <select class="form-control form-control-sm" name="status">
           <option value="all" selected disabled>стадия</option>
           <option <?= $data['formData']['status'] == 'all' ? 'selected' : ''; ?>
                   value="all">все
           </option>
           <option <?= $data['formData']['status'] == '0' ? 'selected' : ''; ?>
-                  value="0">ожидание назначения дизайнера
+                  value="0">ожидание подтверждения
           </option>
           <option <?= $data['formData']['status'] == '100' ? 'selected' : ''; ?>
-                  value="100">получено дизайнером
+                  value="100">получено производством
           </option>
           <option <?= $data['formData']['status'] == '200-290' ? 'selected' : ''; ?>
                   value="200-290">в работе
           </option>
           <option <?= $data['formData']['status'] == '300' ? 'selected' : ''; ?>
                   value="300">выполнено
+          </option>
+          <option <?= $data['formData']['status'] == '400' ? 'selected' : ''; ?>
+                  value="400">отгружено
+          </option>
+          <option <?= $data['formData']['status'] == '998' ? 'selected' : ''; ?>
+                  value="998">ожидание подтверждения отмены
           </option>
           <option <?= $data['formData']['status'] == '999' ? 'selected' : ''; ?>
                   value="999">отменено
@@ -76,7 +82,7 @@
       </div>
       <div class="form-group col-2">
         <input type="number" class="form-control form-control-sm" name="deadline"
-               value="<?= $data['formData']['deadline']; ?>" placeholder="дней до дедлайна" disabled>
+               value="<?= $data['formData']['deadline']; ?>" placeholder="дней до дедлайна">
       </div>
     </div>
     <div class="form-row">
@@ -87,9 +93,9 @@
       <div class="form-group col-3 mb-0 input-daterange datepicker">
         <div class="input-group">
           <input type="text" aria-label="First name" class="form-control form-control-sm" name="date_from"
-                 value="<?= $data['formData']['dateFrom']; ?>" placeholder="c" disabled>
+                 value="<?= $data['formData']['dateFrom']; ?>" placeholder="c">
           <input type="text" aria-label="Last name" class="form-control form-control-sm" name="date_to"
-                 value="<?= $data['formData']['dateTo']; ?>" placeholder="по" disabled>
+                 value="<?= $data['formData']['dateTo']; ?>" placeholder="по">
         </div>
       </div>
       <div class="form-group col-2 mb-0">
