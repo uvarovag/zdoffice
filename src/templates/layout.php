@@ -14,7 +14,6 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 -->
 <!-- bg-gradient-red bg-gradient-orange bg-gradient-info bg-gradient-green bg-gradient-purple bg-gradient-yellow -->
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -36,22 +35,47 @@
   <link rel="stylesheet" href="/argon-dashboard/assets/daterangepicker/daterangepicker-min.css?v=5" type="text/css">
 </head>
 <body>
+<?php if (isset($data['reloadEveryMin']) && $data['reloadEveryMin']): ?>
+  <script type="text/javascript">
+
+    function setTimer(t) {
+      return setTimeout(() => {
+        location.reload();
+      }, t);
+    }
+
+    function refreshTimer(timerId, t) {
+      clearTimeout(timerId);
+      return setTimer(t);
+    }
+
+    let reloadTime = 1000 * 60 * <?= $data['reloadEveryMin']; ?>;
+    let timerId = setTimer(reloadTime);
+
+    document.addEventListener('click', () => {
+      timerId = refreshTimer(timerId, reloadTime);
+    });
+
+    document.addEventListener('mousemove', () => {
+      timerId = refreshTimer(timerId, reloadTime);
+    });
+
+    document.addEventListener('keydown', () => {
+      timerId = refreshTimer(timerId, reloadTime);
+    });
+
+  </script>
+<?php endif; ?>
 <?= $data['modal']; ?>
 <!-- Sidenav -->
 <nav class="sidenav navbar navbar-vertical fixed-left navbar-expand-xs navbar-light bg-white" id="sidenav-main">
   <div class="scrollbar-inner">
     <!-- Brand -->
-<!--    <div class="sidenav-header  align-items-center mb-4">-->
-<!--      <a class="navbar-brand" href="--><?//= $data['CONFIG']['HOST'] . '/index.php'; ?><!--">-->
-<!--        <img src="/argon-dashboard/assets/img/brand/zd-blue.png" class="navbar-brand-img" alt="...">-->
-<!--        <h2 class="d-inline align-bottom --><?//= $data['CONFIG']['TEXT_STYLE']; ?><!--">ZIYNAT DESIGN</h2><br/>-->
-<!--        <p class="d-inline align-bottom --><?//= $data['CONFIG']['TEXT_STYLE']; ?><!--">online application</p>-->
-<!--      </a>-->
-<!--    </div>-->
     <div class="sidenav-header  align-items-center mb-4">
       <a class="navbar-brand" href="<?= $data['CONFIG']['HOST'] . '/index.php'; ?>">
         <img src="/argon-dashboard/assets/img/brand/zd-blue.png" class="navbar-brand-img" alt="...">
-        <p class="d-inline align-bottom <?= $data['CONFIG']['TEXT_STYLE']; ?>">Online application</p><br/>
+        <h2 class="d-inline align-bottom <?= $data['CONFIG']['TEXT_STYLE']; ?>">ZIYNAT DESIGN</h2><br/>
+        <p class="d-inline align-bottom <?= $data['CONFIG']['TEXT_STYLE']; ?>">online application</p>
       </a>
     </div>
     <div class="navbar-inner">

@@ -24,6 +24,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'new_order_card') {
 	$_SESSION['formId'] = md5(time());
 	$tmpLayoutContentData['formId'] = $_SESSION['formId'];
 
+	$tmpLayoutData['reloadEveryMin'] = false;
+
 	if (isset($_SESSION['navList']['productionNewOrder']['isActive']))
 		$_SESSION['navList']['productionNewOrder']['isActive'] = true;
 	$tmpLayoutData['title'] = 'Новая заявка на производство';

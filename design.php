@@ -24,6 +24,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'new_order_card') {
 	$_SESSION['formId'] = md5(time());
 	$tmpLayoutContentData['formId'] = $_SESSION['formId'];
 
+	$tmpLayoutData['reloadEveryMin'] = false;
+
 	if (isset($_SESSION['navList']['designNewOrder']['isActive']))
 		$_SESSION['navList']['designNewOrder']['isActive'] = true;
 	$tmpLayoutData['title'] = 'Новая заявка на дизайн';
@@ -408,18 +410,19 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['design
 //	'READY_80' 	=> 280,
 //	'READY_90' 	=> 290,
 
-	$changeDesignerIdQuery = 'UPDATE design_orders SET designer_id = ?, current_status = ?, datetime_status_100 = ?, 
-                         datetime_status_200 = NULL, 
-                         datetime_status_210 = NULL, 
-                         datetime_status_220 = NULL, 
-                         datetime_status_230 = NULL, 
-                         datetime_status_240 = NULL, 
-                         datetime_status_250 = NULL, 
-                         datetime_status_260 = NULL, 
-                         datetime_status_270 = NULL, 
-                         datetime_status_280 = NULL, 
-                         datetime_status_290 = NULL 
-												 WHERE id = ?';
+	$changeDesignerIdQuery = 'UPDATE design_orders SET designer_id = ?, current_status = ?, 
+    datetime_status_100 = ?,
+		datetime_status_200 = NULL, 
+    datetime_status_210 = NULL, 
+    datetime_status_220 = NULL, 
+    datetime_status_230 = NULL, 
+    datetime_status_240 = NULL, 
+    datetime_status_250 = NULL, 
+    datetime_status_260 = NULL, 
+    datetime_status_270 = NULL, 
+    datetime_status_280 = NULL, 
+    datetime_status_290 = NULL 
+		WHERE id = ?';
 	$changeDesignerIdData = [$_POST['designer_id'],
 		$PROG_DATA['STATUS_ID_DESIGN']['RECEIVED'],
 		date('Y-m-d H:i:s'), $_POST['order_id']];
