@@ -41,11 +41,17 @@
 <nav class="sidenav navbar navbar-vertical fixed-left navbar-expand-xs navbar-light bg-white" id="sidenav-main">
   <div class="scrollbar-inner">
     <!-- Brand -->
+<!--    <div class="sidenav-header  align-items-center mb-4">-->
+<!--      <a class="navbar-brand" href="--><?//= $data['CONFIG']['HOST'] . '/index.php'; ?><!--">-->
+<!--        <img src="/argon-dashboard/assets/img/brand/zd-blue.png" class="navbar-brand-img" alt="...">-->
+<!--        <h2 class="d-inline align-bottom --><?//= $data['CONFIG']['TEXT_STYLE']; ?><!--">ZIYNAT DESIGN</h2><br/>-->
+<!--        <p class="d-inline align-bottom --><?//= $data['CONFIG']['TEXT_STYLE']; ?><!--">online application</p>-->
+<!--      </a>-->
+<!--    </div>-->
     <div class="sidenav-header  align-items-center mb-4">
       <a class="navbar-brand" href="<?= $data['CONFIG']['HOST'] . '/index.php'; ?>">
         <img src="/argon-dashboard/assets/img/brand/zd-blue.png" class="navbar-brand-img" alt="...">
-        <h2 class="d-inline align-bottom <?= $data['CONFIG']['TEXT_STYLE']; ?>">ZIYNAT DESIGN</h2><br/>
-        <p class="d-inline align-bottom <?= $data['CONFIG']['TEXT_STYLE']; ?>">online application</p>
+        <p class="d-inline align-bottom <?= $data['CONFIG']['TEXT_STYLE']; ?>">Online application</p><br/>
       </a>
     </div>
     <div class="navbar-inner">

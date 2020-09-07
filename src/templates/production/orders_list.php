@@ -108,9 +108,9 @@
       <thead>
       <tr>
         <th scope="col">Дата создания</th>
-        <th scope="col">Счет бонсенс</th>
         <th scope="col">Контрагент</th>
         <th scope="col">Менеджер</th>
+        <th scope="col">Дизайнер</th>
         <th scope="col">Приоритет</th>
         <th scope="col">Стадия</th>
         <th scope="col">Дедлайн</th>
@@ -124,11 +124,15 @@
           <td>
             <?= $order[activeDepartments($order, $data['PROG_DATA']['DEPARTAMENTS_LIST'])[0] . '_datetime_status_0'] ?? '???'; ?>
           </td>
-          <td><?= shortStr($order['order_name_out'], $data['CONFIG']['MAX_SYMBOLS_TABLE_CELL']); ?></td>
           <td><?= shortStr($order['client_name'], $data['CONFIG']['MAX_SYMBOLS_TABLE_CELL']); ?></td>
           <td>
           <span>
             <?= shortStr($order['uc_last_name'] . ' ' . $order['uc_first_name'], $data['CONFIG']['MAX_SYMBOLS_TABLE_CELL']); ?>
+          </span>
+          </td>
+          <td>
+          <span>
+            <?= shortStr($order['ud_last_name'] . ' ' . $order['ud_first_name'], $data['CONFIG']['MAX_SYMBOLS_TABLE_CELL']); ?>
           </span>
           </td>
           <td>

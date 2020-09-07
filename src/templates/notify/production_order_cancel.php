@@ -7,8 +7,12 @@
 			<div class="row align-items-center">
 				<div class="col">
 					<div class="">
+            <small>
+							<?= shortStr($notity['client_name'], $data['CONFIG']['MAX_SYMBOLS_TABLE_CELL']); ?>
+            </small>
+            |
 						<small>
-							Приоритет:
+							приоритет:
 							<?= $data['PROG_DATA']['PRIORITY_ORDERS'][$notity['order_priority']]['icon'] ?? '???'; ?>
 						</small>
 					</div>

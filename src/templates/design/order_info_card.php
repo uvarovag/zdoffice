@@ -90,7 +90,7 @@
           <p><?= $data['order']['task_text']; ?></p>
         </div>
 
-				<?php if ($data['order']['current_status'] == $data['PROG_DATA']['STATUS_ID_DESIGN']['WAIT'] &&
+				<?php if ($data['order']['current_status'] < $data['PROG_DATA']['STATUS_ID_DESIGN']['DONE'] &&
 					$_SESSION['user']['auth_design_order_select_designer']): ?>
           <div class="mb-4">
             <hr>
@@ -103,9 +103,7 @@
                   <select name="designer_id" class="form-control" required>
                     <option></option>
 										<?php foreach ($data['designers'] as $designer): ?>
-											<?php if ($designer['id'] === $data['order']['designer_id']): ?>
-                        <option value="<?= $designer['id']; ?>" selected><?= $designer['last_name'] . ' ' . $designer['first_name']; ?></option>
-											<?php else: ?>
+											<?php if ($designer['id'] !== $data['order']['designer_id']): ?>
                         <option value="<?= $designer['id']; ?>"><?= $designer['last_name'] . ' ' . $designer['first_name']; ?></option>
 											<?php endif; ?>
 										<?php endforeach; ?>

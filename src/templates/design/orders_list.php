@@ -98,8 +98,8 @@
       <thead>
       <tr>
         <th scope="col">Дата создания</th>
-        <th scope="col">Счет бонсенс</th>
         <th scope="col">Контрагент</th>
+        <th scope="col">Менеджер</th>
         <th scope="col">Дизайнер</th>
         <th scope="col">Приоритет</th>
         <th scope="col">Стадия</th>
@@ -112,14 +112,24 @@
             onclick="window.location.href='<?= $data['CONFIG']['HOST'] . '/design.php?action=order_info_card&id=' .
 						$order['id']; ?>'; return false">
           <td><?= $order['datetime_status_0']; ?></td>
-          <td><?= shortStr($order['order_name_out'], $data['CONFIG']['MAX_SYMBOLS_TABLE_CELL']); ?></td>
           <td><?= shortStr($order['client_name'], $data['CONFIG']['MAX_SYMBOLS_TABLE_CELL']); ?></td>
           <td>
+            <span>
+            <?php if ($order['create_user_id']): ?>
+							<?= shortStr($order['uc_last_name'] . ' ' . $order['uc_first_name'], $data['CONFIG']['MAX_SYMBOLS_TABLE_CELL']); ?>
+						<?php else: ?>
+              не назначен
+						<?php endif; ?>
+            </span>
+          </td>
+          <td>
+            <span>
             <?php if ($order['designer_id']): ?>
-            <?= shortStr($order['ud_last_name'] . ' ' . $order['ud_first_name'], $data['CONFIG']['MAX_SYMBOLS_TABLE_CELL']); ?>
-            <?php else: ?>
-            не назначен
-            <?php endif; ?>
+							<?= shortStr($order['ud_last_name'] . ' ' . $order['ud_first_name'], $data['CONFIG']['MAX_SYMBOLS_TABLE_CELL']); ?>
+						<?php else: ?>
+              не назначен
+						<?php endif; ?>
+            </span>
           </td>
           <td>
             <?= $data['PROG_DATA']['PRIORITY_ORDERS'][$order['order_priority']]['icon'] ?? '???'; ?>

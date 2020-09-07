@@ -5,9 +5,9 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/src/include.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_session_start.php');
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_tmp_data.php');
-require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_notify.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_alert_massage.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_authorization_user.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_notify.php');
 
 date_default_timezone_set($PROG_CONFIG['TIMEZONE']);
 $_SESSION['navList'] = cleanActiveTabs($_SESSION['navList']);
@@ -391,13 +391,35 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['design
 
 	$userData = dbSelectData($con, 'SELECT * FROM adm_users WHERE id = ?', [$_POST['designer_id']])[0] ?? [];
 
-	if (isset($userData['position']) === false || $userData['auth_design_order_change_status'] === 0) {
+	if (isset($userData['id']) === false || $userData['auth_design_order_change_status'] === 0) {
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] .
 			'/design.php?action=order_info_card&id=' . $_POST['order_id'] . '&error_massage=' . $PROG_DATA['ERROR']['ID']);
 	}
 
-	$changeDesignerIdQuery = 'UPDATE design_orders SET designer_id = ?, current_status = ?, datetime_status_100 = ? WHERE id = ?';
+//	'START'			=> 200,
+//	'READY_10' 	=> 210,
+//	'READY_20' 	=> 220,
+//	'READY_30' 	=> 230,
+//	'READY_40' 	=> 240,
+//	'READY_50' 	=> 250,
+//	'READY_60' 	=> 260,
+//	'READY_70' 	=> 270,
+//	'READY_80' 	=> 280,
+//	'READY_90' 	=> 290,
+
+	$changeDesignerIdQuery = 'UPDATE design_orders SET designer_id = ?, current_status = ?, datetime_status_100 = ?, 
+                         datetime_status_200 = NULL, 
+                         datetime_status_210 = NULL, 
+                         datetime_status_220 = NULL, 
+                         datetime_status_230 = NULL, 
+                         datetime_status_240 = NULL, 
+                         datetime_status_250 = NULL, 
+                         datetime_status_260 = NULL, 
+                         datetime_status_270 = NULL, 
+                         datetime_status_280 = NULL, 
+                         datetime_status_290 = NULL 
+												 WHERE id = ?';
 	$changeDesignerIdData = [$_POST['designer_id'],
 		$PROG_DATA['STATUS_ID_DESIGN']['RECEIVED'],
 		date('Y-m-d H:i:s'), $_POST['order_id']];
