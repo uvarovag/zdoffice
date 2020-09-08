@@ -48,7 +48,7 @@ if ($_SESSION['user']['auth_design_order_select_designer']) {
 	}
 }
 
-$availableDepartmentsArr = userAvailableDepartmentsArr($_SESSION['user'], $PROG_DATA['DEPARTAMENTS_LIST']);
+$availableDepartmentsArr = userAvailableDepartmentsArr($_SESSION['user'], $PROG_DATA['DEPARTMENTS_LIST']);
 
 if (isset($availableDepartmentsArr[0])) {
 

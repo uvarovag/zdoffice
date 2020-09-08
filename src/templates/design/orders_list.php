@@ -53,8 +53,8 @@
           <option <?= $data['formData']['status'] == '100' ? 'selected' : ''; ?>
                   value="100">получено дизайнером
           </option>
-          <option <?= $data['formData']['status'] == '200-290' ? 'selected' : ''; ?>
-                  value="200-290">в работе
+          <option <?= $data['formData']['status'] == '200,210,220,230,240,250,260,270,280,290' ? 'selected' : ''; ?>
+                  value="200,210,220,230,240,250,260,270,280,290">в работе
           </option>
           <option <?= $data['formData']['status'] == '300' ? 'selected' : ''; ?>
                   value="300">выполнено
@@ -88,6 +88,11 @@
     </div>
   </form>
 </div>
+
+<div class="card">
+  <p><?= $data['sql']; ?></p>
+</div>
+
 
 <div class="card">
   <div class="card-header bg-transparent">

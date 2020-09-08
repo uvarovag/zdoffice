@@ -1,6 +1,6 @@
 <?php
 
-$DEPARTAMENTS_LIST = [
+$DEPARTMENTS_LIST = [
 	'const' => 'конструктор',
 	'adv' => 'цех реклама',
 	'furn' => 'цех мебель',

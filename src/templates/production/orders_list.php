@@ -8,7 +8,7 @@
           <option <?= $data['formData']['department'] == 'all' ? 'selected' : ''; ?>
                   value="all">все
           </option>
-					<?php foreach ($data['PROG_DATA']['DEPARTAMENTS_LIST'] as $depKey => $depVal): ?>
+					<?php foreach ($data['PROG_DATA']['DEPARTMENTS_LIST'] as $depKey => $depVal): ?>
             <option <?= $data['formData']['department'] == $depKey ? 'selected' : ''; ?>
                     value="<?= $depKey; ?>"><?= $depVal; ?></option>
 					<?php endforeach; ?>
@@ -63,8 +63,8 @@
           <option <?= $data['formData']['status'] == '100' ? 'selected' : ''; ?>
                   value="100">получено производством
           </option>
-          <option <?= $data['formData']['status'] == '200-290' ? 'selected' : ''; ?>
-                  value="200-290">в работе
+          <option <?= $data['formData']['status'] == '200,210,220,230,240,250,260,270,280,290' ? 'selected' : ''; ?>
+                  value="200,210,220,230,240,250,260,270,280,290">в работе
           </option>
           <option <?= $data['formData']['status'] == '300' ? 'selected' : ''; ?>
                   value="300">выполнено
@@ -128,7 +128,7 @@
             onclick="window.location.href='<?= $data['CONFIG']['HOST'] . '/production.php?action=order_info_card&id=' .
 						$order['id']; ?>'; return false">
           <td>
-            <?= $order[activeDepartments($order, $data['PROG_DATA']['DEPARTAMENTS_LIST'])[0] . '_datetime_status_0'] ?? '???'; ?>
+            <?= $order[activeDepartments($order, $data['PROG_DATA']['DEPARTMENTS_LIST'])[0] . '_datetime_status_0'] ?? '???'; ?>
           </td>
           <td><?= shortStr($order['client_name'], $data['CONFIG']['MAX_SYMBOLS_TABLE_CELL']); ?></td>
           <td>
@@ -150,7 +150,7 @@
           <span>
             <?php if ($data['departmentFilter']): ?>
 							<?= $data['PROG_DATA']['STATUS_LIST_PRODUCTION'][$order[$data['departmentFilter'] . '_current_status']]['icon'] ?? '???'; ?>
-						<?php elseif (($generalStatus = currentGeneralStatus($order, $data['PROG_DATA']['DEPARTAMENTS_LIST'])) !== false): ?>
+						<?php elseif (($generalStatus = currentGeneralStatus($order, $data['PROG_DATA']['DEPARTMENTS_LIST'])) !== false): ?>
 							<?= $data['PROG_DATA']['STATUS_LIST_PRODUCTION'][$generalStatus]['icon'] ?? '???'; ?>
             <?php endif; ?>
           </span>

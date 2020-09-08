@@ -4,7 +4,7 @@ function setNavListUser($navList, $user, $PROG_DATA) {
 
 	$navList['designOrdersListMy']['url'] = $navList['designOrdersListMy']['url'] . '&designer_id=' . $user['id'];
 	$navList['productionOrdersListMy']['url'] = $navList['productionOrdersListMy']['url'] . '&department=' .
-		(userAvailableDepartmentsArr($user, $PROG_DATA['DEPARTAMENTS_LIST'])[0] ?? 'all');
+		(userAvailableDepartmentsArr($user, $PROG_DATA['DEPARTMENTS_LIST'])[0] ?? 'all');
 
 	if ($user['auth_design_order_new'] === 0)
 		unset($navList['designNewOrder']);
@@ -25,7 +25,7 @@ function setNavListUser($navList, $user, $PROG_DATA) {
 		unset($navList['captionProduction']);
 
 	if ($user['auth_production_order_view'] === 0 ||
-		userAvailableDepartmentsArr($user, $PROG_DATA['DEPARTAMENTS_LIST']) == false)
+		userAvailableDepartmentsArr($user, $PROG_DATA['DEPARTMENTS_LIST']) == false)
 		unset($navList['productionOrdersListMy']);
 
 	return $navList;

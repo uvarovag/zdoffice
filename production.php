@@ -150,7 +150,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	errorIfAccessDenied($_SESSION['user']['auth_production_order_view'],
 		$PROG_CONFIG['HOST'] . '/production.php?error_massage=' . $PROG_DATA['ERROR']['ACCESS_DENIED'] . ' ' . __LINE__);
 
-	$userAvailableDepartmentsArr = userAvailableDepartmentsArr($_SESSION['user'], $PROG_DATA['DEPARTAMENTS_LIST']);
+	$userAvailableDepartmentsArr = userAvailableDepartmentsArr($_SESSION['user'], $PROG_DATA['DEPARTMENTS_LIST']);
 
 	if (isset($_SESSION['navList']['productionOrdersListMy']['isActive']) &&
 		isset($_GET['department']) && $userAvailableDepartmentsArr !== false &&
@@ -202,16 +202,27 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	$sqlSortBy = 'ORDER BY o.id * o.order_priority * o.sort_priority * o.error_priority DESC ';
 
 
-	$departmentFilter = (isset($_GET['department']) &&
-		array_key_exists($_GET['department'], $PROG_DATA['DEPARTAMENTS_LIST'])) ? $_GET['department'] : false;
+	$statusFilter = paramSqlFilterArrVal(',', $_GET['status'] ?? '', $PROG_DATA['STATUS_ID_PRODUCTION']);
+	if ($statusFilter === false)
+		foreach ($PROG_DATA['STATUS_ID_PRODUCTION'] as $key => $val)
+			$statusFilter[] = $val;
+
+	$departmentFilter = paramSqlFilterArrKey(',', $_GET['department'] ?? '', $PROG_DATA['DEPARTMENTS_LIST']);
+	if ($departmentFilter === false)
+		foreach ($PROG_DATA['DEPARTMENTS_LIST'] as $key => $val)
+			$departmentFilter[] = $key;
 
 	$dateFilter = isset($_GET['date_from']) && isset($_GET['date_to']) && $_GET['date_from'] && $_GET['date_to'];
 
-	$statusFilter = isset($_GET['status']) && $_GET['status'] != 'all';
 
+	if (isset($_GET['department']) && $_GET['department'] !== 'all' && $dateFilter === false) {
+		$sqlQueryWhere = $sqlQueryWhere . 'AND (';
 
-	if ($departmentFilter) {
-		$sqlQueryWhere = $sqlQueryWhere . 'AND ' . $departmentFilter . '_datetime_status_0 IS NOT NULL ';
+		foreach ($departmentFilter as $val)
+			$sqlQueryWhere = $sqlQueryWhere . $val . '_datetime_status_0 IS NOT NULL OR ';
+
+		$sqlQueryWhere = substr($sqlQueryWhere, 0, -4);
+		$sqlQueryWhere = $sqlQueryWhere . ') ';
 	}
 
 	if (isset($_GET['create_user_id']) && $_GET['create_user_id'] != 'all') {
@@ -229,50 +240,23 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 		$sqlParameters[] = $_GET['priority'];
 	}
 
-	if ($statusFilter && $dateFilter === false && $departmentFilter !== false) {
-
-		if ($_GET['status'] === $PROG_DATA['STATUS_ID_PRODUCTION']['START'] . '-' . $PROG_DATA['STATUS_ID_PRODUCTION']['READY_90']) {
-			$sqlQueryWhere = $sqlQueryWhere . 'AND ' . $departmentFilter . '_current_status >= ? AND ' . $departmentFilter . '_current_status <= ? ';
-			$sqlParameters[] = $PROG_DATA['STATUS_ID_PRODUCTION']['START'];
-			$sqlParameters[] = $PROG_DATA['STATUS_ID_PRODUCTION']['READY_90'];
-		} else {
-			$sqlQueryWhere = $sqlQueryWhere . 'AND ' . $departmentFilter . '_current_status = ? ';
-			$sqlParameters[] = $_GET['status'];
-		}
-	}
-
-	if ($statusFilter && $dateFilter === false && $departmentFilter === false) {
-
-		if ($_GET['status'] === $PROG_DATA['STATUS_ID_PRODUCTION']['START'] . '-' . $PROG_DATA['STATUS_ID_PRODUCTION']['READY_90']) {
-
-			$sqlQueryWhere = $sqlQueryWhere . 'AND (';
-			foreach ($PROG_DATA['DEPARTAMENTS_LIST'] as $depKey => $depVal) {
-				$sqlQueryWhere = $sqlQueryWhere . '(' . $depKey . '_current_status >= ? AND ' . $depKey . '_current_status <= ?) OR ';
-				$sqlParameters[] = $PROG_DATA['STATUS_ID_PRODUCTION']['START'];
-				$sqlParameters[] = $PROG_DATA['STATUS_ID_PRODUCTION']['READY_90'];
-			}
-			$sqlQueryWhere = substr($sqlQueryWhere, 0, -4);
-			$sqlQueryWhere = $sqlQueryWhere . ') ';
-		} else {
-			$sqlQueryWhere = $sqlQueryWhere . 'AND (';
-			foreach ($PROG_DATA['DEPARTAMENTS_LIST'] as $depKey => $depVal) {
-				$sqlQueryWhere = $sqlQueryWhere . $depKey . '_current_status = ? OR ';
-				$sqlParameters[] = $_GET['status'];
-			}
-			$sqlQueryWhere = substr($sqlQueryWhere, 0, -4);
-			$sqlQueryWhere = $sqlQueryWhere . ') ';
-		}
-	}
-
-	if (isset($_GET['deadline']) && ($_GET['deadline'] || $_GET['deadline'] == '0') && $departmentFilter !== false) {
-		$sqlQueryWhere = $sqlQueryWhere . 'AND ' . $departmentFilter . '_deadline_date <= NOW() + INTERVAL ? DAY ';
-		$sqlParameters[] = $_GET['deadline'];
-	}
-
-	if (isset($_GET['deadline']) && ($_GET['deadline'] || $_GET['deadline'] == '0') && $departmentFilter === false) {
+	if (isset($_GET['status']) && $_GET['status'] !== 'all' && $dateFilter === false) {
 		$sqlQueryWhere = $sqlQueryWhere . 'AND (';
-		foreach ($PROG_DATA['DEPARTAMENTS_LIST'] as $depKey => $depVal) {
-			$sqlQueryWhere = $sqlQueryWhere . $depKey . '_deadline_date <= NOW() + INTERVAL ? DAY OR ';
+
+		foreach ($departmentFilter as $depKey => $depVal) {
+			foreach ($statusFilter as $stKey => $stVal) {
+				$sqlQueryWhere = $sqlQueryWhere . $depVal . '_current_status = ? OR ';
+				$sqlParameters[] = $stVal;
+			}
+		}
+		$sqlQueryWhere = substr($sqlQueryWhere, 0, -4);
+		$sqlQueryWhere = $sqlQueryWhere . ') ';
+	}
+
+	if (isset($_GET['deadline']) && mb_strlen($_GET['deadline']) > 0) {
+		$sqlQueryWhere = $sqlQueryWhere . 'AND (';
+		foreach ($departmentFilter as $depKey => $depVal) {
+			$sqlQueryWhere = $sqlQueryWhere . $depVal . '_deadline_date <= NOW() + INTERVAL ? DAY OR ';
 			$sqlParameters[] = $_GET['deadline'];
 		}
 		$sqlQueryWhere = substr($sqlQueryWhere, 0, -4);
@@ -286,104 +270,12 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 		$sqlParameters[] = '%' . $_GET['search'] . '%';
 	}
 
-
-	// const
-	// adv
-	// furn
-	// steel
-	// install
-	// supply
-	// const_datetime_status_210
-
-	// фильтр дата и статус
-	if ($dateFilter && $statusFilter !== false && $departmentFilter === false) {
-
-		if ($_GET['status'] === $PROG_DATA['STATUS_ID_PRODUCTION']['START'] . '-' . $PROG_DATA['STATUS_ID_PRODUCTION']['READY_90']) {
-
-			$sqlQueryWhere = $sqlQueryWhere . 'AND (';
-
-			foreach ($PROG_DATA['DEPARTAMENTS_LIST'] as $depKey => $depVal) {
-
-				foreach ($PROG_DATA['STATUS_ID_PRODUCTION'] as $stKey => $stVal) {
-					if ($stVal >= $PROG_DATA['STATUS_ID_PRODUCTION']['START'] && $stVal <= $PROG_DATA['STATUS_ID_PRODUCTION']['READY_90']) {
-						$sqlQueryWhere = $sqlQueryWhere . '(' . $depKey . '_datetime_status_' . $stVal . ' BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR ';
-						$sqlParameters[] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-						$sqlParameters[] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-					}
-				}
-
-			}
-			$sqlQueryWhere = substr($sqlQueryWhere, 0, -4);
-			$sqlQueryWhere = $sqlQueryWhere . ') ';
-		} else {
-			$sqlQueryWhere = $sqlQueryWhere . 'AND (';
-
-			foreach ($PROG_DATA['DEPARTAMENTS_LIST'] as $depKey => $depVal) {
-				$sqlQueryWhere = $sqlQueryWhere . '(' . $depKey . '_datetime_status_' . correctFormat($_GET['status']) . ' BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR ';
-				$sqlParameters[] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-				$sqlParameters[] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-			}
-			$sqlQueryWhere = substr($sqlQueryWhere, 0, -4);
-			$sqlQueryWhere = $sqlQueryWhere . ') ';
-		}
-
-	}
-
-	// фильтр дата и отдел
-	if ($dateFilter && $statusFilter === false && $departmentFilter !== false) {
-
+	if ($dateFilter) {
 		$sqlQueryWhere = $sqlQueryWhere . 'AND (';
 
-		foreach ($PROG_DATA['STATUS_ID_PRODUCTION'] as $stKey => $stVal) {
-			$sqlQueryWhere = $sqlQueryWhere . '(' . $departmentFilter . '_datetime_status_' . $stVal . ' BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR ';
-			$sqlParameters[] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters[] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-		}
-		$sqlQueryWhere = substr($sqlQueryWhere, 0, -4);
-		$sqlQueryWhere = $sqlQueryWhere . ') ';
-	}
-
-
-	// фильтр дата и статус и отдел
-	if ($dateFilter && $statusFilter !== false && $departmentFilter !== false) {
-
-
-		if ($_GET['status'] === $PROG_DATA['STATUS_ID_PRODUCTION']['START'] . '-' . $PROG_DATA['STATUS_ID_PRODUCTION']['READY_90']) {
-
-			$sqlQueryWhere = $sqlQueryWhere . 'AND (';
-
-			foreach ($PROG_DATA['STATUS_ID_PRODUCTION'] as $stKey => $stVal) {
-				if ($stVal >= $PROG_DATA['STATUS_ID_PRODUCTION']['START'] && $stVal <= $PROG_DATA['STATUS_ID_PRODUCTION']['READY_90']) {
-					$sqlQueryWhere = $sqlQueryWhere . '(' . $departmentFilter . '_datetime_status_' . $stVal . ' BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR ';
-					$sqlParameters[] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-					$sqlParameters[] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-				}
-			}
-
-			$sqlQueryWhere = substr($sqlQueryWhere, 0, -4);
-			$sqlQueryWhere = $sqlQueryWhere . ') ';
-
-		} else {
-			$sqlQueryWhere = $sqlQueryWhere . 'AND (';
-
-			$sqlQueryWhere = $sqlQueryWhere . '(' . $departmentFilter . '_datetime_status_' . correctFormat($_GET['status']) . ' BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR ';
-			$sqlParameters[] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters[] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-
-			$sqlQueryWhere = substr($sqlQueryWhere, 0, -4);
-			$sqlQueryWhere = $sqlQueryWhere . ') ';
-		}
-
-	}
-
-	// фильтр дата
-	if ($dateFilter && $statusFilter === false && $departmentFilter === false) {
-
-		$sqlQueryWhere = $sqlQueryWhere . 'AND (';
-
-		foreach ($PROG_DATA['DEPARTAMENTS_LIST'] as $depKey => $depVal) {
-			foreach ($PROG_DATA['STATUS_ID_PRODUCTION'] as $stKey => $stVal) {
-				$sqlQueryWhere = $sqlQueryWhere . '(' . $depKey . '_datetime_status_' . $stVal . ' BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR ';
+		foreach ($departmentFilter as $depKey => $depVal) {
+			foreach ($statusFilter as $stKey => $stVal) {
+				$sqlQueryWhere = $sqlQueryWhere . '(' . $depVal . '_datetime_status_' . $stVal . ' BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR ';
 				$sqlParameters[] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
 				$sqlParameters[] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
 			}
@@ -392,6 +284,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 		$sqlQueryWhere = $sqlQueryWhere . ') ';
 	}
 
+	// todo тест
+	$tmpLayoutContentData['sql'] = $sqlQueryWhere;
 
 	$paginationData =
 		getPagination($PROG_CONFIG, $PROG_CONFIG['HOST'] . '/production.php', $con, $sqlQuerySelectPagination .
@@ -400,7 +294,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	$tmpLayoutData['pagination'] = $paginationData['tmpPagination'];
 	$sqlPagination = $paginationData['sqlPagination'];
 
-	$tmpLayoutContentData['departmentFilter'] = $departmentFilter;
+	$tmpLayoutContentData['departmentFilter'] =
+		($departmentFilter === false || count($departmentFilter) > 1) ? false : $departmentFilter[0];
 
 	$tmpLayoutContentData['createUsers'] =
 		dbSelectData($con, 'SELECT * FROM adm_users WHERE auth_design_order_new = 1', []);
@@ -605,7 +500,7 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['depart
 	// подтвердить отмену у кого есть права && статус 'ожидание подтверждения отмены - (998 WAIT_CANCEL)'
 	if ($_POST['status'] == $PROG_DATA['STATUS_ID_PRODUCTION']['CANCEL'] &&
 		($_SESSION['user']['auth_production_order_cancel'] == 0 ||
-			currentGeneralStatus($orderData, $PROG_DATA['DEPARTAMENTS_LIST']) != $PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_CANCEL'])) {
+			currentGeneralStatus($orderData, $PROG_DATA['DEPARTMENTS_LIST']) != $PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_CANCEL'])) {
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] . '/production.php?action=order_info_card&id=' .
 			$_POST['order_id'] . '&error_massage=' . $PROG_DATA['ERROR']['ACCESS_DENIED'] . ' ' . __LINE__);
@@ -614,7 +509,7 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['depart
 	// запустить в работу у кго есть права && статус 'ожидание подтверждения - (0 WAIT_START)'
 	if ($_POST['status'] == $PROG_DATA['STATUS_ID_PRODUCTION']['RECEIVED'] &&
 		($_SESSION['user']['auth_production_order_start'] == 0 ||
-			currentGeneralStatus($orderData, $PROG_DATA['DEPARTAMENTS_LIST']) != $PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_START'])) {
+			currentGeneralStatus($orderData, $PROG_DATA['DEPARTMENTS_LIST']) != $PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_START'])) {
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] . '/production.php?action=order_info_card&id=' .
 			$_POST['order_id'] . '&error_massage=' . $PROG_DATA['ERROR']['ACCESS_DENIED'] . ' ' . __LINE__);

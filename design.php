@@ -164,12 +164,17 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	$sqlSortBy = 'ORDER BY o.id * o.order_priority * o.sort_priority * o.error_priority DESC ';
 
 
+	$statusFilter = paramSqlFilterArrVal(',', $_GET['status'] ?? '', $PROG_DATA['STATUS_ID_DESIGN']);
+	if ($statusFilter === false)
+		foreach ($PROG_DATA['STATUS_ID_DESIGN'] as $key => $val)
+			$statusFilter[] = $val;
+
 	$dateFilter = isset($_GET['date_from']) && isset($_GET['date_to']) && $_GET['date_from'] && $_GET['date_to'];
 
 
 	if (isset($_GET['create_user_id']) && $_GET['create_user_id'] != 'all') {
 		$sqlQueryWhere = $sqlQueryWhere . 'AND create_user_id = ? ';
-		$sqlParameters['create_user_id'] = $_GET['create_user_id'];
+		$sqlParameters[] = $_GET['create_user_id'];
 	}
 
 	if (isset($_GET['designer_id']) && $_GET['designer_id'] != 'all') {
@@ -177,138 +182,52 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 			$sqlQueryWhere = $sqlQueryWhere . 'AND designer_id IS NULL ';
 		} else {
 			$sqlQueryWhere = $sqlQueryWhere . 'AND designer_id = ? ';
-			$sqlParameters['designer_id'] = $_GET['designer_id'];
+			$sqlParameters[] = $_GET['designer_id'];
 		}
 	}
 
 	if (isset($_GET['priority']) && $_GET['priority'] != 'all') {
 		$sqlQueryWhere = $sqlQueryWhere . 'AND order_priority = ? ';
-		$sqlParameters['priority'] = $_GET['priority'];
+		$sqlParameters[] = $_GET['priority'];
 	}
 
 	if (isset($_GET['status']) && $_GET['status'] != 'all' && $dateFilter == false) {
-		if ($_GET['status'] === $PROG_DATA['STATUS_ID_DESIGN']['START'] . '-' . $PROG_DATA['STATUS_ID_DESIGN']['READY_90']) {
-			$sqlQueryWhere = $sqlQueryWhere . 'AND current_status >= ? AND current_status <= ? ';
-			$sqlParameters['status_start'] = $PROG_DATA['STATUS_ID_DESIGN']['START'];
-			$sqlParameters['status_ready_90'] = $PROG_DATA['STATUS_ID_DESIGN']['READY_90'];
-		} else {
-			$sqlQueryWhere = $sqlQueryWhere . 'AND current_status = ? ';
-			$sqlParameters['status'] = $_GET['status'];
+		$sqlQueryWhere = $sqlQueryWhere . 'AND (';
+
+		foreach ($statusFilter as $stKey => $stVal) {
+			$sqlQueryWhere = $sqlQueryWhere . 'current_status = ? OR ';
+			$sqlParameters[] = $stVal;
 		}
+		$sqlQueryWhere = substr($sqlQueryWhere, 0, -4);
+		$sqlQueryWhere = $sqlQueryWhere . ') ';
 	}
 
 	if (isset($_GET['deadline']) && ($_GET['deadline'] || $_GET['deadline'] == '0')) {
 		$sqlQueryWhere = $sqlQueryWhere . 'AND deadline_date <= NOW() + INTERVAL ? DAY ';
-		$sqlParameters['deadline'] = $_GET['deadline'];
+		$sqlParameters[] = $_GET['deadline'];
 	}
 
 	if (isset($_GET['search']) && $_GET['search']) {
 		$sqlQueryWhere = $sqlQueryWhere . 'AND (order_name_in LIKE ? OR order_name_out LIKE ? OR client_name LIKE ?) ';
-		$sqlParameters['search_order_name_in'] = '%' . $_GET['search'] . '%';
-		$sqlParameters['search_order_name_out'] = '%' . $_GET['search'] . '%';
-		$sqlParameters['search_client_name'] = '%' . $_GET['search'] . '%';
+		$sqlParameters[] = '%' . $_GET['search'] . '%';
+		$sqlParameters[] = '%' . $_GET['search'] . '%';
+		$sqlParameters[] = '%' . $_GET['search'] . '%';
 	}
 
 	if ($dateFilter) {
-		if (isset($_GET['status']) && $_GET['status'] == $PROG_DATA['STATUS_ID_DESIGN']['WAIT']) {
-			$sqlQueryWhere = $sqlQueryWhere . 'AND (datetime_status_0 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) ';
-			$sqlParameters['datetime_status_0_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters['datetime_status_0_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-		} elseif (isset($_GET['status']) && $_GET['status'] == $PROG_DATA['STATUS_ID_DESIGN']['RECEIVED']) {
-			$sqlQueryWhere = $sqlQueryWhere . 'AND (datetime_status_100 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) ';
-			$sqlParameters['datetime_status_100_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters['datetime_status_100_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-		} elseif (isset($_GET['status']) &&
-			$_GET['status'] === $PROG_DATA['STATUS_ID_DESIGN']['START'] . '-' . $PROG_DATA['STATUS_ID_DESIGN']['READY_90']) {
-			$sqlQueryWhere = $sqlQueryWhere . 'AND (
-			(datetime_status_200 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR
-			(datetime_status_210 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR
-			(datetime_status_220 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR
-			(datetime_status_230 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR
-			(datetime_status_240 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR
-			(datetime_status_250 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR
-			(datetime_status_260 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR
-			(datetime_status_270 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR
-			(datetime_status_280 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR
-			(datetime_status_290 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY))
-			) ';
+		$sqlQueryWhere = $sqlQueryWhere . 'AND (';
 
-			$sqlParameters['datetime_status_200_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters['datetime_status_200_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-			$sqlParameters['datetime_status_210_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters['datetime_status_210_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-			$sqlParameters['datetime_status_220_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters['datetime_status_220_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-			$sqlParameters['datetime_status_230_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters['datetime_status_230_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-			$sqlParameters['datetime_status_240_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters['datetime_status_240_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-			$sqlParameters['datetime_status_250_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters['datetime_status_250_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-			$sqlParameters['datetime_status_260_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters['datetime_status_260_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-			$sqlParameters['datetime_status_270_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters['datetime_status_270_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-			$sqlParameters['datetime_status_280_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters['datetime_status_280_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-			$sqlParameters['datetime_status_290_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters['datetime_status_290_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-		} elseif (isset($_GET['status']) && $_GET['status'] == $PROG_DATA['STATUS_ID_DESIGN']['DONE']) {
-			$sqlQueryWhere = $sqlQueryWhere . 'AND (datetime_status_300 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) ';
-			$sqlParameters['datetime_status_300_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters['datetime_status_300_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-		} elseif (isset($_GET['status']) && $_GET['status'] == $PROG_DATA['STATUS_ID_DESIGN']['CANCEL']) {
-			$sqlQueryWhere = $sqlQueryWhere . 'AND (datetime_status_999 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) ';
-			$sqlParameters['datetime_status_999_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters['datetime_status_999_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-		} else {
-			$sqlQueryWhere = $sqlQueryWhere . 'AND (
-			(datetime_status_0 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR
-			(datetime_status_100 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR
-			(datetime_status_200 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR
-			(datetime_status_210 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR
-			(datetime_status_220 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR
-			(datetime_status_230 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR
-			(datetime_status_240 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR
-			(datetime_status_250 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR
-			(datetime_status_260 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR
-			(datetime_status_270 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR
-			(datetime_status_280 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR
-			(datetime_status_290 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR
-			(datetime_status_300 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR
-			(datetime_status_999 BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY))
-			) ';
-
-			$sqlParameters['datetime_status_0_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters['datetime_status_0_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-			$sqlParameters['datetime_status_100_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters['datetime_status_100_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-			$sqlParameters['datetime_status_200_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters['datetime_status_200_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-			$sqlParameters['datetime_status_210_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters['datetime_status_210_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-			$sqlParameters['datetime_status_220_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters['datetime_status_220_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-			$sqlParameters['datetime_status_230_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters['datetime_status_230_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-			$sqlParameters['datetime_status_240_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters['datetime_status_240_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-			$sqlParameters['datetime_status_250_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters['datetime_status_250_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-			$sqlParameters['datetime_status_260_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters['datetime_status_260_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-			$sqlParameters['datetime_status_270_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters['datetime_status_270_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-			$sqlParameters['datetime_status_280_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters['datetime_status_280_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-			$sqlParameters['datetime_status_290_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters['datetime_status_290_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-			$sqlParameters['datetime_status_300_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters['datetime_status_300_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
-			$sqlParameters['datetime_status_999_from'] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
-			$sqlParameters['datetime_status_999_to'] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
+		foreach ($statusFilter as $stKey => $stVal) {
+			$sqlQueryWhere = $sqlQueryWhere . '(' . 'datetime_status_' . $stVal . ' BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR ';
+			$sqlParameters[] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
+			$sqlParameters[] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
 		}
+		$sqlQueryWhere = substr($sqlQueryWhere, 0, -4);
+		$sqlQueryWhere = $sqlQueryWhere . ') ';
 	}
+
+	// todo тест
+	$tmpLayoutContentData['sql'] = $sqlQueryWhere;
 
 	$paginationData =
 		getPagination($PROG_CONFIG, $PROG_CONFIG['HOST'] . '/design.php', $con, $sqlQuerySelectPagination .

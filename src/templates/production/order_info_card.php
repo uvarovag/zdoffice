@@ -89,7 +89,7 @@
               <td class="px-0"><?= $data['PROG_DATA']['PRIORITY_ORDERS'][$data['order']['order_priority']]['icon'] ?? '???'; ?></td>
             </tr>
 
-						<?php if (($generalStatus = currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTAMENTS_LIST'])) !== false): ?>
+						<?php if (($generalStatus = currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTMENTS_LIST'])) !== false): ?>
               <tr>
                 <td class="px-0">Стадия</td>
                 <td class="px-0"><?= $data['PROG_DATA']['STATUS_LIST_PRODUCTION'][$generalStatus]['icon'] ?? '???'; ?></td>
@@ -126,8 +126,8 @@
 				<?php endif; ?>
 
 				<?php if ($_SESSION['user']['auth_production_order_change_priority'] &&
-					currentMinStatus($data['order'], $data['PROG_DATA']['DEPARTAMENTS_LIST']) !== false &&
-					currentMinStatus($data['order'], $data['PROG_DATA']['DEPARTAMENTS_LIST']) < $data['PROG_DATA']['STATUS_ID_PRODUCTION']['DONE']): ?>
+					currentMinStatus($data['order'], $data['PROG_DATA']['DEPARTMENTS_LIST']) !== false &&
+					currentMinStatus($data['order'], $data['PROG_DATA']['DEPARTMENTS_LIST']) < $data['PROG_DATA']['STATUS_ID_PRODUCTION']['DONE']): ?>
           <div class="mb-4">
             <hr>
             <form action="<?= $data['CONFIG']['HOST'] . '/production.php'; ?>" method="POST">
@@ -156,8 +156,8 @@
 				<?php endif; ?>
 
 				<?php if ($_SESSION['user']['id'] == $data['order']['create_user_id'] &&
-					currentMinStatus($data['order'], $data['PROG_DATA']['DEPARTAMENTS_LIST']) !== false &&
-					currentMinStatus($data['order'], $data['PROG_DATA']['DEPARTAMENTS_LIST']) < $data['PROG_DATA']['STATUS_ID_PRODUCTION']['DONE']): ?>
+					currentMinStatus($data['order'], $data['PROG_DATA']['DEPARTMENTS_LIST']) !== false &&
+					currentMinStatus($data['order'], $data['PROG_DATA']['DEPARTMENTS_LIST']) < $data['PROG_DATA']['STATUS_ID_PRODUCTION']['DONE']): ?>
           <div class="mb-4 d-inline-block">
             <form class="d-inline-block mr-2" action="<?= $data['CONFIG']['HOST'] . '/production.php'; ?>" method="POST">
               <input type="hidden" name="action" value="change_status">
@@ -176,7 +176,7 @@
 				<?php endif; ?>
 
 				<?php if ($_SESSION['user']['auth_production_order_cancel'] &&
-					currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTAMENTS_LIST']) === $data['PROG_DATA']['STATUS_ID_PRODUCTION']['WAIT_CANCEL']): ?>
+					currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTMENTS_LIST']) === $data['PROG_DATA']['STATUS_ID_PRODUCTION']['WAIT_CANCEL']): ?>
           <div class="mb-4 d-inline-block">
             <form class="d-inline-block mr-2" action="<?= $data['CONFIG']['HOST'] . '/production.php'; ?>" method="POST">
               <input type="hidden" name="action" value="change_status">
@@ -195,7 +195,7 @@
 				<?php endif; ?>
 
 				<?php if ($_SESSION['user']['auth_production_order_start'] &&
-					currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTAMENTS_LIST']) === $data['PROG_DATA']['STATUS_ID_PRODUCTION']['WAIT_START']): ?>
+					currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTMENTS_LIST']) === $data['PROG_DATA']['STATUS_ID_PRODUCTION']['WAIT_START']): ?>
           <div class="mb-4 d-inline-block">
             <form class="d-inline-block mr-2" action="<?= $data['CONFIG']['HOST'] . '/production.php'; ?>" method="POST">
               <input type="hidden" name="action" value="change_status">
@@ -215,8 +215,8 @@
 
 
 				<?php if ($data['order']['error_priority'] == 2 &&
-					currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTAMENTS_LIST']) !== false &&
-					currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTAMENTS_LIST']) < $data['PROG_DATA']['STATUS_ID_PRODUCTION']['DONE']): ?>
+					currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTMENTS_LIST']) !== false &&
+					currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTMENTS_LIST']) < $data['PROG_DATA']['STATUS_ID_PRODUCTION']['DONE']): ?>
           <a href="<?= $data['CONFIG']['HOST'] . '/production.php?' . http_build_query([
 						'action' => 'cancel_error',
 						'order_id' => $data['order']['id'],
@@ -226,8 +226,8 @@
 							$data['order']['id']
 					]); ?>"
              class="btn btn-primary" role="button" aria-pressed="true">Снять ошибку</a>
-				<?php elseif (currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTAMENTS_LIST']) !== false &&
-					currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTAMENTS_LIST']) < $data['PROG_DATA']['STATUS_ID_PRODUCTION']['DONE']): ?>
+				<?php elseif (currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTMENTS_LIST']) !== false &&
+					currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTMENTS_LIST']) < $data['PROG_DATA']['STATUS_ID_PRODUCTION']['DONE']): ?>
           <a href="<?= $data['CONFIG']['HOST'] . '/production.php?' . http_build_query([
 						'action' => 'add_error',
 						'order_id' => $data['order']['id'],
@@ -255,7 +255,7 @@
                    aria-controls="tabs-icons-text-files" aria-selected="false">Файлы</a>
               </li>
 
-							<?php foreach ($data['PROG_DATA']['DEPARTAMENTS_LIST'] as $depKey => $depVal): ?>
+							<?php foreach ($data['PROG_DATA']['DEPARTMENTS_LIST'] as $depKey => $depVal): ?>
 								<?php if ($data['order'][$depKey . '_datetime_status_0']): ?>
                   <li class="nav-item">
                     <a class="mb-3 nav-link <?= $data['activeTab'] == $depKey ? 'active' : ''; ?>" id="tabs-icons-text-<?= $depKey; ?>-tab"
@@ -356,7 +356,7 @@
               </div>
 
 
-							<?php foreach ($data['PROG_DATA']['DEPARTAMENTS_LIST'] as $depKey => $depVal): ?>
+							<?php foreach ($data['PROG_DATA']['DEPARTMENTS_LIST'] as $depKey => $depVal): ?>
 
 								<?php if ($data['order'][$depKey . '_datetime_status_0']): ?>
                   <div class="tab-pane fade <?= $data['activeTab'] == $depKey ? 'show active' : ''; ?>" id="tabs-icons-text-<?= $depKey; ?>"
