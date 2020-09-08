@@ -24,7 +24,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'new_order_card') {
 	$_SESSION['formId'] = md5(time());
 	$tmpLayoutContentData['formId'] = $_SESSION['formId'];
 
-	$tmpLayoutData['reloadEveryMin'] = false;
+	$tmpLayoutData['RELOAD_EVERY_MIN'] = false;
 
 	if (isset($_SESSION['navList']['designNewOrder']['isActive']))
 		$_SESSION['navList']['designNewOrder']['isActive'] = true;
@@ -317,17 +317,6 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['design
 			$PROG_CONFIG['HOST'] .
 			'/design.php?action=order_info_card&id=' . $_POST['order_id'] . '&error_massage=' . $PROG_DATA['ERROR']['ID']);
 	}
-
-//	'START'			=> 200,
-//	'READY_10' 	=> 210,
-//	'READY_20' 	=> 220,
-//	'READY_30' 	=> 230,
-//	'READY_40' 	=> 240,
-//	'READY_50' 	=> 250,
-//	'READY_60' 	=> 260,
-//	'READY_70' 	=> 270,
-//	'READY_80' 	=> 280,
-//	'READY_90' 	=> 290,
 
 	$changeDesignerIdQuery = 'UPDATE design_orders SET designer_id = ?, current_status = ?, 
     datetime_status_100 = ?,

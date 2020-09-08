@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="/argon-dashboard/assets/daterangepicker/daterangepicker-min.css?v=5" type="text/css">
 </head>
 <body>
-<?php if (isset($data['reloadEveryMin']) && $data['reloadEveryMin']): ?>
+<?php if (isset($data['RELOAD_EVERY_MIN']) && $data['RELOAD_EVERY_MIN']): ?>
   <script type="text/javascript">
 
     function setTimer(t) {
@@ -49,7 +49,7 @@
       return setTimer(t);
     }
 
-    let reloadTime = 1000 * 60 * <?= $data['reloadEveryMin']; ?>;
+    let reloadTime = 1000 * 60 * <?= $data['RELOAD_EVERY_MIN']; ?>;
     let timerId = setTimer(reloadTime);
 
     document.addEventListener('click', () => {

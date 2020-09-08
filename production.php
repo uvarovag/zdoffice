@@ -24,7 +24,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'new_order_card') {
 	$_SESSION['formId'] = md5(time());
 	$tmpLayoutContentData['formId'] = $_SESSION['formId'];
 
-	$tmpLayoutData['reloadEveryMin'] = false;
+	$tmpLayoutData['RELOAD_EVERY_MIN'] = false;
 
 	if (isset($_SESSION['navList']['productionNewOrder']['isActive']))
 		$_SESSION['navList']['productionNewOrder']['isActive'] = true;
@@ -150,11 +150,10 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	errorIfAccessDenied($_SESSION['user']['auth_production_order_view'],
 		$PROG_CONFIG['HOST'] . '/production.php?error_massage=' . $PROG_DATA['ERROR']['ACCESS_DENIED'] . ' ' . __LINE__);
 
-	$userAvailableDepartmentsArr = userAvailableDepartmentsArr($_SESSION['user'], $PROG_DATA['DEPARTMENTS_LIST']);
 
 	if (isset($_SESSION['navList']['productionOrdersListMy']['isActive']) &&
-		isset($_GET['department']) && $userAvailableDepartmentsArr !== false &&
-		$userAvailableDepartmentsArr[0] == $_GET['department'])
+		isset($_GET['department']) && $_SESSION['user']['availDepProd'] !== false &&
+		implode(',', $_SESSION['user']['availDepProd']) == $_GET['department'])
 		$_SESSION['navList']['productionOrdersListMy']['isActive'] = true;
 	else if (isset($_SESSION['navList']['productionOrdersList']['isActive']))
 		$_SESSION['navList']['productionOrdersList']['isActive'] = true;
@@ -175,23 +174,15 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 
 	$sqlQuerySelect = 'SELECT 
        ud.last_name AS ud_last_name, ud.first_name AS ud_first_name, 
-       uc.last_name AS uc_last_name, uc.first_name AS uc_first_name, 
-       
-       o.const_current_status, DATE_FORMAT(const_datetime_status_0, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS const_datetime_status_0, 
-       o.adv_current_status, DATE_FORMAT(adv_datetime_status_0, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS adv_datetime_status_0, 
-       o.furn_current_status, DATE_FORMAT(furn_datetime_status_0, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS furn_datetime_status_0, 
-       o.steel_current_status, DATE_FORMAT(steel_datetime_status_0, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS steel_datetime_status_0, 
-       o.install_current_status, DATE_FORMAT(install_datetime_status_0, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS install_datetime_status_0, 
-       o.supply_current_status, DATE_FORMAT(supply_datetime_status_0, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS supply_datetime_status_0, 
-        
-       DATE_FORMAT(const_deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS const_deadline_date, 
-       DATE_FORMAT(adv_deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS adv_deadline_date, 
-       DATE_FORMAT(furn_deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS furn_deadline_date, 
-       DATE_FORMAT(steel_deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS steel_deadline_date, 
-       DATE_FORMAT(install_deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS install_deadline_date, 
-       DATE_FORMAT(supply_deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS supply_deadline_date, 
-       
-       o.id, o.designer_id, o.order_name_in, o.order_name_out, o.client_name, 
+       uc.last_name AS uc_last_name, uc.first_name AS uc_first_name, ';
+
+	foreach ($PROG_DATA['DEPARTMENTS_LIST'] as $depKey => $depVal) {
+		$sqlQuerySelect = $sqlQuerySelect . 'o.' . $depKey . '_current_status, 
+			DATE_FORMAT(' . $depKey . '_datetime_status_0, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS ' . $depKey . '_datetime_status_0, 
+			DATE_FORMAT(' . $depKey . '_deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS ' . $depKey . '_deadline_date, ';
+	}
+
+	$sqlQuerySelect = $sqlQuerySelect . 'o.id, o.designer_id, o.order_name_in, o.order_name_out, o.client_name, 
        o.order_priority, o.error_priority 
        FROM production_orders o ';
 
@@ -284,7 +275,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 		$sqlQueryWhere = $sqlQueryWhere . ') ';
 	}
 
-	// todo тест
 	$tmpLayoutContentData['sql'] = $sqlQueryWhere;
 
 	$paginationData =
@@ -294,7 +284,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	$tmpLayoutData['pagination'] = $paginationData['tmpPagination'];
 	$sqlPagination = $paginationData['sqlPagination'];
 
-	$tmpLayoutContentData['departmentFilter'] =
+	$tmpLayoutContentData['showDepartment'] =
 		($departmentFilter === false || count($departmentFilter) > 1) ? false : $departmentFilter[0];
 
 	$tmpLayoutContentData['createUsers'] =
@@ -304,6 +294,12 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 
 	$tmpLayoutContentData['orders'] =
 		dbSelectData($con, $sqlQuerySelect . $sqlQueryJoin1 . $sqlQueryJoin2 . $sqlQueryWhere . $sqlSortBy . $sqlPagination, $sqlParameters) ?? [];
+
+	foreach ($tmpLayoutContentData['orders'] as $key => $val)
+	{
+		$tmpLayoutContentData['orders'][$key]['general_status'] =
+			currentGeneralStatus($val, $PROG_DATA['DEPARTMENTS_LIST']);
+	}
 
 	$tmpLayoutData['content'] =
 		renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/src/templates/production/orders_list.php', $tmpLayoutContentData);
@@ -557,20 +553,12 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['depart
 			$_POST['order_id'] . '&error_massage=' . $PROG_DATA['ERROR']['ACCESS_DENIED'] . ' ' . __LINE__);
 	}
 
+
 	$sqlQueryUpdate = 'UPDATE production_orders ';
-
 	$sqlQuerySet = 'SET ';
-
 	$sqlQueryWhere = 'WHERE id = ?';
-
 	$sqlParameters = [];
 
-	// const
-	// adv
-	// furn
-	// steel
-	// install
-	// supply
 
 	if (($_POST['department'] == 'all' || $_POST['department'] == 'const') && $orderData['const_datetime_status_0']) {
 
@@ -585,7 +573,6 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['depart
 		$sqlParameters[] = $_POST['status'];
 		$sqlParameters[] = date('Y-m-d H:i:s');
 	}
-
 
 	if (($_POST['department'] == 'all' || $_POST['department'] == 'adv') && $orderData['adv_datetime_status_0']) {
 
@@ -664,8 +651,7 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['depart
 		$sqlQuerySet = $sqlQuerySet . 'order_priority = 1, sort_priority = 1, error_priority = 1, ';
 	}
 
-	$sqlQuerySet = substr($sqlQuerySet, 0, -1);
-	$sqlQuerySet = substr($sqlQuerySet, 0, -1);
+	$sqlQuerySet = substr($sqlQuerySet, 0, -2);
 	$sqlQuerySet = $sqlQuerySet . ' ';
 	$sqlParameters[] = $_POST['order_id'];
 

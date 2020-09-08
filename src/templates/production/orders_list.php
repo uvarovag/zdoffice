@@ -1,3 +1,15 @@
+<?php if ($data['CONFIG']['DEBUG_MODE_USER_ID'] == $_SESSION['user']['id']): ?>
+  <div class="card">
+    <div class="card-body">
+			<?php if (isset($data['debug'])): ?>
+        <p class="m-0"><?= $data['debug'] ?? 'no'; ?></p>
+			<?php endif; ?>
+			<?php if (isset($data['sql'])): ?>
+        <p class="m-0"><?= $data['sql'] ?? 'no'; ?></p>
+			<?php endif; ?>
+    </div>
+  </div>
+<?php endif; ?>
 <div class="card">
   <form class="card-body" action="<?= $data['CONFIG']['HOST'] . '/production.php'; ?>" method="GET">
     <input type="hidden" name="action" value="orders_list">
@@ -12,6 +24,11 @@
             <option <?= $data['formData']['department'] == $depKey ? 'selected' : ''; ?>
                     value="<?= $depKey; ?>"><?= $depVal; ?></option>
 					<?php endforeach; ?>
+					<?php if ($_SESSION['user']['availDepProd']): ?>
+            <option <?= $data['formData']['department'] == implode(',', $_SESSION['user']['availDepProd']) ? 'selected' : ''; ?>
+                    value="<?= implode(',', $_SESSION['user']['availDepProd']); ?>">доступные мне
+            </option>
+					<?php endif; ?>
         </select>
       </div>
       <div class="form-group col">
@@ -78,6 +95,9 @@
           <option <?= $data['formData']['status'] == '999' ? 'selected' : ''; ?>
                   value="999">отменено
           </option>
+          <option <?= $data['formData']['status'] == '100,200,210,220,230,240,250,260,270,280,290' ? 'selected' : ''; ?>
+                  value="100,200,210,220,230,240,250,260,270,280,290">активные
+          </option>
         </select>
       </div>
       <div class="form-group col-2">
@@ -104,7 +124,6 @@
     </div>
   </form>
 </div>
-
 <div class="card">
   <div class="card-header bg-transparent">
     <h2 class="mb-0"><?= $data['title']; ?></h2>
@@ -148,18 +167,18 @@
           </td>
           <td>
           <span>
-            <?php if ($data['departmentFilter']): ?>
-							<?= $data['PROG_DATA']['STATUS_LIST_PRODUCTION'][$order[$data['departmentFilter'] . '_current_status']]['icon'] ?? '???'; ?>
-						<?php elseif (($generalStatus = currentGeneralStatus($order, $data['PROG_DATA']['DEPARTMENTS_LIST'])) !== false): ?>
-							<?= $data['PROG_DATA']['STATUS_LIST_PRODUCTION'][$generalStatus]['icon'] ?? '???'; ?>
-            <?php endif; ?>
+            <?php if ($data['showDepartment']): ?>
+							<?= $data['PROG_DATA']['STATUS_LIST_PRODUCTION'][$order[$data['showDepartment'] . '_current_status']]['icon'] ?? '???'; ?>
+						<?php elseif ($order['general_status'] !== false): ?>
+							<?= $data['PROG_DATA']['STATUS_LIST_PRODUCTION'][$order['general_status']]['icon'] ?? '???'; ?>
+						<?php endif; ?>
           </span>
           </td>
           <td>
           <span>
-            <?php if ($data['departmentFilter']): ?>
-              <?= deadlineBadge($order[$data['departmentFilter'] . '_deadline_date'], $data['CONFIG']['WARNING_DAYS_BEFORE_DEADLINE']); ?>
-            <?php endif; ?>
+            <?php if ($data['showDepartment']): ?>
+							<?= deadlineBadge($order[$data['showDepartment'] . '_deadline_date'], $data['CONFIG']['WARNING_DAYS_BEFORE_DEADLINE']); ?>
+						<?php endif; ?>
           </span>
           </td>
         </tr>

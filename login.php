@@ -46,6 +46,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'login') {
 
 		setUserNeedLogoutVal($con, 'adm_users', $userData['id'], 0);
 		$_SESSION['user'] = $userData;
+		$_SESSION['user']['availDepProd'] = userAvailableDepartmentsArr($userData, $PROG_DATA['DEPARTMENTS_LIST']);
 		$_SESSION['navList'] = setNavListUser($navigationListUser, $_SESSION['user'], $PROG_DATA);
 		$_SESSION['formId'] = 'none';
 

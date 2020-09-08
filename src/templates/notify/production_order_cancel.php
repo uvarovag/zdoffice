@@ -7,14 +7,10 @@
 			<div class="row align-items-center">
 				<div class="col">
 					<div class="">
+						<?= $data['PROG_DATA']['PRIORITY_ORDERS'][$notity['order_priority']]['icon'] ?? '???'; ?>
             <small>
 							<?= shortStr($notity['client_name'], $data['CONFIG']['MAX_SYMBOLS_TABLE_CELL']); ?>
             </small>
-            |
-						<small>
-							приоритет:
-							<?= $data['PROG_DATA']['PRIORITY_ORDERS'][$notity['order_priority']]['icon'] ?? '???'; ?>
-						</small>
 					</div>
 					<p class="text-sm mb-0"><?= shortStr($notity['task_text'], 50); ?></p>
 				</div>

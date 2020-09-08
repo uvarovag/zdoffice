@@ -3,8 +3,8 @@
 $tmpLayoutData = [
 	'CONFIG' => &$PROG_CONFIG,
 	'PROG_DATA' => &$PROG_DATA,
+	'RELOAD_EVERY_MIN' => $PROG_CONFIG['RELOAD_EVERY_MIN'],
 	'title' => $PROG_CONFIG['PROG_NAME'],
-	'reloadEveryMin' => 5,
 	'content' => '',
 	'modal' => '',
 	'notifyQuantity' => 0,

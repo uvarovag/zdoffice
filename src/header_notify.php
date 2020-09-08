@@ -48,17 +48,21 @@ if ($_SESSION['user']['auth_design_order_select_designer']) {
 	}
 }
 
-$availableDepartmentsArr = userAvailableDepartmentsArr($_SESSION['user'], $PROG_DATA['DEPARTMENTS_LIST']);
+if ($_SESSION['user']['availDepProd']) {
 
-if (isset($availableDepartmentsArr[0])) {
+	$tmpLayoutNotifyData['active_tab'] = 'notes';
 
-	$tmpLayoutNotifyData['active_tab'] = $availableDepartmentsArr[0];
+	$sqlSelect = 'SELECT * FROM production_orders WHERE ';
+	$sqlParameters = [];
 
-	$tmpLayoutNotifyData['notifys'] = dbSelectData($con,
-		'SELECT *, DATE_FORMAT(' . $availableDepartmentsArr[0] . '_deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS deadline_date
-		 FROM production_orders WHERE ' . $availableDepartmentsArr[0] . '_current_status = ? 
-		 ORDER BY id * order_priority * sort_priority * error_priority DESC',
-		[$PROG_DATA['STATUS_ID_PRODUCTION']['RECEIVED']]);
+	foreach ($_SESSION['user']['availDepProd'] as $key => $val) {
+		$sqlSelect = $sqlSelect . $val . '_current_status = ? OR ';
+		$sqlParameters[] = $PROG_DATA['STATUS_ID_PRODUCTION']['RECEIVED'];
+	}
+	$sqlSelect = substr($sqlSelect, 0, -3);
+	$sqlSelect = $sqlSelect . 'ORDER BY id * order_priority * sort_priority * error_priority DESC';
+
+	$tmpLayoutNotifyData['notifys'] = dbSelectData($con, $sqlSelect, $sqlParameters);
 
 	$tmpLayoutNotifyData['notifyQuantity'] = count($tmpLayoutNotifyData['notifys']);
 
