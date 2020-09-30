@@ -215,8 +215,8 @@
 
 
 				<?php if ($data['order']['error_priority'] == 2 &&
-					currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTMENTS_LIST']) !== false &&
-					currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTMENTS_LIST']) < $data['PROG_DATA']['STATUS_ID_PRODUCTION']['DONE']): ?>
+					(currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTMENTS_LIST']) == false ||
+					currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTMENTS_LIST']) < $data['PROG_DATA']['STATUS_ID_PRODUCTION']['DONE'])): ?>
           <a href="<?= $data['CONFIG']['HOST'] . '/production.php?' . http_build_query([
 						'action' => 'cancel_error',
 						'order_id' => $data['order']['id'],
@@ -226,7 +226,7 @@
 							$data['order']['id']
 					]); ?>"
              class="btn btn-primary" role="button" aria-pressed="true">Снять ошибку</a>
-				<?php elseif (currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTMENTS_LIST']) !== false &&
+				<?php elseif (currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTMENTS_LIST']) == false ||
 					currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTMENTS_LIST']) < $data['PROG_DATA']['STATUS_ID_PRODUCTION']['DONE']): ?>
           <a href="<?= $data['CONFIG']['HOST'] . '/production.php?' . http_build_query([
 						'action' => 'add_error',

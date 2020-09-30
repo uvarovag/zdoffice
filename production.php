@@ -288,9 +288,9 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 		($departmentFilter === false || count($departmentFilter) > 1) ? false : $departmentFilter[0];
 
 	$tmpLayoutContentData['createUsers'] =
-		dbSelectData($con, 'SELECT * FROM adm_users WHERE auth_design_order_new = 1', []);
+		dbSelectData($con, 'SELECT * FROM adm_users WHERE auth_design_order_new = 1 ORDER BY last_name', []);
 	$tmpLayoutContentData['designers'] =
-		dbSelectData($con, 'SELECT * FROM adm_users WHERE auth_design_order_change_status = 1', []);
+		dbSelectData($con, 'SELECT * FROM adm_users WHERE auth_design_order_change_status = 1 ORDER BY last_name', []);
 
 	$tmpLayoutContentData['orders'] =
 		dbSelectData($con, $sqlQuerySelect . $sqlQueryJoin1 . $sqlQueryJoin2 . $sqlQueryWhere . $sqlSortBy . $sqlPagination, $sqlParameters) ?? [];
@@ -644,6 +644,7 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['depart
 		$sqlParameters[] = date('Y-m-d H:i:s');
 	}
 
+	// todo когда у всех цехов выполено
 	if ($_POST['status'] == $PROG_DATA['STATUS_ID_PRODUCTION']['DONE'] ||
 		$_POST['status'] == $PROG_DATA['STATUS_ID_PRODUCTION']['ISSUED'] ||
 		$_POST['status'] == $PROG_DATA['STATUS_ID_PRODUCTION']['CANCEL']) {

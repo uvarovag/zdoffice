@@ -3,7 +3,7 @@
 $PROG_CONFIG = [
 	'HOST' => $SYS_CONFIG['HOST'], // DONT TOUCH!!!
 	'DEBUG_MODE_USER_ID' => $SYS_CONFIG['DEBUG_MODE_USER_ID'], // DONT TOUCH!!!
-	'RELOAD_EVERY_MIN' => 12,
+	'RELOAD_EVERY_MIN' => 5,
 	'TIMEZONE' => 'Asia/Tashkent',
 	'PROG_NAME' => 'ZIYNAT DESIGN online application',
 	'BG_STYLE' => 'bg-primary',

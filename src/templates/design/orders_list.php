@@ -113,6 +113,7 @@
       <tr>
         <th scope="col">Дата создания</th>
         <th scope="col">Контрагент</th>
+        <th scope="col">Счет бонсенс</th>
         <th scope="col">Менеджер</th>
         <th scope="col">Дизайнер</th>
         <th scope="col">Приоритет</th>
@@ -127,6 +128,7 @@
 						$order['id']; ?>'; return false">
           <td><?= $order['datetime_status_0']; ?></td>
           <td><?= shortStr($order['client_name'], $data['CONFIG']['MAX_SYMBOLS_TABLE_CELL']); ?></td>
+          <td><?= $order['order_name_out']; ?></td>
           <td>
             <span>
             <?php if ($order['create_user_id']): ?>

@@ -54,7 +54,7 @@
 							<?php if ($data['errorMassage']): ?>
                 <p class="text-red"><?= $data['errorMassage']; ?></p>
 							<?php else: ?>
-                <p><?= $data['CONFIG']['PROG_NAME']; ?></p>
+                <p>(new server) <?= $data['CONFIG']['PROG_NAME']; ?></p>
 							<?php endif; ?>
             </div>
             <form action="<?= $data['CONFIG']['HOST'] . '/login.php'; ?>" method="post">

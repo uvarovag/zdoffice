@@ -65,7 +65,7 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'order_in
 	}
 
 	$tmpLayoutContentData['designers'] =
-		dbSelectData($con, 'SELECT * FROM adm_users WHERE auth_design_order_change_status = 1 AND is_block = 0 AND is_deleted = 0', []) ?? [];
+		dbSelectData($con, 'SELECT * FROM adm_users WHERE auth_design_order_change_status = 1 AND is_block = 0 AND is_deleted = 0 ORDER BY last_name', []) ?? [];
 
 	$tmpLayoutContentData['designer'] = dbSelectData($con,
 			'SELECT id, last_name, first_name FROM adm_users WHERE id = ?',
@@ -237,9 +237,9 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	$sqlPagination = $paginationData['sqlPagination'];
 
 	$tmpLayoutContentData['createUsers'] =
-		dbSelectData($con, 'SELECT * FROM adm_users WHERE auth_design_order_new = 1', []);
+		dbSelectData($con, 'SELECT * FROM adm_users WHERE auth_design_order_new = 1 ORDER BY last_name', []);
 	$tmpLayoutContentData['designers'] =
-		dbSelectData($con, 'SELECT * FROM adm_users WHERE auth_design_order_change_status = 1', []);
+		dbSelectData($con, 'SELECT * FROM adm_users WHERE auth_design_order_change_status = 1 ORDER BY last_name', []);
 
 	$tmpLayoutContentData['orders'] =
 		dbSelectData($con, $sqlQuerySelect . $sqlQueryJoin1 . $sqlQueryJoin2 . $sqlQueryWhere . $sqlSortBy . $sqlPagination, $sqlParameters) ?? [];
