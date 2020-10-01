@@ -1,45 +1,5 @@
 <?php
 
-
-
-//* Ожидание подтверждения 000
-//* Получено производством 1000
-//* Начата работа 200
-//* Готовность % 210 - 290
-//* Выполнено % 300
-//* Отгружено 400
-//* Ожидание подтверждения отмены 998
-//* 999
-
-// const
-// adv
-// furn
-// steel
-// install
-// supply
-
-
-
-/*
-  current_status
- 	datetime_status_0 												DATETIME,
-	datetime_status_100 												DATETIME,
-	datetime_status_200 												DATETIME,
-	datetime_status_210 												DATETIME,
-	datetime_status_220 												DATETIME,
-	datetime_status_230 												DATETIME,
-	datetime_status_240 												DATETIME,
-	datetime_status_250 												DATETIME,
-	datetime_status_260 												DATETIME,
-	datetime_status_270 												DATETIME,
-	datetime_status_280 												DATETIME,
-	datetime_status_290 												DATETIME,
-	datetime_status_300 												DATETIME,
-	datetime_status_999 												DATETIME
-
-*/
-
-
 $STATUS_LIST_PRODUCTION = [
 	0 => [
 		'name' => 'ожидание подтверждения',
@@ -94,8 +54,8 @@ $STATUS_LIST_PRODUCTION = [
 		'icon' => '<span class="badge badge-pill badge-success">выполнено</span>'
 	],
 	400 => [
-		'name' => 'отгружено',
-		'icon' => '<span class="badge badge-pill badge-success">отгружено</span>'
+		'name' => 'проект сдан',
+		'icon' => '<span class="badge badge-pill badge-success">проект сдан</span>'
 	],
 	998 => [
 		'name' => 'ожидание подтверждения отмены',

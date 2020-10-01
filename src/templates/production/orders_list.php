@@ -93,7 +93,7 @@
                   value="300">выполнено
           </option>
           <option <?= $data['formData']['status'] == '400' ? 'selected' : ''; ?>
-                  value="400">отгружено
+                  value="400">проект сдан
           </option>
           <option <?= $data['formData']['status'] == '998' ? 'selected' : ''; ?>
                   value="998">ожидание подтверждения отмены

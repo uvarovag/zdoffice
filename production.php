@@ -53,27 +53,17 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'order_in
 
 	$tmpLayoutContentData['activeTab'] = isset($_GET['active_tab']) ? $_GET['active_tab'] : 'notes';
 
-	$tmpLayoutContentData['order'] =
-		dbSelectData($con, 'SELECT *, 
-		DATE_FORMAT(const_deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS const_deadline_date,
-		' . addSuffixStatusList('const_datetime_status_', $PROG_DATA['STATUS_ID_PRODUCTION'], $PROG_CONFIG['DATETIME_FORMAT']) . ' , 
-		
-		DATE_FORMAT(adv_deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS adv_deadline_date,
-		' . addSuffixStatusList('adv_datetime_status_', $PROG_DATA['STATUS_ID_PRODUCTION'], $PROG_CONFIG['DATETIME_FORMAT']) . ' , 
-		
-		DATE_FORMAT(furn_deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS furn_deadline_date,
-		' . addSuffixStatusList('furn_datetime_status_', $PROG_DATA['STATUS_ID_PRODUCTION'], $PROG_CONFIG['DATETIME_FORMAT']) . ' , 
-		
-		DATE_FORMAT(steel_deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS steel_deadline_date,
-		' . addSuffixStatusList('steel_datetime_status_', $PROG_DATA['STATUS_ID_PRODUCTION'], $PROG_CONFIG['DATETIME_FORMAT']) . ' , 
-		
-		DATE_FORMAT(install_deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS install_deadline_date,
-		' . addSuffixStatusList('install_datetime_status_', $PROG_DATA['STATUS_ID_PRODUCTION'], $PROG_CONFIG['DATETIME_FORMAT']) . ' , 
-		
-		DATE_FORMAT(supply_deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS supply_deadline_date,
-		' . addSuffixStatusList('supply_datetime_status_', $PROG_DATA['STATUS_ID_PRODUCTION'], $PROG_CONFIG['DATETIME_FORMAT']) . ' 
-		
-		FROM production_orders WHERE id = ?', [$_GET['id']])[0] ?? [];
+	$sqlSelect = 'SELECT *, ';
+
+	foreach ($PROG_DATA['DEPARTMENTS_LIST'] as $depKey => $depVal) {
+		$sqlSelect = $sqlSelect . 'DATE_FORMAT(' . $depKey . '_deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS ' . $depKey . '_deadline_date, ' .
+			addSuffixStatusList($depKey . '_datetime_status_', $PROG_DATA['STATUS_ID_PRODUCTION'], $PROG_CONFIG['DATETIME_FORMAT']) . ' ,';
+	}
+
+	$sqlSelect = substr($sqlSelect, 0, -2);
+	$sqlSelect = $sqlSelect . 'FROM production_orders WHERE id = ?';
+
+	$tmpLayoutContentData['order'] = dbSelectData($con, $sqlSelect, [$_GET['id']])[0] ?? [];
 
 	if (empty($tmpLayoutContentData['order'])) {
 		redirectToIf(false, '', $PROG_CONFIG['HOST'] .
@@ -200,13 +190,15 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	}
 
 	$departmentFilter = paramSqlFilterArrKey(',', $_GET['department'] ?? '', $PROG_DATA['DEPARTMENTS_LIST']);
-	if ($departmentFilter === false)
+	if ($departmentFilter === false) {
 		foreach ($PROG_DATA['DEPARTMENTS_LIST'] as $key => $val)
 			$departmentFilter[] = $key;
+	}
 
 	$dateFilter = isset($_GET['date_from']) && isset($_GET['date_to']) && $_GET['date_from'] && $_GET['date_to'];
 
 	$departmentOrAnd = (isset($_GET['department']) && $_GET['department'] == 'all') ? 'AND' : 'OR';
+
 	$statusFilterStr = implode(', ', $statusFilter);
 
 
@@ -253,7 +245,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 		$sqlQueryWhere = $sqlQueryWhere . ') ';
 	}
 
-
+	// todo дней до общего дедлайна
 	if (isset($_GET['deadline']) && mb_strlen($_GET['deadline']) > 0) {
 		$sqlQueryWhere = $sqlQueryWhere . 'AND (';
 		foreach ($departmentFilter as $depKey => $depVal) {
@@ -363,40 +355,12 @@ if (isset($_POST['action']) && $_POST['action'] == 'new_order_data') {
 		'install_address' => correctFormat($_POST['install_address'] ?? '')
 	];
 
-	if (isset($_POST['const']) && $_POST['const'] == 'on' && isset($_POST['const_deadline']) && $_POST['const_deadline']) {
-		$newOrderData['const_deadline_date'] = date('Y-m-d H:i:s', strtotime($_POST['const_deadline']));
-		$newOrderData['const_current_status'] = $PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_START'];
-		$newOrderData['const_datetime_status_0'] = date('Y-m-d H:i:s');
-	}
-
-	if (isset($_POST['adv']) && $_POST['adv'] == 'on' && isset($_POST['adv_deadline']) && $_POST['adv_deadline']) {
-		$newOrderData['adv_deadline_date'] = date('Y-m-d H:i:s', strtotime($_POST['adv_deadline']));
-		$newOrderData['adv_current_status'] = $PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_START'];
-		$newOrderData['adv_datetime_status_0'] = date('Y-m-d H:i:s');
-	}
-
-	if (isset($_POST['furn']) && $_POST['furn'] == 'on' && isset($_POST['furn_deadline']) && $_POST['furn_deadline']) {
-		$newOrderData['furn_deadline_date'] = date('Y-m-d H:i:s', strtotime($_POST['furn_deadline']));
-		$newOrderData['furn_current_status'] = $PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_START'];
-		$newOrderData['furn_datetime_status_0'] = date('Y-m-d H:i:s');
-	}
-
-	if (isset($_POST['steel']) && $_POST['steel'] == 'on' && isset($_POST['steel_deadline']) && $_POST['steel_deadline']) {
-		$newOrderData['steel_deadline_date'] = date('Y-m-d H:i:s', strtotime($_POST['steel_deadline']));
-		$newOrderData['steel_current_status'] = $PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_START'];
-		$newOrderData['steel_datetime_status_0'] = date('Y-m-d H:i:s');
-	}
-
-	if (isset($_POST['install']) && $_POST['install'] == 'on' && isset($_POST['install_deadline']) && $_POST['install_deadline']) {
-		$newOrderData['install_deadline_date'] = date('Y-m-d H:i:s', strtotime($_POST['install_deadline']));
-		$newOrderData['install_current_status'] = $PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_START'];
-		$newOrderData['install_datetime_status_0'] = date('Y-m-d H:i:s');
-	}
-
-	if (isset($_POST['supply']) && $_POST['supply'] == 'on' && isset($_POST['supply_deadline']) && $_POST['supply_deadline']) {
-		$newOrderData['supply_deadline_date'] = date('Y-m-d H:i:s', strtotime($_POST['supply_deadline']));
-		$newOrderData['supply_current_status'] = $PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_START'];
-		$newOrderData['supply_datetime_status_0'] = date('Y-m-d H:i:s');
+	foreach ($PROG_DATA['DEPARTMENTS_LIST'] as $depKey => $depVal) {
+		if (isset($_POST[$depKey]) && $_POST[$depKey] == 'on' && isset($_POST[$depKey . '_deadline']) && $_POST[$depKey . '_deadline']) {
+			$newOrderData[$depKey . '_deadline_date'] = date('Y-m-d H:i:s', strtotime($_POST[$depKey . '_deadline']));
+			$newOrderData[$depKey . '_current_status'] = $PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_START'];
+			$newOrderData[$depKey . '_datetime_status_0'] = date('Y-m-d H:i:s');
+		}
 	}
 
 	mysqli_query($con, 'START TRANSACTION');
@@ -430,7 +394,7 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['priori
 	if (array_key_exists($_POST['priority'], $PROG_DATA['PRIORITY_ORDERS']) === false) {
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] .
-			'/production.php?action=order_info_card&id=' . $_POST['order_id'] . '&error_massage=ACCESS DENIED' . __LINE__);
+			'/production.php?action=order_info_card&id=' . $_POST['order_id'] . '&error_massage=ACCESS DENIED' . ' ' . __LINE__);
 	}
 
 	$changePriorityQuery = 'UPDATE production_orders SET order_priority = ? WHERE id = ?';
@@ -468,15 +432,13 @@ if (isset($_GET['action']) && isset($_GET['order_id']) &&
 
 // (все цеха) запустить в работу у кго есть права && статус 'ожидание подтверждения - 0'
 
-// (все цеха) изменение статуса для всех цехов только на статусы (WAIT_START RECEIVED WAIT_CANCEL CANCEL)
-
+// (все цеха) изменение статуса для всех цехов только на статусы (WAIT_START RECEIVED WAIT_CANCEL ISSUED CANCEL)
+// (все цеха) изменить на статус 'проект сдан' возможно только со статуса 'выполнено' и только тот кто создал
 
 // (отдельные цеха) у кого есть права
 // (отдельные цеха) статус меняется только в большую сторону
 // (отдельные цеха) изменение статуса по цехам только если стадия больше RECEIVED
-// (отдельные цеха) изменение статуса по цехам в диапозоне от START до ISSUED
-
-// если статус отгружено (ISSUED) а статус выполнено (DONE) не ставился, дата выполнения как отгружен
+// (отдельные цеха) изменение статуса по цехам в диапозоне от START до DONE
 
 if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['department']) && isset($_POST['status']) &&
 	isset($_POST['redirect_success']) && isset($_POST['redirect_error']) &&
@@ -530,21 +492,31 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['depart
 			$_POST['order_id'] . '&error_massage=' . $PROG_DATA['ERROR']['ACCESS_DENIED'] . ' ' . __LINE__);
 	}
 
-	// изменение статуса для всех цехов только на статусы (WAIT_START RECEIVED WAIT_CANCEL CANCEL)
+	// изменить на статус 'проект сдан' возможно только со статуса 'выполнено' и только тот кто создал
+	if ($_POST['status'] == $PROG_DATA['STATUS_ID_PRODUCTION']['ISSUED'] &&
+		($_SESSION['user']['id'] != $orderData['create_user_id'] ||
+		currentGeneralStatus($orderData, $PROG_DATA['DEPARTMENTS_LIST']) !== $PROG_DATA['STATUS_ID_PRODUCTION']['DONE'])) {
+		redirectToIf(false, '',
+			$PROG_CONFIG['HOST'] . '/production.php?action=order_info_card&id=' .
+			$_POST['order_id'] . '&error_massage=' . $PROG_DATA['ERROR']['ACCESS_DENIED'] . ' ' . __LINE__);
+	}
+
+	// (все цеха) изменение статуса для всех цехов только на статусы (WAIT_START RECEIVED WAIT_CANCEL CANCEL)
 	if ($_POST['department'] == 'all' &&
 		$_POST['status'] != $PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_START'] &&
 		$_POST['status'] != $PROG_DATA['STATUS_ID_PRODUCTION']['RECEIVED'] &&
 		$_POST['status'] != $PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_CANCEL'] &&
+		$_POST['status'] != $PROG_DATA['STATUS_ID_PRODUCTION']['ISSUED'] &&
 		$_POST['status'] != $PROG_DATA['STATUS_ID_PRODUCTION']['CANCEL']) {
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] . '/production.php?action=order_info_card&id=' .
 			$_POST['order_id'] . '&error_massage=' . $PROG_DATA['ERROR']['ACCESS_DENIED'] . ' ' . __LINE__);
 	}
 
-	// изменение статуса по цехам в диапозоне от START до ISSUED
+	// (отдельные цеха) изменение статуса по цехам в диапозоне от START до ISSUED
 	if ($_POST['department'] != 'all' &&
 		($_POST['status'] < $PROG_DATA['STATUS_ID_PRODUCTION']['START'] ||
-			$_POST['status'] > $PROG_DATA['STATUS_ID_PRODUCTION']['ISSUED'])) {
+			$_POST['status'] > $PROG_DATA['STATUS_ID_PRODUCTION']['DONE'])) {
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] . '/production.php?action=order_info_card&id=' .
 			$_POST['order_id'] . '&error_massage=' . $PROG_DATA['ERROR']['ACCESS_DENIED'] . ' ' . __LINE__);
@@ -558,14 +530,14 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['depart
 			$_POST['order_id'] . '&error_massage=' . $PROG_DATA['ERROR']['ACCESS_DENIED'] . ' ' . __LINE__);
 	}
 
-	// изменение статуса по цехам у кого есть права
+	// (отдельные цеха) изменение статуса по цехам у кого есть права
 	if ($_POST['department'] != 'all' && $_SESSION['user']['auth_production_order_change_status_' . $_POST['department']] == 0) {
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] . '/production.php?action=order_info_card&id=' .
 			$_POST['order_id'] . '&error_massage=' . $PROG_DATA['ERROR']['ACCESS_DENIED'] . ' ' . __LINE__);
 	}
 
-	// изменение статуса по цехам меняется только в большую сторону
+	// (отдельные цеха) изменение статуса по цехам меняется только в большую сторону
 	if ($_POST['department'] != 'all' && $_POST['status'] <= $orderData[$_POST['department'] . '_current_status']) {
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] . '/production.php?action=order_info_card&id=' .
@@ -578,97 +550,12 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['depart
 	$sqlQueryWhere = 'WHERE id = ?';
 	$sqlParameters = [];
 
-
-	if (($_POST['department'] == 'all' || $_POST['department'] == 'const') && $orderData['const_datetime_status_0']) {
-
-		if ($_POST['status'] == $PROG_DATA['STATUS_ID_PRODUCTION']['ISSUED'] &&
-			$orderData['const_current_status'] < $PROG_DATA['STATUS_ID_PRODUCTION']['DONE']) {
-
-			$sqlQuerySet = $sqlQuerySet . 'const_datetime_status_300 = ?, ';
+	foreach ($PROG_DATA['DEPARTMENTS_LIST'] as $depKey => $depVal) {
+		if (($_POST['department'] == 'all' || $_POST['department'] == $depKey) && $orderData[$depKey . '_datetime_status_0']) {
+			$sqlQuerySet = $sqlQuerySet . "{$depKey}_current_status = ?, {$depKey}_datetime_status_{$_POST['status']} = ?, ";
+			$sqlParameters[] = $_POST['status'];
 			$sqlParameters[] = date('Y-m-d H:i:s');
 		}
-
-		$sqlQuerySet = $sqlQuerySet . 'const_current_status = ?, const_datetime_status_' . $_POST['status'] . ' = ?, ';
-		$sqlParameters[] = $_POST['status'];
-		$sqlParameters[] = date('Y-m-d H:i:s');
-	}
-
-	if (($_POST['department'] == 'all' || $_POST['department'] == 'adv') && $orderData['adv_datetime_status_0']) {
-
-		if ($_POST['status'] == $PROG_DATA['STATUS_ID_PRODUCTION']['ISSUED'] &&
-			$orderData['adv_current_status'] < $PROG_DATA['STATUS_ID_PRODUCTION']['DONE']) {
-
-			$sqlQuerySet = $sqlQuerySet . 'adv_datetime_status_300 = ?, ';
-			$sqlParameters[] = date('Y-m-d H:i:s');
-		}
-
-		$sqlQuerySet = $sqlQuerySet . 'adv_current_status = ?, adv_datetime_status_' . $_POST['status'] . ' = ?, ';
-		$sqlParameters[] = $_POST['status'];
-		$sqlParameters[] = date('Y-m-d H:i:s');
-	}
-
-	if (($_POST['department'] == 'all' || $_POST['department'] == 'furn') && $orderData['furn_datetime_status_0']) {
-
-		if ($_POST['status'] == $PROG_DATA['STATUS_ID_PRODUCTION']['ISSUED'] &&
-			$orderData['furn_current_status'] < $PROG_DATA['STATUS_ID_PRODUCTION']['DONE']) {
-
-			$sqlQuerySet = $sqlQuerySet . 'furn_datetime_status_300 = ?, ';
-			$sqlParameters[] = date('Y-m-d H:i:s');
-		}
-
-		$sqlQuerySet = $sqlQuerySet . 'furn_current_status = ?, furn_datetime_status_' . $_POST['status'] . ' = ?, ';
-		$sqlParameters[] = $_POST['status'];
-		$sqlParameters[] = date('Y-m-d H:i:s');
-	}
-
-	if (($_POST['department'] == 'all' || $_POST['department'] == 'steel') && $orderData['steel_datetime_status_0']) {
-
-		if ($_POST['status'] == $PROG_DATA['STATUS_ID_PRODUCTION']['ISSUED'] &&
-			$orderData['steel_current_status'] < $PROG_DATA['STATUS_ID_PRODUCTION']['DONE']) {
-
-			$sqlQuerySet = $sqlQuerySet . 'steel_datetime_status_300 = ?, ';
-			$sqlParameters[] = date('Y-m-d H:i:s');
-		}
-
-		$sqlQuerySet = $sqlQuerySet . 'steel_current_status = ?, steel_datetime_status_' . $_POST['status'] . ' = ?, ';
-		$sqlParameters[] = $_POST['status'];
-		$sqlParameters[] = date('Y-m-d H:i:s');
-	}
-
-	if (($_POST['department'] == 'all' || $_POST['department'] == 'install') && $orderData['install_datetime_status_0']) {
-
-		if ($_POST['status'] == $PROG_DATA['STATUS_ID_PRODUCTION']['ISSUED'] &&
-			$orderData['install_current_status'] < $PROG_DATA['STATUS_ID_PRODUCTION']['DONE']) {
-
-			$sqlQuerySet = $sqlQuerySet . 'install_datetime_status_300 = ?, ';
-			$sqlParameters[] = date('Y-m-d H:i:s');
-		}
-
-		$sqlQuerySet = $sqlQuerySet . 'install_current_status = ?, install_datetime_status_' . $_POST['status'] . ' = ?, ';
-		$sqlParameters[] = $_POST['status'];
-		$sqlParameters[] = date('Y-m-d H:i:s');
-	}
-
-	if (($_POST['department'] == 'all' || $_POST['department'] == 'supply') && $orderData['supply_datetime_status_0']) {
-
-		if ($_POST['status'] == $PROG_DATA['STATUS_ID_PRODUCTION']['ISSUED'] &&
-			$orderData['supply_current_status'] < $PROG_DATA['STATUS_ID_PRODUCTION']['DONE']) {
-
-			$sqlQuerySet = $sqlQuerySet . 'supply_datetime_status_300 = ?, ';
-			$sqlParameters[] = date('Y-m-d H:i:s');
-		}
-
-		$sqlQuerySet = $sqlQuerySet . 'supply_current_status = ?, supply_datetime_status_' . $_POST['status'] . ' = ?, ';
-		$sqlParameters[] = $_POST['status'];
-		$sqlParameters[] = date('Y-m-d H:i:s');
-	}
-
-	// todo когда у всех цехов выполено
-	if ($_POST['status'] == $PROG_DATA['STATUS_ID_PRODUCTION']['DONE'] ||
-		$_POST['status'] == $PROG_DATA['STATUS_ID_PRODUCTION']['ISSUED'] ||
-		$_POST['status'] == $PROG_DATA['STATUS_ID_PRODUCTION']['CANCEL']) {
-
-		$sqlQuerySet = $sqlQuerySet . 'order_priority = 1, sort_priority = 1, error_priority = 1, ';
 	}
 
 	$sqlQuerySet = substr($sqlQuerySet, 0, -2);
@@ -697,6 +584,16 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['depart
 		mysqli_query($con, 'COMMIT');
 	else
 		mysqli_query($con, 'ROLLBACK');
+
+
+	$orderData = dbSelectData($con, 'SELECT * FROM production_orders WHERE id = ?', [$_POST['order_id']])[0] ?? [];
+
+	$currentGeneralStatus = currentGeneralStatus($orderData, $PROG_DATA['DEPARTMENTS_LIST']);
+
+	if ($currentGeneralStatus == $PROG_DATA['STATUS_ID_PRODUCTION']['ISSUED'] ||
+		$currentGeneralStatus == $PROG_DATA['STATUS_ID_PRODUCTION']['CANCEL']) {
+		dbExecQuery($con, 'UPDATE production_orders SET order_priority = 1, sort_priority = 1, error_priority = 1 WHERE id = ?', [$_POST['order_id']]);
+	}
 
 	redirectToIf($confirmStart && $confirmCancel && $changeStatus,
 		$_POST['redirect_success'] . '&alert_massage=' . $PROG_DATA['ALERT']['OK'],
