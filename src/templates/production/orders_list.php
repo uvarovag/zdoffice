@@ -16,7 +16,10 @@
     <div class="form-row mb-0">
       <div class="form-group col">
         <select class="form-control form-control-sm" name="department">
-          <option value="all" selected disabled>отдел</option>
+          <option value="any" selected disabled>отдел</option>
+          <option <?= $data['formData']['department'] == 'any' ? 'selected' : ''; ?>
+                  value="any">любой
+          </option>
           <option <?= $data['formData']['department'] == 'all' ? 'selected' : ''; ?>
                   value="all">все
           </option>
@@ -33,9 +36,9 @@
       </div>
       <div class="form-group col">
         <select class="form-control form-control-sm" name="create_user_id">
-          <option value="all" selected disabled>менеджер</option>
-          <option <?= $data['formData']['createUserId'] == 'all' ? 'selected' : ''; ?>
-                  value="all">все
+          <option value="any" selected disabled>менеджер</option>
+          <option <?= $data['formData']['createUserId'] == 'any' ? 'selected' : ''; ?>
+                  value="any">любой
           </option>
 					<?php foreach ($data['createUsers'] as $user): ?>
             <option <?= $data['formData']['createUserId'] == $user['id'] ? 'selected' : ''; ?>
@@ -45,9 +48,9 @@
       </div>
       <div class="form-group col">
         <select class="form-control form-control-sm" name="designer_id">
-          <option value="all" selected disabled>дизайнер</option>
-          <option <?= $data['formData']['designerId'] == 'all' ? 'selected' : ''; ?>
-                  value="all">все
+          <option value="any" selected disabled>дизайнер</option>
+          <option <?= $data['formData']['designerId'] == 'any' ? 'selected' : ''; ?>
+                  value="any">любой
           </option>
           </option>
 					<?php foreach ($data['designers'] as $designer): ?>
@@ -58,9 +61,9 @@
       </div>
       <div class="form-group col">
         <select class="form-control form-control-sm" name="priority">
-          <option value="all" selected disabled>приоритет</option>
-          <option <?= $data['formData']['priority'] == 'all' ? 'selected' : ''; ?>
-                  value="all">все
+          <option value="any" selected disabled>приоритет</option>
+          <option <?= $data['formData']['priority'] == 'any' ? 'selected' : ''; ?>
+                  value="any">любой
           </option>
 					<?php foreach ($data['PROG_DATA']['PRIORITY_ORDERS'] as $priorityKey => $priorityVal): ?>
             <option <?= $data['formData']['priority'] == $priorityKey ? 'selected' : ''; ?>
@@ -70,9 +73,12 @@
       </div>
       <div class="form-group col">
         <select class="form-control form-control-sm" name="status">
-          <option value="all" selected disabled>стадия</option>
-          <option <?= $data['formData']['status'] == 'all' ? 'selected' : ''; ?>
-                  value="all">все
+          <option value="any" selected disabled>стадия</option>
+          <option <?= $data['formData']['status'] == 'any' ? 'selected' : ''; ?>
+                  value="any">любая
+          </option>
+          <option <?= $data['formData']['status'] == '100,200,210,220,230,240,250,260,270,280,290' ? 'selected' : ''; ?>
+                  value="100,200,210,220,230,240,250,260,270,280,290">активные
           </option>
           <option <?= $data['formData']['status'] == '0' ? 'selected' : ''; ?>
                   value="0">ожидание подтверждения
@@ -94,9 +100,6 @@
           </option>
           <option <?= $data['formData']['status'] == '999' ? 'selected' : ''; ?>
                   value="999">отменено
-          </option>
-          <option <?= $data['formData']['status'] == '100,200,210,220,230,240,250,260,270,280,290' ? 'selected' : ''; ?>
-                  value="100,200,210,220,230,240,250,260,270,280,290">активные
           </option>
         </select>
       </div>

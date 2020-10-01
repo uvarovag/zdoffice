@@ -194,9 +194,10 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 
 
 	$statusFilter = paramSqlFilterArrVal(',', $_GET['status'] ?? '', $PROG_DATA['STATUS_ID_PRODUCTION']);
-	if ($statusFilter === false)
+	if ($statusFilter === false) {
 		foreach ($PROG_DATA['STATUS_ID_PRODUCTION'] as $key => $val)
 			$statusFilter[] = $val;
+	}
 
 	$departmentFilter = paramSqlFilterArrKey(',', $_GET['department'] ?? '', $PROG_DATA['DEPARTMENTS_LIST']);
 	if ($departmentFilter === false)
@@ -205,54 +206,65 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 
 	$dateFilter = isset($_GET['date_from']) && isset($_GET['date_to']) && $_GET['date_from'] && $_GET['date_to'];
 
+	$departmentOrAnd = (isset($_GET['department']) && $_GET['department'] == 'all') ? 'AND' : 'OR';
+	$statusFilterStr = implode(', ', $statusFilter);
 
-	if (isset($_GET['department']) && $_GET['department'] !== 'all' && $dateFilter === false) {
+
+	if (isset($_GET['department']) && $dateFilter === false &&
+		count($departmentFilter) !== count($PROG_DATA['DEPARTMENTS_LIST'])) {
+
 		$sqlQueryWhere = $sqlQueryWhere . 'AND (';
 
 		foreach ($departmentFilter as $val)
-			$sqlQueryWhere = $sqlQueryWhere . $val . '_datetime_status_0 IS NOT NULL OR ';
+			$sqlQueryWhere = $sqlQueryWhere . "{$val}_datetime_status_0 IS NOT NULL OR ";
 
 		$sqlQueryWhere = substr($sqlQueryWhere, 0, -4);
 		$sqlQueryWhere = $sqlQueryWhere . ') ';
 	}
 
-	if (isset($_GET['create_user_id']) && $_GET['create_user_id'] != 'all') {
+
+	if (isset($_GET['create_user_id']) && $_GET['create_user_id'] != 'any') {
 		$sqlQueryWhere = $sqlQueryWhere . 'AND create_user_id = ? ';
 		$sqlParameters[] = $_GET['create_user_id'];
 	}
 
-	if (isset($_GET['designer_id']) && $_GET['designer_id'] != 'all') {
+	if (isset($_GET['designer_id']) && $_GET['designer_id'] != 'any') {
 		$sqlQueryWhere = $sqlQueryWhere . 'AND designer_id = ? ';
 		$sqlParameters[] = $_GET['designer_id'];
 	}
 
-	if (isset($_GET['priority']) && $_GET['priority'] != 'all') {
+	if (isset($_GET['priority']) && $_GET['priority'] != 'any') {
 		$sqlQueryWhere = $sqlQueryWhere . 'AND order_priority = ? ';
 		$sqlParameters[] = $_GET['priority'];
 	}
 
-	if (isset($_GET['status']) && $_GET['status'] !== 'all' && $dateFilter === false) {
+
+	if (isset($_GET['status']) && $_GET['status'] !== 'any' && $dateFilter === false) {
+
 		$sqlQueryWhere = $sqlQueryWhere . 'AND (';
 
 		foreach ($departmentFilter as $depKey => $depVal) {
-			foreach ($statusFilter as $stKey => $stVal) {
-				$sqlQueryWhere = $sqlQueryWhere . $depVal . '_current_status = ? OR ';
-				$sqlParameters[] = $stVal;
-			}
+			if (isset($_GET['department']) && $_GET['department'] == 'all')
+				$sqlQueryWhere = $sqlQueryWhere . "({$depVal}_current_status IN ({$statusFilterStr}) OR {$depVal}_datetime_status_0 IS NULL) {$departmentOrAnd} ";
+			else
+				$sqlQueryWhere = $sqlQueryWhere . "{$depVal}_current_status IN ({$statusFilterStr}) {$departmentOrAnd} ";
 		}
-		$sqlQueryWhere = substr($sqlQueryWhere, 0, -4);
+		$sqlQueryWhere = substr($sqlQueryWhere, 0, -2 - strlen($departmentOrAnd));
 		$sqlQueryWhere = $sqlQueryWhere . ') ';
 	}
+
 
 	if (isset($_GET['deadline']) && mb_strlen($_GET['deadline']) > 0) {
 		$sqlQueryWhere = $sqlQueryWhere . 'AND (';
 		foreach ($departmentFilter as $depKey => $depVal) {
-			$sqlQueryWhere = $sqlQueryWhere . $depVal . '_deadline_date <= NOW() + INTERVAL ? DAY OR ';
+
+			$sqlQueryWhere = $sqlQueryWhere . "{$depVal}_deadline_date <= NOW() + INTERVAL ? DAY OR ";
 			$sqlParameters[] = $_GET['deadline'];
 		}
 		$sqlQueryWhere = substr($sqlQueryWhere, 0, -4);
 		$sqlQueryWhere = $sqlQueryWhere . ') ';
 	}
+
 
 	if (isset($_GET['search']) && $_GET['search']) {
 		$sqlQueryWhere = $sqlQueryWhere . 'AND (order_name_in LIKE ? OR order_name_out LIKE ? OR client_name LIKE ?) ';
@@ -262,16 +274,23 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	}
 
 	if ($dateFilter) {
+
 		$sqlQueryWhere = $sqlQueryWhere . 'AND (';
 
 		foreach ($departmentFilter as $depKey => $depVal) {
 			foreach ($statusFilter as $stKey => $stVal) {
-				$sqlQueryWhere = $sqlQueryWhere . '(' . $depVal . '_datetime_status_' . $stVal . ' BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR ';
+
+				if (isset($_GET['department']) && $_GET['department'] == 'all')
+					$sqlQueryWhere = $sqlQueryWhere . "(({$depVal}_datetime_status_{$stVal} BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR 
+						{$depVal}_datetime_status_0 IS NULL) {$departmentOrAnd} ";
+				else
+					$sqlQueryWhere = $sqlQueryWhere . "({$depVal}_datetime_status_{$stVal} BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) {$departmentOrAnd} ";
+
 				$sqlParameters[] = date('Y-m-d H:i:s', strtotime($_GET['date_from']));
 				$sqlParameters[] = date('Y-m-d H:i:s', strtotime($_GET['date_to']));
 			}
 		}
-		$sqlQueryWhere = substr($sqlQueryWhere, 0, -4);
+		$sqlQueryWhere = substr($sqlQueryWhere, 0, -2 - strlen($departmentOrAnd));
 		$sqlQueryWhere = $sqlQueryWhere . ') ';
 	}
 
