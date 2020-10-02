@@ -62,6 +62,9 @@ if ($_SESSION['user']['availDepProd']) {
 	$sqlSelect = substr($sqlSelect, 0, -3);
 	$sqlSelect = $sqlSelect . 'ORDER BY id * order_priority * sort_priority * error_priority DESC';
 
+//	var_dump($sqlSelect);
+//	var_dump($sqlParameters);
+//	exit();
 	$tmpLayoutNotifyData['notifys'] = dbSelectData($con, $sqlSelect, $sqlParameters);
 
 	$tmpLayoutNotifyData['notifyQuantity'] = count($tmpLayoutNotifyData['notifys']);
@@ -77,21 +80,18 @@ if ($_SESSION['user']['auth_production_order_start']) {
 
 	$tmpLayoutNotifyData['active_tab'] = 'notes';
 
-	$tmpLayoutNotifyData['notifys'] = dbSelectData($con,
-		'SELECT * 
-		 FROM production_orders 
-		 WHERE 
-		 const_current_status = ? OR 
-		 adv_current_status = ? OR 
-		 furn_current_status = ? OR 
-		 steel_current_status = ? OR 
-		 install_current_status = ? OR 
-		 supply_current_status = ? 
-		 ORDER BY id * order_priority * sort_priority * error_priority DESC',
-		[$PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_START'], $PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_START'],
-			$PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_START'], $PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_START'],
-			$PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_START'], $PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_START']]);
+	$sqlSelect = 'SELECT * FROM production_orders WHERE ';
+	$sqlParam = [];
 
+	foreach ($PROG_DATA['DEPARTMENTS_LIST'] as $depKey => $depVal) {
+		$sqlSelect = $sqlSelect . "{$depKey}_current_status = ? OR ";
+		$sqlParam[] = $PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_START'];
+	}
+
+	$sqlSelect = substr($sqlSelect, 0, -3);
+	$sqlSelect = $sqlSelect . 'ORDER BY id * order_priority * sort_priority * error_priority DESC';
+
+	$tmpLayoutNotifyData['notifys'] = dbSelectData($con, $sqlSelect, $sqlParam);
 	$tmpLayoutNotifyData['notifyQuantity'] = count($tmpLayoutNotifyData['notifys']);
 
 	if ($tmpLayoutNotifyData['notifyQuantity'] > 0) {
@@ -105,21 +105,18 @@ if ($_SESSION['user']['auth_production_order_cancel']) {
 
 	$tmpLayoutNotifyData['active_tab'] = 'notes';
 
-	$tmpLayoutNotifyData['notifys'] = dbSelectData($con,
-		'SELECT * 
-		 FROM production_orders 
-		 WHERE 
-		 const_current_status = ? OR 
-		 adv_current_status = ? OR 
-		 furn_current_status = ? OR 
-		 steel_current_status = ? OR 
-		 install_current_status = ? OR 
-		 supply_current_status = ? 
-		 ORDER BY id * order_priority * sort_priority * error_priority DESC',
-		[$PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_CANCEL'], $PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_CANCEL'],
-			$PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_CANCEL'], $PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_CANCEL'],
-			$PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_CANCEL'], $PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_CANCEL']]);
+	$sqlSelect = 'SELECT * FROM production_orders WHERE ';
+	$sqlParam = [];
 
+	foreach ($PROG_DATA['DEPARTMENTS_LIST'] as $depKey => $depVal) {
+		$sqlSelect = $sqlSelect . "{$depKey}_current_status = ? OR ";
+		$sqlParam[] = $PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_CANCEL'];
+	}
+
+	$sqlSelect = substr($sqlSelect, 0, -3);
+	$sqlSelect = $sqlSelect . 'ORDER BY id * order_priority * sort_priority * error_priority DESC';
+
+	$tmpLayoutNotifyData['notifys'] = dbSelectData($con, $sqlSelect, $sqlParam);
 	$tmpLayoutNotifyData['notifyQuantity'] = count($tmpLayoutNotifyData['notifys']);
 
 	if ($tmpLayoutNotifyData['notifyQuantity'] > 0) {

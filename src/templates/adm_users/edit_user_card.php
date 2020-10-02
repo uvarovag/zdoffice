@@ -138,42 +138,14 @@
                      class="custom-control-input" <?= $data['user']['auth_production_order_cancel'] ? 'checked' : ''; ?>>
               <label class="custom-control-label" for="production_order_cancel">подтвердить отмену заявки</label>
             </div>
-            <div class="custom-control custom-checkbox mb-2">
-              <input type="checkbox" name="production_order_change_status_const" id="production_order_change_status_const"
-                     class="custom-control-input" <?= $data['user']['auth_production_order_change_status_const'] ? 'checked' : ''; ?>>
-              <label class="custom-control-label" for="production_order_change_status_const">
-                <b>конструктор</b> менять статус заявки</label>
-            </div>
-            <div class="custom-control custom-checkbox mb-2">
-              <input type="checkbox" name="production_order_change_status_adv" id="production_order_change_status_adv"
-                     class="custom-control-input" <?= $data['user']['auth_production_order_change_status_adv'] ? 'checked' : ''; ?>>
-              <label class="custom-control-label" for="production_order_change_status_adv">
-                <b>реклама</b> менять статус заявки</label>
-            </div>
-            <div class="custom-control custom-checkbox mb-2">
-              <input type="checkbox" name="production_order_change_status_furn" id="production_order_change_status_furn"
-                     class="custom-control-input" <?= $data['user']['auth_production_order_change_status_furn'] ? 'checked' : ''; ?>>
-              <label class="custom-control-label" for="production_order_change_status_furn">
-                <b>мебель</b> менять статус заявки</label>
-            </div>
-            <div class="custom-control custom-checkbox mb-2">
-              <input type="checkbox" name="production_order_change_status_steel" id="production_order_change_status_steel"
-                     class="custom-control-input" <?= $data['user']['auth_production_order_change_status_steel'] ? 'checked' : ''; ?>>
-              <label class="custom-control-label" for="production_order_change_status_steel">
-                <b>металл</b> менять статус заявки</label>
-            </div>
-            <div class="custom-control custom-checkbox mb-2">
-              <input type="checkbox" name="production_order_change_status_install" id="production_order_change_status_install"
-                     class="custom-control-input" <?= $data['user']['auth_production_order_change_status_install'] ? 'checked' : ''; ?>>
-              <label class="custom-control-label" for="production_order_change_status_install">
-                <b>монтаж</b> менять статус заявки</label>
-            </div>
-            <div class="custom-control custom-checkbox mb-2">
-              <input type="checkbox" name="production_order_change_status_supply" id="production_order_change_status_supply"
-                     class="custom-control-input" <?= $data['user']['auth_production_order_change_status_supply'] ? 'checked' : ''; ?>>
-              <label class="custom-control-label" for="production_order_change_status_supply">
-                <b>склад</b> менять статус заявки</label>
-            </div>
+						<?php foreach ($data['PROG_DATA']['DEPARTMENTS_LIST'] as $depKey => $depVal): ?>
+              <div class="custom-control custom-checkbox mb-2">
+                <input type="checkbox" name="production_order_change_status_<?= $depKey; ?>" id="production_order_change_status_<?= $depKey; ?>"
+                       class="custom-control-input" <?= $data['user']['auth_production_order_change_status_' . $depKey] ? 'checked' : ''; ?>>
+                <label class="custom-control-label" for="production_order_change_status_<?= $depKey; ?>">
+                  <b><?= $depVal; ?></b> менять статус заявки</label>
+              </div>
+            <?php endforeach; ?>
           </div>
         </div>
       </div>

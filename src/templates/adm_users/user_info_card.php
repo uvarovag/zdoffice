@@ -109,36 +109,13 @@
               <td class="px-0"><?= $data['user']['auth_production_order_cancel'] ? '<i class="ni ni-fat-add text-success"></i>' :
 									'<i class="ni ni-fat-delete text-danger"></i>'; ?></td>
             </tr>
-            <tr class="">
-              <td class="px-0"><b>конструктор</b> менять статус заявки</td>
-              <td class="px-0"><?= $data['user']['auth_production_order_change_status_const'] ? '<i class="ni ni-fat-add text-success"></i>' :
-									'<i class="ni ni-fat-delete text-danger"></i>'; ?></td>
-            </tr>
-            <tr class="">
-              <td class="px-0"><b>реклама</b> менять статус заявки</td>
-              <td class="px-0"><?= $data['user']['auth_production_order_change_status_adv'] ? '<i class="ni ni-fat-add text-success"></i>' :
-									'<i class="ni ni-fat-delete text-danger"></i>'; ?></td>
-            </tr>
-            <tr class="">
-              <td class="px-0"><b>мебель</b> менять статус заявки</td>
-              <td class="px-0"><?= $data['user']['auth_production_order_change_status_furn'] ? '<i class="ni ni-fat-add text-success"></i>' :
-									'<i class="ni ni-fat-delete text-danger"></i>'; ?></td>
-            </tr>
-            <tr class="">
-              <td class="px-0"><b>металл</b> менять статус заявки</td>
-              <td class="px-0"><?= $data['user']['auth_production_order_change_status_steel'] ? '<i class="ni ni-fat-add text-success"></i>' :
-									'<i class="ni ni-fat-delete text-danger"></i>'; ?></td>
-            </tr>
-            <tr class="">
-              <td class="px-0"><b>монтаж</b> менять статус заявки</td>
-              <td class="px-0"><?= $data['user']['auth_production_order_change_status_install'] ? '<i class="ni ni-fat-add text-success"></i>' :
-									'<i class="ni ni-fat-delete text-danger"></i>'; ?></td>
-            </tr>
-            <tr class="">
-              <td class="px-0"><b>склад</b> менять статус заявки</td>
-              <td class="px-0"><?= $data['user']['auth_production_order_change_status_supply'] ? '<i class="ni ni-fat-add text-success"></i>' :
-									'<i class="ni ni-fat-delete text-danger"></i>'; ?></td>
-            </tr>
+						<?php foreach ($data['PROG_DATA']['DEPARTMENTS_LIST'] as $depKey => $depVal): ?>
+              <tr class="">
+                <td class="px-0"><b><?= $depVal; ?></b> менять статус заявки</td>
+                <td class="px-0"><?= $data['user']['auth_production_order_change_status_' . $depKey] ? '<i class="ni ni-fat-add text-success"></i>' :
+										'<i class="ni ni-fat-delete text-danger"></i>'; ?></td>
+              </tr>
+            <?php endforeach; ?>
           </table>
         </div>
       </div>

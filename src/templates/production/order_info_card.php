@@ -256,121 +256,6 @@
 					]); ?>"
              class="btn btn-primary" role="button" aria-pressed="true">Добавить ошибку</a>
 				<?php endif; ?>
-
-
-				<?php if ($data['CONFIG']['DEBUG_MODE_USER_ID'] == $_SESSION['user']['id']): ?>
-          <h3 class="text-danger my-5">!!! DEBUG MODE !!!</h3>
-
-          <div class="mb-4">
-            <hr>
-            <form action="<?= $data['CONFIG']['HOST'] . '/production.php'; ?>" method="POST">
-              <input type="hidden" name="action" value="change_priority">
-              <input type="hidden" name="order_id" value="<?= $data['order']['id']; ?>">
-              <small>Изменить приоритет</small>
-              <div class="form-row">
-                <div class="m-0 form-group col-8">
-                  <select name="priority" class="form-control" required>
-                    <option></option>
-										<?php foreach ($data['PROG_DATA']['PRIORITY_ORDERS'] as $priorityKey => $priorityVal): ?>
-											<?php if ($priorityKey === $data['order']['order_priority']): ?>
-                        <option value="<?= $priorityKey; ?>" selected><?= $priorityVal['name']; ?></option>
-											<?php else: ?>
-                        <option value="<?= $priorityKey; ?>"><?= $priorityVal['name']; ?></option>
-											<?php endif; ?>
-										<?php endforeach; ?>
-                  </select>
-                </div>
-                <div class="form-group col-4">
-                  <input class="btn btn-primary" type="submit" value="Сохранить">
-                </div>
-              </div>
-            </form>
-          </div>
-
-          <div class="mb-4 d-inline-block">
-            <form class="d-inline-block mr-2" action="<?= $data['CONFIG']['HOST'] . '/production.php'; ?>" method="POST">
-              <input type="hidden" name="action" value="change_status">
-              <input type="hidden" name="status" value="<?= $data['PROG_DATA']['STATUS_ID_PRODUCTION']['WAIT_CANCEL']; ?>">
-              <input type="hidden" name="order_id" value="<?= $data['order']['id']; ?>">
-              <input type="hidden" name="department" value="all">
-              <input type="hidden" name="redirect_success"
-                     value="<?= $data['CONFIG']['HOST'] . '/production.php?action=order_info_card&id=' .
-										 $data['order']['id']; ?>">
-              <input type="hidden" name="redirect_error"
-                     value="<?= $data['CONFIG']['HOST'] . '/production.php?action=order_info_card&id=' .
-										 $data['order']['id']; ?>">
-              <input class="btn btn-danger" type="submit" value="Запросить отмену">
-            </form>
-          </div>
-
-          <div class="mb-4 d-inline-block">
-            <form class="d-inline-block mr-2" action="<?= $data['CONFIG']['HOST'] . '/production.php'; ?>" method="POST">
-              <input type="hidden" name="action" value="change_status">
-              <input type="hidden" name="status" value="<?= $data['PROG_DATA']['STATUS_ID_PRODUCTION']['CANCEL']; ?>">
-              <input type="hidden" name="order_id" value="<?= $data['order']['id']; ?>">
-              <input type="hidden" name="department" value="all">
-              <input type="hidden" name="redirect_success"
-                     value="<?= $data['CONFIG']['HOST'] . '/production.php?action=order_info_card&id=' .
-										 $data['order']['id']; ?>">
-              <input type="hidden" name="redirect_error"
-                     value="<?= $data['CONFIG']['HOST'] . '/production.php?action=order_info_card&id=' .
-										 $data['order']['id']; ?>">
-              <input class="btn btn-danger" type="submit" value="Подтвердить отмену">
-            </form>
-          </div>
-
-          <div class="mb-4 d-inline-block">
-            <form class="d-inline-block mr-2" action="<?= $data['CONFIG']['HOST'] . '/production.php'; ?>" method="POST">
-              <input type="hidden" name="action" value="change_status">
-              <input type="hidden" name="status" value="<?= $data['PROG_DATA']['STATUS_ID_PRODUCTION']['RECEIVED']; ?>">
-              <input type="hidden" name="order_id" value="<?= $data['order']['id']; ?>">
-              <input type="hidden" name="department" value="all">
-              <input type="hidden" name="redirect_success"
-                     value="<?= $data['CONFIG']['HOST'] . '/production.php?action=order_info_card&id=' .
-										 $data['order']['id']; ?>">
-              <input type="hidden" name="redirect_error"
-                     value="<?= $data['CONFIG']['HOST'] . '/production.php?action=order_info_card&id=' .
-										 $data['order']['id']; ?>">
-              <input class="btn btn-primary" type="submit" value="Запустить в работу">
-            </form>
-          </div>
-
-          <div class="mb-4 d-inline-block">
-            <form class="d-inline-block mr-2" action="<?= $data['CONFIG']['HOST'] . '/production.php'; ?>" method="POST">
-              <input type="hidden" name="action" value="change_status">
-              <input type="hidden" name="status" value="<?= $data['PROG_DATA']['STATUS_ID_PRODUCTION']['ISSUED']; ?>">
-              <input type="hidden" name="order_id" value="<?= $data['order']['id']; ?>">
-              <input type="hidden" name="department" value="all">
-              <input type="hidden" name="redirect_success"
-                     value="<?= $data['CONFIG']['HOST'] . '/production.php?action=order_info_card&id=' .
-										 $data['order']['id']; ?>">
-              <input type="hidden" name="redirect_error"
-                     value="<?= $data['CONFIG']['HOST'] . '/production.php?action=order_info_card&id=' .
-										 $data['order']['id']; ?>">
-              <input class="btn btn-primary" type="submit" value="Проект сдан">
-            </form>
-          </div>
-
-          <a href="<?= $data['CONFIG']['HOST'] . '/production.php?' . http_build_query([
-						'action' => 'cancel_error',
-						'order_id' => $data['order']['id'],
-						'redirect_success' => $data['CONFIG']['HOST'] . '/production.php?action=order_info_card&id=' .
-							$data['order']['id'],
-						'redirect_error' => $data['CONFIG']['HOST'] . '/production.php?action=order_info_card&id=' .
-							$data['order']['id']
-					]); ?>"
-             class="btn btn-primary" role="button" aria-pressed="true">Снять ошибку</a>
-
-          <a href="<?= $data['CONFIG']['HOST'] . '/production.php?' . http_build_query([
-						'action' => 'add_error',
-						'order_id' => $data['order']['id'],
-						'redirect_success' => $data['CONFIG']['HOST'] . '/production.php?action=order_info_card&id=' .
-							$data['order']['id'],
-						'redirect_error' => $data['CONFIG']['HOST'] . '/production.php?action=order_info_card&id=' .
-							$data['order']['id']
-					]); ?>"
-             class="btn btn-primary" role="button" aria-pressed="true">Добавить ошибку</a>
-				<?php endif; ?>
       </div>
       <div class="col-12 col-md-6">
         <div class="nav-wrapper">
@@ -487,7 +372,6 @@
                   </div>
                 </form>
               </div>
-
 
 							<?php foreach ($data['PROG_DATA']['DEPARTMENTS_LIST'] as $depKey => $depVal): ?>
 

@@ -62,7 +62,8 @@ if (isset($_POST['action']) && isset($_POST['form_id']) && $_POST['action'] == '
 		redirectToIf(false, '', $_POST['redirect_error'] . '&error_massage=недопустимый формат файла ' . __LINE__);
 
 	$pathDir = $SYS_CONFIG['DOWNLOAD_DIR'] . '/' . date('Y') . '/' . date('m') . '/' . date('d');
-	$pathFile = $pathDir . '/' . substr(md5(time()), 5, 15) . '.' . pathinfo($_FILES['file']['name'])['extension'];
+//	$pathFile = $pathDir . '/' . substr(md5(time()), 5, 15) . '.' . pathinfo($_FILES['file']['name'])['extension'];
+	$pathFile = $pathDir . '/' . date('H-i-s') . '_' . correctFormatLower($_FILES['file']['name']);
 
 	mysqli_query($con, 'START TRANSACTION');
 

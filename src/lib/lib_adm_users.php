@@ -1,6 +1,6 @@
 <?php
 
-function createNewAdmUser($con, $tableName) {
+function createNewAdmUser($con, $departmentsList, $tableName) {
 
 	$newUserData = [
 		'is_deleted' => 0,
@@ -33,24 +33,6 @@ function createNewAdmUser($con, $tableName) {
 		'auth_production_order_view' =>
 			(isset($_POST['production_order_view']) &&
 				$_POST['production_order_view'] == 'on') ? 1 : 0,
-		'auth_production_order_change_status_const' =>
-			(isset($_POST['production_order_change_status_const']) &&
-				$_POST['production_order_change_status_const'] == 'on') ? 1 : 0,
-		'auth_production_order_change_status_adv' =>
-			(isset($_POST['production_order_change_status_adv']) &&
-				$_POST['production_order_change_status_adv'] == 'on') ? 1 : 0,
-		'auth_production_order_change_status_furn' =>
-			(isset($_POST['production_order_change_status_furn']) &&
-				$_POST['production_order_change_status_furn'] == 'on') ? 1 : 0,
-		'auth_production_order_change_status_steel' =>
-			(isset($_POST['production_order_change_status_steel']) &&
-				$_POST['production_order_change_status_steel'] == 'on') ? 1 : 0,
-		'auth_production_order_change_status_install' =>
-			(isset($_POST['production_order_change_status_install']) &&
-				$_POST['production_order_change_status_install'] == 'on') ? 1 : 0,
-		'auth_production_order_change_status_supply' =>
-			(isset($_POST['production_order_change_status_supply']) &&
-				$_POST['production_order_change_status_supply'] == 'on') ? 1 : 0,
 		'auth_production_order_change_priority' =>
 			(isset($_POST['production_order_change_priority']) &&
 				$_POST['production_order_change_priority'] == 'on') ? 1 : 0,
@@ -62,11 +44,17 @@ function createNewAdmUser($con, $tableName) {
 				$_POST['production_order_cancel'] == 'on') ? 1 : 0
 	];
 
+	foreach ($departmentsList as $depKey => $depVal) {
+		$newUserData['auth_production_order_change_status_' . $depKey] =
+			(isset($_POST['production_order_change_status_' . $depKey]) &&
+				$_POST['production_order_change_status_' . $depKey] == 'on') ? 1 : 0;
+	}
+
 	return dbInsertData($con, $tableName, $newUserData);
 }
 
 
-function editAdmUserData($con, $tableName) {
+function editAdmUserData($con, $departmentsList, $tableName) {
 
 	$editUserData = [
 		'last_name' => correctFormatUpper($_POST['last_name']),
@@ -93,24 +81,6 @@ function editAdmUserData($con, $tableName) {
 		'auth_production_order_view' =>
 			(isset($_POST['production_order_view']) &&
 				$_POST['production_order_view'] == 'on') ? 1 : 0,
-		'auth_production_order_change_status_const' =>
-			(isset($_POST['production_order_change_status_const']) &&
-				$_POST['production_order_change_status_const'] == 'on') ? 1 : 0,
-		'auth_production_order_change_status_adv' =>
-			(isset($_POST['production_order_change_status_adv']) &&
-				$_POST['production_order_change_status_adv'] == 'on') ? 1 : 0,
-		'auth_production_order_change_status_furn' =>
-			(isset($_POST['production_order_change_status_furn']) &&
-				$_POST['production_order_change_status_furn'] == 'on') ? 1 : 0,
-		'auth_production_order_change_status_steel' =>
-			(isset($_POST['production_order_change_status_steel']) &&
-				$_POST['production_order_change_status_steel'] == 'on') ? 1 : 0,
-		'auth_production_order_change_status_install' =>
-			(isset($_POST['production_order_change_status_install']) &&
-				$_POST['production_order_change_status_install'] == 'on') ? 1 : 0,
-		'auth_production_order_change_status_supply' =>
-			(isset($_POST['production_order_change_status_supply']) &&
-				$_POST['production_order_change_status_supply'] == 'on') ? 1 : 0,
 		'auth_production_order_change_priority' =>
 			(isset($_POST['production_order_change_priority']) &&
 				$_POST['production_order_change_priority'] == 'on') ? 1 : 0,
@@ -119,8 +89,7 @@ function editAdmUserData($con, $tableName) {
 				$_POST['production_order_start'] == 'on') ? 1 : 0,
 		'auth_production_order_cancel' =>
 			(isset($_POST['production_order_cancel']) &&
-				$_POST['production_order_cancel'] == 'on') ? 1 : 0,
-		'id' => $_POST['id']
+				$_POST['production_order_cancel'] == 'on') ? 1 : 0
 	];
 
 	$editUserQuery = 'UPDATE ' . $tableName . ' SET 
@@ -135,18 +104,26 @@ function editAdmUserData($con, $tableName) {
 		auth_design_order_change_status = ?, 
 		auth_design_order_select_designer = ?, 
 		auth_design_order_change_priority = ?, 
+		
 		auth_production_order_new = ?, 
 		auth_production_order_view = ?, 
-		auth_production_order_change_status_const = ?, 
-		auth_production_order_change_status_adv = ?, 
-		auth_production_order_change_status_furn = ?, 
-		auth_production_order_change_status_steel = ?, 
-		auth_production_order_change_status_install = ?, 
-		auth_production_order_change_status_supply = ?, 
 		auth_production_order_change_priority = ?, 
 		auth_production_order_start = ?, 
-		auth_production_order_cancel = ? 
-		WHERE id = ?';
+		auth_production_order_cancel = ?, ';
+
+	foreach ($departmentsList as $depKey => $depVal) {
+
+		$editUserData['auth_production_order_change_status_' . $depKey] =
+			(isset($_POST['production_order_change_status_' . $depKey]) &&
+				$_POST['production_order_change_status_' . $depKey] == 'on') ? 1 : 0;
+
+		$editUserQuery = $editUserQuery . "auth_production_order_change_status_{$depKey} = ?, ";
+	}
+
+	$editUserData['id'] = $_POST['id'];
+
+	$editUserQuery = substr($editUserQuery, 0, -2);
+	$editUserQuery = $editUserQuery . ' WHERE id = ?';
 
 	return dbExecQuery($con, $editUserQuery, $editUserData);
 }
