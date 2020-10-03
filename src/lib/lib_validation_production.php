@@ -8,7 +8,8 @@ function isValidNewProductionOrderData($progConfig) {
 		isset($_POST['mobile_phone']) == false ||
 		isset($_POST['email']) == false ||
 		isset($_POST['task_text']) == false ||
-		isset($_POST['task_quantity']) == false)
+		isset($_POST['task_quantity']) == false ||
+		isset($_POST['general_deadline']) == false)
 		return false;
 
 	if (isValidLen($_POST['order_name_out'], $progConfig['MIN_LEN_A'], $progConfig['MAX_LEN_A']) == false ||

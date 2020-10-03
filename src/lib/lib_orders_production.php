@@ -83,3 +83,13 @@ function userAvailableDepartmentsArr($userData, $departmentsList) {
 
 	return empty($availableDepartments) ? false : $availableDepartments;
 }
+
+
+function orderAvailableForUser($userData, $orderData, $departmentsList, $statusIdProductions) {
+	if (currentGeneralStatus($orderData, $departmentsList) === $statusIdProductions['WAIT_START'] &&
+		$userData['auth_production_order_new'] == 0 &&
+		$userData['auth_production_order_start'] == 0 &&
+		$userData['auth_production_order_cancel'] == 0)
+		return false;
+	return true;
+}

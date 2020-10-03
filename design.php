@@ -161,7 +161,10 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	$sqlQueryJoin2 = 'LEFT JOIN adm_users uc ON o.create_user_id = uc.id ';
 	$sqlQueryWhere = 'WHERE o.id > 0 ';
 	$sqlParameters = [];
-	$sqlSortBy = 'ORDER BY o.id * o.order_priority * o.sort_priority * o.error_priority DESC ';
+	$sqlSortBy = 'ORDER BY CASE 
+			WHEN (order_priority + sort_priority + error_priority) > 3 
+			THEN (365 - DATEDIFF(deadline_date, NOW())) * order_priority * sort_priority * error_priority 
+			ELSE o.id END DESC ';
 
 
 	$statusFilter = paramSqlFilterArrVal(',', $_GET['status'] ?? '', $PROG_DATA['STATUS_ID_DESIGN']);
@@ -199,12 +202,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 
 	if (isset($_GET['status']) && $_GET['status'] != 'any' && $dateFilter == false) {
 		$sqlQueryWhere = $sqlQueryWhere . "AND (current_status IN ({$statusFilterStr})) ";
-	}
-
-
-	if (isset($_GET['deadline']) && ($_GET['deadline'] || $_GET['deadline'] == '0')) {
-		$sqlQueryWhere = $sqlQueryWhere . 'AND deadline_date <= NOW() + INTERVAL ? DAY ';
-		$sqlParameters[] = $_GET['deadline'];
 	}
 
 

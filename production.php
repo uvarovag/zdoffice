@@ -53,7 +53,8 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'order_in
 
 	$tmpLayoutContentData['activeTab'] = isset($_GET['active_tab']) ? $_GET['active_tab'] : 'notes';
 
-	$sqlSelect = 'SELECT *, ';
+	$sqlSelect = 'SELECT *, 
+	DATE_FORMAT(general_deadline, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS general_deadline, ';
 
 	foreach ($PROG_DATA['DEPARTMENTS_LIST'] as $depKey => $depVal) {
 		$sqlSelect = $sqlSelect . 'DATE_FORMAT(' . $depKey . '_deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS ' . $depKey . '_deadline_date, ' .
@@ -65,9 +66,19 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'order_in
 
 	$tmpLayoutContentData['order'] = dbSelectData($con, $sqlSelect, [$_GET['id']])[0] ?? [];
 
+
 	if (empty($tmpLayoutContentData['order'])) {
 		redirectToIf(false, '', $PROG_CONFIG['HOST'] .
 			'/production.php?action=orders_list&error_massage=' . $PROG_DATA['ERROR']['ID']);
+	}
+
+	if (orderAvailableForUser($_SESSION['user'],
+			$tmpLayoutContentData['order'],
+			$PROG_DATA['DEPARTMENTS_LIST'],
+			$PROG_DATA['STATUS_ID_PRODUCTION']) === false) {
+
+		redirectToIf(false, '', $PROG_CONFIG['HOST'] .
+			'/production.php?action=orders_list&error_massage=' . $PROG_DATA['ERROR']['ACCESS_DENIED'] . ' ' . __LINE__);
 	}
 
 	$tmpLayoutContentData['designer'] = dbSelectData($con,
@@ -173,15 +184,16 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	}
 
 	$sqlQuerySelect = $sqlQuerySelect . 'o.id, o.designer_id, o.order_name_in, o.order_name_out, o.client_name, 
-       o.order_priority, o.error_priority 
+       o.order_priority, 
+       o.error_priority, DATE_FORMAT(o.general_deadline, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS general_deadline,
+       o.error_priority, DATE_FORMAT(o.create_datetime, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS create_datetime 
        FROM production_orders o ';
 
 	$sqlQueryJoin1 = 'LEFT JOIN adm_users ud ON o.designer_id = ud.id ';
 	$sqlQueryJoin2 = 'LEFT JOIN adm_users uc ON o.create_user_id = uc.id ';
 	$sqlQueryWhere = 'WHERE o.id > 0 ';
 	$sqlParameters = [];
-	$sqlSortBy = 'ORDER BY o.id * o.order_priority * o.sort_priority * o.error_priority DESC ';
-
+	$sqlSortBy = '';
 
 	$statusFilter = paramSqlFilterArrVal(',', $_GET['status'] ?? '', $PROG_DATA['STATUS_ID_PRODUCTION']);
 	if ($statusFilter === false) {
@@ -200,6 +212,23 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	$departmentOrAnd = (isset($_GET['department']) && $_GET['department'] == 'all') ? 'AND' : 'OR';
 
 	$statusFilterStr = implode(', ', $statusFilter);
+
+	$tmpLayoutContentData['showDepartment'] =
+		($departmentFilter === false || count($departmentFilter) > 1) ? false : $departmentFilter[0];
+
+
+	if ($tmpLayoutContentData['showDepartment']) {
+		$sqlSortBy = "ORDER BY CASE 
+			WHEN (o.order_priority + o.sort_priority + o.error_priority) > 3 
+			THEN (365 - DATEDIFF(o.{$tmpLayoutContentData['showDepartment']}_deadline_date, NOW())) * o.order_priority * o.sort_priority * o.error_priority 
+			ELSE o.id END DESC ";
+
+	} else {
+		$sqlSortBy = 'ORDER BY CASE 
+			WHEN (o.order_priority + o.sort_priority + o.error_priority) > 3 
+			THEN (365 - DATEDIFF(o.general_deadline, NOW())) * o.order_priority * o.sort_priority * o.error_priority 
+			ELSE o.id END DESC ';
+	}
 
 
 	if (isset($_GET['department']) && $dateFilter === false &&
@@ -245,18 +274,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 		$sqlQueryWhere = $sqlQueryWhere . ') ';
 	}
 
-	// todo дней до общего дедлайна
-	if (isset($_GET['deadline']) && mb_strlen($_GET['deadline']) > 0) {
-		$sqlQueryWhere = $sqlQueryWhere . 'AND (';
-		foreach ($departmentFilter as $depKey => $depVal) {
-
-			$sqlQueryWhere = $sqlQueryWhere . "{$depVal}_deadline_date <= NOW() + INTERVAL ? DAY OR ";
-			$sqlParameters[] = $_GET['deadline'];
-		}
-		$sqlQueryWhere = substr($sqlQueryWhere, 0, -4);
-		$sqlQueryWhere = $sqlQueryWhere . ') ';
-	}
-
 
 	if (isset($_GET['search']) && $_GET['search']) {
 		$sqlQueryWhere = $sqlQueryWhere . 'AND (order_name_in LIKE ? OR order_name_out LIKE ? OR client_name LIKE ?) ';
@@ -295,9 +312,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	$tmpLayoutData['pagination'] = $paginationData['tmpPagination'];
 	$sqlPagination = $paginationData['sqlPagination'];
 
-	$tmpLayoutContentData['showDepartment'] =
-		($departmentFilter === false || count($departmentFilter) > 1) ? false : $departmentFilter[0];
-
 	$tmpLayoutContentData['createUsers'] =
 		dbSelectData($con, 'SELECT * FROM adm_users WHERE auth_design_order_new = 1 ORDER BY last_name', []);
 	$tmpLayoutContentData['designers'] =
@@ -306,8 +320,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	$tmpLayoutContentData['orders'] =
 		dbSelectData($con, $sqlQuerySelect . $sqlQueryJoin1 . $sqlQueryJoin2 . $sqlQueryWhere . $sqlSortBy . $sqlPagination, $sqlParameters) ?? [];
 
-	foreach ($tmpLayoutContentData['orders'] as $key => $val)
-	{
+	foreach ($tmpLayoutContentData['orders'] as $key => $val) {
 		$tmpLayoutContentData['orders'][$key]['general_status'] =
 			currentGeneralStatus($val, $PROG_DATA['DEPARTMENTS_LIST']);
 	}
@@ -350,6 +363,8 @@ if (isset($_POST['action']) && $_POST['action'] == 'new_order_data') {
 
 		'task_text' => correctFormat($_POST['task_text']),
 		'task_quantity' => $_POST['task_quantity'],
+		'general_deadline' => date('Y-m-d H:i:s', strtotime($_POST['general_deadline'])),
+		'create_datetime' => date('Y-m-d H:i:s'),
 
 		'install_task' => correctFormat($_POST['install_task'] ?? ''),
 		'install_address' => correctFormat($_POST['install_address'] ?? '')
@@ -495,7 +510,7 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['depart
 	// изменить на статус 'проект сдан' возможно только со статуса 'выполнено' и только тот кто создал
 	if ($_POST['status'] == $PROG_DATA['STATUS_ID_PRODUCTION']['ISSUED'] &&
 		($_SESSION['user']['id'] != $orderData['create_user_id'] ||
-		currentGeneralStatus($orderData, $PROG_DATA['DEPARTMENTS_LIST']) !== $PROG_DATA['STATUS_ID_PRODUCTION']['DONE'])) {
+			currentGeneralStatus($orderData, $PROG_DATA['DEPARTMENTS_LIST']) !== $PROG_DATA['STATUS_ID_PRODUCTION']['DONE'])) {
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] . '/production.php?action=order_info_card&id=' .
 			$_POST['order_id'] . '&error_massage=' . $PROG_DATA['ERROR']['ACCESS_DENIED'] . ' ' . __LINE__);

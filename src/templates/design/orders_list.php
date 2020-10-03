@@ -79,10 +79,6 @@
           </option>
         </select>
       </div>
-      <div class="form-group col-2">
-        <input type="number" class="form-control form-control-sm" name="deadline"
-               value="<?= $data['formData']['deadline']; ?>" placeholder="дней до дедлайна">
-      </div>
     </div>
     <div class="form-row">
       <div class="form-group col mb-0">
@@ -151,7 +147,13 @@
             <?= $data['PROG_DATA']['PRIORITY_ORDERS'][$order['order_priority']]['icon'] ?? '???'; ?>
           </td>
           <td><?= $data['PROG_DATA']['STATUS_LIST_DESIGN'][$order['current_status']]['icon'] ?? '???'; ?></td>
-          <td><?= deadlineBadge($order['deadline_date'], $data['CONFIG']['WARNING_DAYS_BEFORE_DEADLINE']); ?></td>
+          <td>
+            <?php if ($order['current_status'] >= $data['PROG_DATA']['STATUS_ID_DESIGN']['DONE']): ?>
+            <?= $order['deadline_date']; ?>
+            <?php else: ?>
+            <?= deadlineBadge($order['deadline_date'], $data['CONFIG']['WARNING_DAYS_BEFORE_DEADLINE']); ?>
+            <?php endif; ?>
+          </td>
         </tr>
 			<?php endforeach; ?>
       </tbody>

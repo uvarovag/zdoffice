@@ -1,4 +1,30 @@
 <div class="card">
+  <form class="card-body" action="<?= $data['CONFIG']['HOST'] . '/adm_users.php'; ?>" method="GET">
+    <input type="hidden" name="action" value="users_list">
+    <div class="form-row">
+      <div class="form-group col mb-0">
+        <input type="text" class="form-control form-control-sm" name="search"
+               value="<?= $data['formData']['search']; ?>" placeholder="фамилия / имя / логин">
+      </div>
+      <div class="form-group col-3 mb-0">
+        <select class="form-control form-control-sm" name="position">
+          <option value="any" selected disabled>должность</option>
+          <option <?= $data['formData']['position'] == 'any' ? 'selected' : ''; ?>
+                  value="any">любая
+          </option>
+					<?php foreach ($data['PROG_DATA']['USERS_POSITIONS_LIST'] as $positionKey => $positionVal): ?>
+            <option <?= $data['formData']['position'] == $positionKey ? 'selected' : ''; ?>
+                    value="<?= $positionKey; ?>"><?= $positionVal; ?></option>
+					<?php endforeach; ?>
+        </select>
+      </div>
+      <div class="form-group col-2 mb-0">
+        <button type="submit" class="btn btn-sm btn-primary btn-block">Найти</button>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="card">
   <div class="card-header bg-transparent">
     <h2 class="mb-0"><?= $data['title']; ?></h2>
   </div>

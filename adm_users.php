@@ -99,13 +99,35 @@ if (isset($_GET['action']) && $_GET['action'] === 'users_list') {
 	$_SESSION['navList']['usersList']['isActive'] = true;
 	$tmpLayoutData['title'] = 'Пользователи';
 
+	$tmpLayoutContentData['formData']['search'] = $_GET['search'] ?? '';
+	$tmpLayoutContentData['formData']['position'] = $_GET['position'] ?? '';
+
 	$sqlQuerySelect = 'SELECT *, 
 	DATE_FORMAT(reg_datetime, ' . $PROG_CONFIG['DATETIME_FORMAT'] . ') AS reg_datetime, 
 	DATE_FORMAT(last_modify_datetime, ' . $PROG_CONFIG['DATETIME_FORMAT'] . ') AS last_modify_datetime 
 	FROM adm_users ';
-	$sqlQueryWhere = '';
+	$sqlQueryWhere = 'WHERE id > 0 ';
 	$sqlParameters = [];
 	$sqlSortBy = 'ORDER by id DESC ';
+
+	if (isset($_GET['search']) && $_GET['search']) {
+		$sqlQueryWhere = $sqlQueryWhere . 'AND (last_name LIKE ? OR first_name LIKE ? OR login LIKE ?) ';
+		$sqlParameters[] = '%' . $_GET['search'] . '%';
+		$sqlParameters[] = '%' . $_GET['search'] . '%';
+		$sqlParameters[] = '%' . $_GET['search'] . '%';
+	}
+
+	if (isset($_GET['position']) && $_GET['position'] != 'any') {
+		$sqlQueryWhere = $sqlQueryWhere . 'AND position = ? ';
+		$sqlParameters[] = $_GET['position'];
+	}
+
+//	login
+//	last_name 																			CHAR(64) NOT NULL,
+//	first_name 																			CHAR(64) NOT NULL,
+//	var_dump($sqlQueryWhere);
+//	exit();
+
 
 	$paginationData =
 		getPagination($PROG_CONFIG, $PROG_CONFIG['HOST'] . '/adm_users.php', $con, 'SELECT COUNT(*) as pgn FROM adm_users ' .

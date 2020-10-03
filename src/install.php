@@ -101,6 +101,8 @@ $sql_table_production_orders = "CREATE TABLE production_orders (
 	
 	task_text 																	TEXT(1000),
 	task_quantity 															INT,
+	general_deadline 														DATETIME,
+	create_datetime 														DATETIME,
 	
 	install_task																TEXT(1000),
 	install_address															CHAR(150),	

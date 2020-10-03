@@ -103,10 +103,6 @@
           </option>
         </select>
       </div>
-      <div class="form-group col-2">
-        <input type="number" class="form-control form-control-sm" name="deadline"
-               value="<?= $data['formData']['deadline']; ?>" placeholder="дней до дедлайна">
-      </div>
     </div>
     <div class="form-row">
       <div class="form-group col mb-0">
@@ -141,36 +137,43 @@
         <th scope="col">Менеджер</th>
         <th scope="col">Дизайнер</th>
         <th scope="col">Приоритет</th>
-        <th scope="col">Стадия</th>
-        <th scope="col">Дедлайн</th>
+				<?php if ($data['showDepartment']): ?>
+          <th scope="col">Стадия отдела</th>
+          <th scope="col">Дедлайн отдела</th>
+				<?php else: ?>
+          <th scope="col">Стадия проекта</th>
+          <th scope="col">Дедлайн проекта</th>
+				<?php endif; ?>
       </tr>
       </thead>
       <tbody>
 			<?php foreach ($data['orders'] as $order): ?>
-        <tr class="<?= $order['error_priority'] == 2 ? 'table-danger' : ''; ?>"
-            onclick="window.location.href='<?= $data['CONFIG']['HOST'] . '/production.php?action=order_info_card&id=' .
-						$order['id']; ?>'; return false">
-          <td>
-            <?= $order[activeDepartments($order, $data['PROG_DATA']['DEPARTMENTS_LIST'])[0] . '_datetime_status_0'] ?? '???'; ?>
-          </td>
-          <td><?= shortStr($order['client_name'], $data['CONFIG']['MAX_SYMBOLS_TABLE_CELL']); ?></td>
-          <td><?= $order['order_name_out']; ?></td>
-          <td>
+				<?php if (orderAvailableForUser($_SESSION['user'], $order, $data['PROG_DATA']['DEPARTMENTS_LIST'], $data['PROG_DATA']['STATUS_ID_PRODUCTION'])): ?>
+          <tr class="<?= $order['error_priority'] == 2 ? 'table-danger' : ''; ?>"
+          onclick="window.location.href='<?= $data['CONFIG']['HOST'] . '/production.php?action=order_info_card&id=' .
+					$order['id']; ?>'; return false">
+				<?php else: ?>
+          <tr class="table-light">
+				<?php endif; ?>
+        <td><?= $order['create_datetime']; ?></td>
+        <td><?= shortStr($order['client_name'], $data['CONFIG']['MAX_SYMBOLS_TABLE_CELL']); ?></td>
+        <td><?= $order['order_name_out']; ?></td>
+        <td>
           <span>
             <?= shortStr($order['uc_last_name'] . ' ' . $order['uc_first_name'], $data['CONFIG']['MAX_SYMBOLS_TABLE_CELL']); ?>
           </span>
-          </td>
-          <td>
+        </td>
+        <td>
           <span>
             <?= shortStr($order['ud_last_name'] . ' ' . $order['ud_first_name'], $data['CONFIG']['MAX_SYMBOLS_TABLE_CELL']); ?>
           </span>
-          </td>
-          <td>
+        </td>
+        <td>
           <span>
           <?= $data['PROG_DATA']['PRIORITY_ORDERS'][$order['order_priority']]['icon'] ?? '???'; ?>
           </span>
-          </td>
-          <td>
+        </td>
+        <td>
           <span>
             <?php if ($data['showDepartment']): ?>
 							<?= $data['PROG_DATA']['STATUS_LIST_PRODUCTION'][$order[$data['showDepartment'] . '_current_status']]['icon'] ?? '???'; ?>
@@ -178,14 +181,20 @@
 							<?= $data['PROG_DATA']['STATUS_LIST_PRODUCTION'][$order['general_status']]['icon'] ?? '???'; ?>
 						<?php endif; ?>
           </span>
-          </td>
-          <td>
+        </td>
+        <td>
           <span>
-            <?php if ($data['showDepartment']): ?>
-							<?= deadlineBadge($order[$data['showDepartment'] . '_deadline_date'], $data['CONFIG']['WARNING_DAYS_BEFORE_DEADLINE']); ?>
+            <?php if ($order['general_status'] >= $data['PROG_DATA']['STATUS_ID_PRODUCTION']['ISSUED']): ?>
+							<?= $order['general_deadline']; ?>
+						<?php else: ?>
+							<?php if ($data['showDepartment']): ?>
+								<?= deadlineBadge($order[$data['showDepartment'] . '_deadline_date'], $data['CONFIG']['WARNING_DAYS_BEFORE_DEADLINE']); ?>
+							<?php else: ?>
+								<?= deadlineBadge($order['general_deadline'], $data['CONFIG']['WARNING_DAYS_BEFORE_DEADLINE']); ?>
+							<?php endif; ?>
 						<?php endif; ?>
           </span>
-          </td>
+        </td>
         </tr>
 			<?php endforeach; ?>
       </tbody>

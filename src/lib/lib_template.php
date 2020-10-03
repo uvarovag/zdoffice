@@ -78,7 +78,7 @@ function deadlineBadge($date, $ifDays) {
 	$daysBefore = ceil((strtotime($date) - strtotime('now')) / 60 / 60 / 24);
 
 	if ($daysBefore > $ifDays) {
-		return '<span class="" data-toggle="tooltip" data-placement="top" 
+		return '<span class="badge badge-pill badge-success" data-toggle="tooltip" data-placement="top" 
 		title="осталось дней - ' . $daysBefore . '">' . $date . '</span>';
 	}
 	if ($daysBefore == 0) {

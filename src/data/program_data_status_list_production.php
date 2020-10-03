@@ -3,11 +3,11 @@
 $STATUS_LIST_PRODUCTION = [
 	0 => [
 		'name' => 'ожидание подтверждения',
-		'icon' => '<span class="badge badge-pill badge-warning">ожидание подтверждения</span>'
+		'icon' => '<span class="badge badge-pill badge-warning">ожидание подтв.</span>'
 	],
 	100 => [
 		'name' => 'получено производством',
-		'icon' => '<span class="badge badge-pill badge-info">получено производством</span>'
+		'icon' => '<span class="badge badge-pill badge-info">получено произв.</span>'
 	],
 	200 => [
 		'name' => 'начата работа',
@@ -59,7 +59,7 @@ $STATUS_LIST_PRODUCTION = [
 	],
 	998 => [
 		'name' => 'ожидание подтверждения отмены',
-		'icon' => '<span class="badge badge-pill badge-danger">ожидание подтверждения отмены</span>'
+		'icon' => '<span class="badge badge-pill badge-danger">ожидание подтв. отм.</span>'
 	],
 	999 => [
 		'name' => 'отменено',

@@ -72,6 +72,19 @@
                 </select>
               </div>
             </div>
+
+            <div class="form-row">
+              <div class="form-group col-12 mb-4">
+                <small class="text-gray">дата сдачи проекта</small>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
+                  </div>
+                  <input class="form-control datepicker" type="text" name="general_deadline" required>
+                </div>
+              </div>
+            </div>
+
             <div class="block-ainstall d-none mb-4">
               <small class="text-gray">Описание монтажа (<?= $data['CONFIG']['MIN_LEN_B'] . '-' . $data['CONFIG']['MAX_LEN_B']; ?>)</small>
               <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" name="install_task"

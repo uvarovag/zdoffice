@@ -44,7 +44,7 @@
             <tr>
               <td class="px-0">Менеджер</td>
               <td class="px-0">
-								<?php if (isset($data['createUser']['id'])): ?>
+                <?php if (isset($data['createUser']['id'])): ?>
                 <a href="<?= $data['CONFIG']['HOST'] . '/users.php?action=user_info_card&id=' . $data['createUser']['id']; ?>">
 									<?= $data['createUser']['last_name'] . ' ' . $data['createUser']['first_name']; ?>
 									<?php else: ?>
@@ -55,7 +55,7 @@
             <tr>
               <td class="px-0">Дизайнер</td>
               <td class="px-0">
-								<?php if (isset($data['designer']['id'])): ?>
+                <?php if (isset($data['designer']['id'])): ?>
                 <a href="<?= $data['CONFIG']['HOST'] . '/users.php?action=user_info_card&id=' . $data['designer']['id']; ?>">
 									<?= $data['designer']['last_name'] . ' ' . $data['designer']['first_name']; ?>
 									<?php else: ?>
@@ -74,7 +74,11 @@
             <tr>
               <td class="px-0">Дедлайн</td>
               <td class="px-0">
-								<?= deadlineBadge($data['order']['deadline_date'], $data['CONFIG']['WARNING_DAYS_BEFORE_DEADLINE']); ?>
+                <?php if ($data['order']['current_status'] >= $data['PROG_DATA']['STATUS_ID_DESIGN']['DONE']): ?>
+                <?= $data['order']['deadline_date']; ?>
+                <?php else: ?>
+                <?= deadlineBadge($data['order']['deadline_date'], $data['CONFIG']['WARNING_DAYS_BEFORE_DEADLINE']); ?>
+                <?php endif; ?>
               </td>
             </tr>
             <tr>
@@ -151,9 +155,9 @@
           <div class="mb-4 d-inline-block">
             <form class="d-inline-block mr-2" action="<?= $data['CONFIG']['HOST'] . '/design.php'; ?>" method="POST">
               <input type="hidden" name="redirect_success" value="<?= $data['CONFIG']['HOST'] .
-              '/design.php?action=order_info_card&id=' . $data['order']['id']; ?>">
+							'/design.php?action=order_info_card&id=' . $data['order']['id']; ?>">
               <input type="hidden" name="redirect_error" value="<?= $data['CONFIG']['HOST'] .
-              '/design.php?action=order_info_card&id=' . $data['order']['id']; ?>">
+							'/design.php?action=order_info_card&id=' . $data['order']['id']; ?>">
               <input type="hidden" name="action" value="change_status">
               <input type="hidden" name="status" value="999">
               <input type="hidden" name="order_id" value="<?= $data['order']['id']; ?>">
@@ -188,17 +192,20 @@
         <div class="nav-wrapper">
           <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
             <li class="nav-item">
-              <a class="mb-3 nav-link mb-sm-3 mb-md-0 <?= $data['activeTab'] == 'notes' ? 'active' : ''; ?>" id="tabs-icons-text-notes-tab" data-toggle="tab"
+              <a class="mb-3 nav-link mb-sm-3 mb-md-0 <?= $data['activeTab'] == 'notes' ? 'active' : ''; ?>" id="tabs-icons-text-notes-tab"
+                 data-toggle="tab"
                  href="#tabs-icons-text-notes" role="tab"
                  aria-controls="tabs-icons-text-notes" aria-selected="true">Заметки</a>
             </li>
             <li class="nav-item">
-              <a class="mb-3 nav-link mb-sm-3 mb-md-0 <?= $data['activeTab'] == 'files' ? 'active' : ''; ?>" id="tabs-icons-text-files-tab" data-toggle="tab"
+              <a class="mb-3 nav-link mb-sm-3 mb-md-0 <?= $data['activeTab'] == 'files' ? 'active' : ''; ?>" id="tabs-icons-text-files-tab"
+                 data-toggle="tab"
                  href="#tabs-icons-text-files" role="tab"
                  aria-controls="tabs-icons-text-files" aria-selected="false">Файлы</a>
             </li>
             <li class="mb-3 nav-item">
-              <a class="nav-link mb-sm-3 mb-md-0 <?= $data['activeTab'] == 'designer' ? 'active' : ''; ?>" id="tabs-icons-text-designer-tab" data-toggle="tab"
+              <a class="nav-link mb-sm-3 mb-md-0 <?= $data['activeTab'] == 'designer' ? 'active' : ''; ?>" id="tabs-icons-text-designer-tab"
+                 data-toggle="tab"
                  href="#tabs-icons-text-designer" role="tab"
                  aria-controls="tabs-icons-text-designer" aria-selected="false">Дизайнер</a>
             </li>
@@ -289,7 +296,8 @@
                 </form>
               </div>
 
-              <div class="tab-pane fade <?= $data['activeTab'] == 'designer' ? 'show active' : ''; ?>" id="tabs-icons-text-designer" role="tabpanel" aria-labelledby="tabs-icons-text-designer-tab">
+              <div class="tab-pane fade <?= $data['activeTab'] == 'designer' ? 'show active' : ''; ?>" id="tabs-icons-text-designer" role="tabpanel"
+                   aria-labelledby="tabs-icons-text-designer-tab">
 
                 <table class="table table-sm table-borderless mb-4">
                   <tr>
@@ -308,7 +316,7 @@
 									$data['order']['current_status'] < $data['PROG_DATA']['STATUS_ID_DESIGN']['DONE'] &&
 									$_SESSION['user']['auth_design_order_change_status'] &&
 									$data['order']['designer_id'] == $_SESSION['user']['id']): ?>
-                <hr>
+                  <hr>
                   <div class="mb-4">
                     <form action="<?= $data['CONFIG']['HOST'] . '/design.php'; ?>" method="POST">
                       <input type="hidden" name="action" value="change_status">
@@ -348,12 +356,12 @@
 
                 <table class="table table-sm">
 									<?php foreach ($data['PROG_DATA']['STATUS_LIST_DESIGN'] as $statusKey => $statusVal): ?>
-                  <?php if ($data['order']['datetime_status_' . $statusKey]): ?>
-                    <tr>
-                      <td class="px-0" width="50%"><?= $statusVal['name'] ?? '???'; ?></td>
-                      <td class="px-0"><?= $data['order']['datetime_status_' . $statusKey]; ?></td>
-                    </tr>
-                  <?php endif; ?>
+										<?php if ($data['order']['datetime_status_' . $statusKey]): ?>
+                      <tr>
+                        <td class="px-0" width="50%"><?= $statusVal['name'] ?? '???'; ?></td>
+                        <td class="px-0"><?= $data['order']['datetime_status_' . $statusKey]; ?></td>
+                      </tr>
+										<?php endif; ?>
 									<?php endforeach; ?>
                 </table>
               </div>

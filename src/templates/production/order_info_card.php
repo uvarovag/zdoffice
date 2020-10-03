@@ -97,6 +97,18 @@
 						<?php endif; ?>
 
             <tr>
+              <td class="px-0">Дедлайн проекта</td>
+              <td class="px-0">
+                <?php if (currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTMENTS_LIST']) >=
+                $data['PROG_DATA']['STATUS_ID_PRODUCTION']['ISSUED']): ?>
+                <?= $data['order']['general_deadline']; ?>
+                <?php else: ?>
+                <?= deadlineBadge($data['order']['general_deadline'], $data['CONFIG']['WARNING_DAYS_BEFORE_DEADLINE']); ?>
+                <?php endif; ?>
+              </td>
+            </tr>
+
+            <tr>
               <td class="px-0">Кол-во</td>
               <td class="px-0"><?= $data['order']['task_quantity']; ?></td>
             </tr>
