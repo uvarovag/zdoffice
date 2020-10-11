@@ -63,11 +63,6 @@
 									'<i class="ni ni-fat-delete text-danger"></i>'; ?></td>
             </tr>
             <tr class="">
-              <td class="px-0">менять статус заявки</td>
-              <td class="px-0"><?= $data['user']['auth_design_order_change_status'] ? '<i class="ni ni-fat-add text-success"></i>' :
-									'<i class="ni ni-fat-delete text-danger"></i>'; ?></td>
-            </tr>
-            <tr class="">
               <td class="px-0">распределять заявки</td>
               <td class="px-0"><?= $data['user']['auth_design_order_select_designer'] ? '<i class="ni ni-fat-add text-success"></i>' :
 									'<i class="ni ni-fat-delete text-danger"></i>'; ?></td>
@@ -77,6 +72,13 @@
               <td class="px-0"><?= $data['user']['auth_design_order_change_priority'] ? '<i class="ni ni-fat-add text-success"></i>' :
 									'<i class="ni ni-fat-delete text-danger"></i>'; ?></td>
             </tr>
+						<?php foreach ($data['PROG_DATA']['DESIGN_TYPES'] as $dKey => $dVal): ?>
+              <tr class="">
+                <td class="px-0"><b><?= $dVal; ?></b> менять статус заявки</td>
+                <td class="px-0"><?= $data['user']['auth_design_order_change_status_' . $dKey] ? '<i class="ni ni-fat-add text-success"></i>' :
+										'<i class="ni ni-fat-delete text-danger"></i>'; ?></td>
+              </tr>
+						<?php endforeach; ?>
           </table>
         </div>
 

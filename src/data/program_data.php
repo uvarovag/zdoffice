@@ -9,6 +9,7 @@ function setProgData() {
 	require_once($_SERVER['DOCUMENT_ROOT'] . '/src/data/program_data_order_types.php');
 	require_once($_SERVER['DOCUMENT_ROOT'] . '/src/data/program_data_massages.php');
 	require_once($_SERVER['DOCUMENT_ROOT'] . '/src/data/program_data_departments_list.php');
+	require_once($_SERVER['DOCUMENT_ROOT'] . '/src/data/program_data_design_types.php');
 
 	$PROG_DATA = [
 		'USERS_POSITIONS_LIST' => $USERS_POSITIONS_LIST,
@@ -26,6 +27,8 @@ function setProgData() {
 		'PRIORITY_ID' => $PRIORITY_ID,
 
 		'ORDER_TYPES' => $ORDER_TYPES,
+
+		'DESIGN_TYPES' => $DESIGN_TYPES,
 
 		'ERROR' => $ERROR,
 		'ALERT' => $ALERT

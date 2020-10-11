@@ -109,7 +109,7 @@
                   <small class="text-gray">Участвует в проекте</small>
                   <div class="">
                     <label class="custom-toggle my-2">
-                      <input class="at-least-one-enabled if-enabled-required" data-required=".input-a<?= $depKey; ?>"
+                      <input class="if-enabled-required" data-required=".input-a<?= $depKey; ?>"
                              data-dnone=".block-a<?= $depKey; ?>" type="checkbox" name="<?= $depKey; ?>">
                       <span class="custom-toggle-slider rounded-circle"></span>
                     </label>
@@ -131,9 +131,8 @@
         </div>
       </div>
       <div class="mb-4">
-        <input class="btn btn-primary at-least-one-enabled_disabled" type="submit" value="Сохранить" disabled>
+        <input class="btn btn-primary" type="submit" value="Сохранить">
       </div>
-      <small class="at-least-one-enabled_dnone text-danger">Выбрать кто участвует в проекте</small>
     </form>
   </div>
 </div>

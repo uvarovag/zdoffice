@@ -64,8 +64,9 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'order_in
 			'/design.php?action=orders_list&error_massage=' . $PROG_DATA['ERROR']['ID']);
 	}
 
+
 	$tmpLayoutContentData['designers'] =
-		dbSelectData($con, 'SELECT * FROM adm_users WHERE auth_design_order_change_status = 1 AND is_block = 0 AND is_deleted = 0 ORDER BY last_name', []) ?? [];
+		dbSelectData($con, "SELECT * FROM adm_users WHERE auth_design_order_change_status_{$tmpLayoutContentData['order']['design_format']} = 1 AND is_block = 0 AND is_deleted = 0 ORDER BY last_name", []) ?? [];
 
 	$tmpLayoutContentData['designer'] = dbSelectData($con,
 			'SELECT id, last_name, first_name FROM adm_users WHERE id = ?',
@@ -163,9 +164,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	$sqlParameters = [];
 	$sqlSortBy = 'ORDER BY CASE 
 			WHEN (order_priority + sort_priority + error_priority) > 3 
-			THEN (365 - DATEDIFF(deadline_date, NOW())) * order_priority * sort_priority * error_priority 
+			THEN (20000 - DATEDIFF(deadline_date, NOW())) * order_priority * sort_priority * error_priority 
 			ELSE o.id END DESC ';
-
 
 	$statusFilter = paramSqlFilterArrVal(',', $_GET['status'] ?? '', $PROG_DATA['STATUS_ID_DESIGN']);
 	if ($statusFilter === false) {
@@ -238,8 +238,9 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 
 	$tmpLayoutContentData['createUsers'] =
 		dbSelectData($con, 'SELECT * FROM adm_users WHERE auth_design_order_new = 1 ORDER BY last_name', []);
-	$tmpLayoutContentData['designers'] =
-		dbSelectData($con, 'SELECT * FROM adm_users WHERE auth_design_order_change_status = 1 ORDER BY last_name', []);
+
+	$tmpLayoutContentData['designers'] = getDesignersUserData($PROG_DATA['DESIGN_TYPES'], $con, 'ORDER BY last_name');
+
 
 	$tmpLayoutContentData['orders'] =
 		dbSelectData($con, $sqlQuerySelect . $sqlQueryJoin1 . $sqlQueryJoin2 . $sqlQueryWhere . $sqlSortBy . $sqlPagination, $sqlParameters) ?? [];
@@ -268,6 +269,13 @@ if (isset($_POST['action']) && isset($_POST['form_id']) && $_POST['action'] == '
 			$PROG_CONFIG['HOST'] . '/design.php?action=new_order_card&error_massage=' . $PROG_DATA['ERROR']['INPUT_DATA']);
 	}
 
+	if (strtotime($_POST['deadline_date']) - time() < 60 * 60 * 12) {
+		redirectToIf(false, '',
+			$PROG_CONFIG['HOST'] . '/design.php?action=new_order_card&error_massage=' . 'Упс, до дедлайна не может быть менее одного дня!');
+	}
+
+	$countDesignersWhoCanThisDesignType = getDesignersUserData([$_POST['design_format'] => ''], $con, '');
+
 	$newOrderData = [
 		'create_user_id' => $_SESSION['user']['id'],
 		'order_name_out' => correctFormatUpper($_POST['order_name_out']),
@@ -281,6 +289,13 @@ if (isset($_POST['action']) && isset($_POST['form_id']) && $_POST['action'] == '
 		'current_status' => $PROG_DATA['STATUS_ID_DESIGN']['WAIT'],
 		'datetime_status_0' => date('Y-m-d H:i:s')
 	];
+
+	if (count($countDesignersWhoCanThisDesignType) == 1) {
+		$newOrderData['designer_id'] = $countDesignersWhoCanThisDesignType[0]['id'];
+		$newOrderData['current_status'] = $PROG_DATA['STATUS_ID_DESIGN']['RECEIVED'];
+		$newOrderData['datetime_status_100'] = date('Y-m-d H:i:s');
+	}
+
 
 	mysqli_query($con, 'START TRANSACTION');
 
@@ -311,8 +326,10 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['design
 		$PROG_CONFIG['HOST'] . '/design.php?error_massage=' . $PROG_DATA['ERROR']['ACCESS_DENIED'] . ' ' . __LINE__);
 
 	$userData = dbSelectData($con, 'SELECT * FROM adm_users WHERE id = ?', [$_POST['designer_id']])[0] ?? [];
+	$orderData = dbSelectData($con, 'SELECT * FROM design_orders WHERE id = ?', [$_POST['order_id']])[0] ?? [];
 
-	if (isset($userData['id']) === false || $userData['auth_design_order_change_status'] === 0) {
+	if (isset($userData['id']) === false || isset($orderData['id']) === false ||
+		$userData['auth_design_order_change_status_' . $orderData['design_format']] === 0) {
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] .
 			'/design.php?action=order_info_card&id=' . $_POST['order_id'] . '&error_massage=' . $PROG_DATA['ERROR']['ID']);
@@ -396,15 +413,16 @@ if (isset($_GET['action']) && isset($_GET['order_id']) &&
 if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['status']) &&
 	$_POST['action'] == 'change_status') {
 
+
+	$orderData = dbSelectData($con, 'SELECT * FROM design_orders WHERE id = ?', [$_POST['order_id']])[0] ?? [];
+
 	// права доступа на стадии от START до DONE
 	if ($_POST['status'] >= $PROG_DATA['STATUS_ID_DESIGN']['START'] &&
 		$_POST['status'] <= $PROG_DATA['STATUS_ID_DESIGN']['DONE']) {
 
-		errorIfAccessDenied($_SESSION['user']['auth_design_order_change_status'],
+		errorIfAccessDenied($_SESSION['user']['auth_design_order_change_status_' . $orderData['design_format']],
 			$PROG_CONFIG['HOST'] . '/design.php?error_massage=' . $PROG_DATA['ERROR']['ACCESS_DENIED'] . ' ' . __LINE__);
 	}
-
-	$orderData = dbSelectData($con, 'SELECT * FROM design_orders WHERE id = ?', [$_POST['order_id']])[0] ?? [];
 
 	// заказ существует
 	if (isset($orderData['id']) == false)

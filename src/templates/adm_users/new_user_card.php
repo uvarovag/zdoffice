@@ -77,10 +77,6 @@
               <label class="custom-control-label" for="auth_design_order_view">просматривать заявки</label>
             </div>
             <div class="custom-control custom-checkbox mb-2">
-              <input type="checkbox" name="design_order_change_status" id="auth_design_order_change_status" class="custom-control-input">
-              <label class="custom-control-label" for="auth_design_order_change_status">менять статус заявки</label>
-            </div>
-            <div class="custom-control custom-checkbox mb-2">
               <input type="checkbox" name="design_order_select_designer" id="auth_design_order_select_designer" class="custom-control-input">
               <label class="custom-control-label" for="auth_design_order_select_designer">распределять заявки</label>
             </div>
@@ -88,6 +84,13 @@
               <input type="checkbox" name="design_order_change_priority" id="auth_design_order_change_priority" class="custom-control-input">
               <label class="custom-control-label" for="auth_design_order_change_priority">менять приоритет заявки</label>
             </div>
+						<?php foreach ($data['PROG_DATA']['DESIGN_TYPES'] as $dKey => $dVal): ?>
+              <div class="custom-control custom-checkbox mb-2">
+                <input type="checkbox" name="design_order_change_status_<?= $dKey; ?>" id="auth_design_order_change_status_<?= $dKey; ?>" class="custom-control-input">
+                <label class="custom-control-label" for="auth_design_order_change_status_<?= $dKey; ?>">
+                  <b><?= $dVal; ?></b> менять статус заявки</label>
+              </div>
+						<?php endforeach; ?>
           </div>
           <div class="mb-4">
             <hr>

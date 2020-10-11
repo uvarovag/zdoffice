@@ -1,6 +1,6 @@
 <?php
 
-function createNewAdmUser($con, $departmentsList, $tableName) {
+function createNewAdmUser($con, $departmentsList, $designTypes, $tableName) {
 
 	$newUserData = [
 		'is_deleted' => 0,
@@ -20,8 +20,6 @@ function createNewAdmUser($con, $departmentsList, $tableName) {
 			(isset($_POST['design_order_new']) && $_POST['design_order_new'] == 'on') ? 1 : 0,
 		'auth_design_order_view' =>
 			(isset($_POST['design_order_view']) && $_POST['design_order_view'] == 'on') ? 1 : 0,
-		'auth_design_order_change_status' =>
-			(isset($_POST['design_order_change_status']) && $_POST['design_order_change_status'] == 'on') ? 1 : 0,
 		'auth_design_order_select_designer' =>
 			(isset($_POST['design_order_select_designer']) && $_POST['design_order_select_designer'] == 'on') ? 1 : 0,
 		'auth_design_order_change_priority' =>
@@ -44,6 +42,12 @@ function createNewAdmUser($con, $departmentsList, $tableName) {
 				$_POST['production_order_cancel'] == 'on') ? 1 : 0
 	];
 
+	foreach ($designTypes as $dKey => $dVal) {
+		$newUserData['auth_design_order_change_status_' . $dKey] =
+			(isset($_POST['design_order_change_status_' . $dKey]) &&
+				$_POST['design_order_change_status_' . $dKey] == 'on') ? 1 : 0;
+	}
+
 	foreach ($departmentsList as $depKey => $depVal) {
 		$newUserData['auth_production_order_change_status_' . $depKey] =
 			(isset($_POST['production_order_change_status_' . $depKey]) &&
@@ -54,7 +58,7 @@ function createNewAdmUser($con, $departmentsList, $tableName) {
 }
 
 
-function editAdmUserData($con, $departmentsList, $tableName) {
+function editAdmUserData($con, $departmentsList, $designTypes, $tableName) {
 
 	$editUserData = [
 		'last_name' => correctFormatUpper($_POST['last_name']),
@@ -68,8 +72,6 @@ function editAdmUserData($con, $departmentsList, $tableName) {
 			(isset($_POST['design_order_new']) && $_POST['design_order_new'] == 'on') ? 1 : 0,
 		'auth_design_order_view' =>
 			(isset($_POST['design_order_view']) && $_POST['design_order_view'] == 'on') ? 1 : 0,
-		'auth_design_order_change_status' =>
-			(isset($_POST['design_order_change_status']) && $_POST['design_order_change_status'] == 'on') ? 1 : 0,
 		'auth_design_order_select_designer' =>
 			(isset($_POST['design_order_select_designer']) && $_POST['design_order_select_designer'] == 'on') ? 1 : 0,
 		'auth_design_order_change_priority' =>
@@ -101,7 +103,6 @@ function editAdmUserData($con, $departmentsList, $tableName) {
 		last_modify_datetime = ?, 
 		auth_design_order_new = ?, 
 		auth_design_order_view = ?, 
-		auth_design_order_change_status = ?, 
 		auth_design_order_select_designer = ?, 
 		auth_design_order_change_priority = ?, 
 		
@@ -110,6 +111,16 @@ function editAdmUserData($con, $departmentsList, $tableName) {
 		auth_production_order_change_priority = ?, 
 		auth_production_order_start = ?, 
 		auth_production_order_cancel = ?, ';
+
+	foreach ($designTypes as $dKey => $dVal) {
+
+		$editUserData['auth_design_order_change_status_' . $dKey] =
+			(isset($_POST['design_order_change_status_' . $dKey]) &&
+				$_POST['design_order_change_status_' . $dKey] == 'on') ? 1 : 0;
+
+		$editUserQuery = $editUserQuery . "auth_design_order_change_status_{$dKey} = ?, ";
+	}
+
 
 	foreach ($departmentsList as $depKey => $depVal) {
 

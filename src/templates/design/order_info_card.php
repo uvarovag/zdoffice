@@ -82,8 +82,8 @@
               </td>
             </tr>
             <tr>
-              <td class="px-0">Формат</td>
-              <td class="px-0"><?= $data['order']['design_format']; ?></td>
+              <td class="px-0">Тип дизайна</td>
+              <td class="px-0"><?= $data['PROG_DATA']['DESIGN_TYPES'][$data['order']['design_format']] ?? '???' ; ?></td>
             </tr>
           </table>
         </div>
@@ -314,7 +314,7 @@
 
 								<?php if ($data['order']['current_status'] >= $data['PROG_DATA']['STATUS_ID_DESIGN']['RECEIVED'] &&
 									$data['order']['current_status'] < $data['PROG_DATA']['STATUS_ID_DESIGN']['DONE'] &&
-									$_SESSION['user']['auth_design_order_change_status'] &&
+									$_SESSION['user']['auth_design_order_change_status_' . $data['order']['design_format']] &&
 									$data['order']['designer_id'] == $_SESSION['user']['id']): ?>
                   <hr>
                   <div class="mb-4">

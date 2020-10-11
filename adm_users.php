@@ -174,7 +174,7 @@ if (isset($_POST['action']) && isset($_POST['form_id']) && $_POST['action'] === 
 			$PROG_CONFIG['HOST'] . '/adm_users.php?action=new_user_card&error_massage=пользователь с таким имнем и фамилией уже существует');
 	}
 
-	$newUserId = createNewAdmUser($con, $PROG_DATA['DEPARTMENTS_LIST'], 'adm_users');
+	$newUserId = createNewAdmUser($con, $PROG_DATA['DEPARTMENTS_LIST'], $PROG_DATA['DESIGN_TYPES'], 'adm_users');
 
 	redirectToIf($newUserId,
 		$PROG_CONFIG['HOST'] .
@@ -233,7 +233,7 @@ if (isset($_POST['action']) && isset($_POST['form_id']) && isset($_POST['id']) &
 		$editUserPassword = dbExecQuery($con, $editUserPasswordQuery, $editUserPasswordData);
 	}
 
-	$editUser = editAdmUserData($con, $PROG_DATA['DEPARTMENTS_LIST'], 'adm_users');
+	$editUser = editAdmUserData($con, $PROG_DATA['DEPARTMENTS_LIST'], $PROG_DATA['DESIGN_TYPES'], 'adm_users');
 
 	setUserNeedLogoutVal($con, 'adm_users', $_POST['id'], 1);
 

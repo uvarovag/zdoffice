@@ -17,4 +17,5 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/src/lib/lib_validation_notes.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/lib/lib_validation_files.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/lib/lib_orders.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/lib/lib_orders_production.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/src/lib/lib_orders_design.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/lib/lib_sql_tmp.php');

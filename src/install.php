@@ -19,7 +19,10 @@ $sql_table_users = "CREATE TABLE adm_users (
 	
 	auth_design_order_new 													TINYINT,
 	auth_design_order_view 													TINYINT,
-	auth_design_order_change_status 								TINYINT,
+	auth_design_order_change_status_2d 							TINYINT,
+	auth_design_order_change_status_3d 							TINYINT,
+	auth_design_order_change_status_const_furn 			TINYINT,
+	auth_design_order_change_status_const_steel 		TINYINT,
 	auth_design_order_select_designer 							TINYINT,
 	auth_design_order_change_priority 							TINYINT,
 	

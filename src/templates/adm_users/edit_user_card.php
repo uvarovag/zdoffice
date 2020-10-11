@@ -93,11 +93,7 @@
                      class="custom-control-input" <?= $data['user']['auth_design_order_view'] ? 'checked' : ''; ?>>
               <label class="custom-control-label" for="design_order_view">просматривать заявки</label>
             </div>
-            <div class="custom-control custom-checkbox mb-2">
-              <input type="checkbox" name="design_order_change_status" id="design_order_change_status"
-                     class="custom-control-input" <?= $data['user']['auth_design_order_change_status'] ? 'checked' : ''; ?>>
-              <label class="custom-control-label" for="design_order_change_status">менять статус заявки</label>
-            </div>
+
             <div class="custom-control custom-checkbox mb-2">
               <input type="checkbox" name="design_order_select_designer" id="design_order_select_designer"
                      class="custom-control-input" <?= $data['user']['auth_design_order_select_designer'] ? 'checked' : ''; ?>>
@@ -108,6 +104,15 @@
                      class="custom-control-input" <?= $data['user']['auth_design_order_change_priority'] ? 'checked' : ''; ?>>
               <label class="custom-control-label" for="design_order_change_priority">менять приоритет заявки</label>
             </div>
+						<?php foreach ($data['PROG_DATA']['DESIGN_TYPES'] as $dKey => $dVal): ?>
+              <div class="custom-control custom-checkbox mb-2">
+                <input type="checkbox" name="design_order_change_status_<?= $dKey; ?>" id="design_order_change_status_<?= $dKey; ?>"
+                       class="custom-control-input" <?= $data['user']['auth_design_order_change_status_' . $dKey] ? 'checked' : ''; ?>>
+                <label class="custom-control-label" for="design_order_change_status_<?= $dKey; ?>">
+                  <b><?= $dVal; ?></b> менять статус заявки</label>
+              </div>
+						<?php endforeach; ?>
+
           </div>
 
           <div class="mb-4">

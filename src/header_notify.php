@@ -10,7 +10,8 @@ $tmpLayoutNotifyData['CONFIG'] = $tmpLayoutData['CONFIG'];
 $tmpLayoutNotifyData['PROG_DATA'] = $tmpLayoutData['PROG_DATA'];
 $tmpLayoutNotifyData['active_tab'] = '';
 
-if ($_SESSION['user']['auth_design_order_change_status']) {
+
+if (userAvailableDesignTypesArr($_SESSION['user'], $PROG_DATA['DESIGN_TYPES'])) {
 
 	$tmpLayoutNotifyData['active_tab'] = 'designer';
 

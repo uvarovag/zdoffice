@@ -17,7 +17,6 @@ $USER_ADMIN_DATA = [
 
 	'auth_design_order_new' => 1,
 	'auth_design_order_view' => 1,
-	'auth_design_order_change_status' => 1,
 	'auth_design_order_select_designer' => 1,
 	'auth_design_order_change_priority' => 1,
 
@@ -32,3 +31,4 @@ $USER_ADMIN_DATA = [
 	'auth_production_order_start' => 1,
 	'auth_production_order_cancel' => 1
 ];
+

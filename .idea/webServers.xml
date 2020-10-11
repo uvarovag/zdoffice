@@ -2,8 +2,8 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="33c42870-25ee-45bf-a8c3-ba8692da5121" name="zdoffice" url="http://zdoffice.ru">
-        <fileTransfer host="zdoffice.ru" port="21">
+      <webServer id="33c42870-25ee-45bf-a8c3-ba8692da5121" name="zdoffice" url="http://194.67.112.25">
+        <fileTransfer host="194.67.112.25" port="21">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>

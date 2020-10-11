@@ -20,7 +20,7 @@ function setNavListUser($navList, $user, $PROG_DATA) {
 		unset($navList['captionDesign']);
 
 	if ($user['auth_design_order_view'] === 0 ||
-		$user['auth_design_order_change_status'] === 0)
+		userAvailableDesignTypesArr($user, $PROG_DATA['DESIGN_TYPES']) === false)
 		unset($navList['designOrdersListMy']);
 
 	if ($user['auth_production_order_new'] === 0)

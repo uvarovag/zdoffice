@@ -51,23 +51,16 @@
                         minlength="<?= $data['CONFIG']['MIN_LEN_B']; ?>"
                         maxlength="<?= $data['CONFIG']['MAX_LEN_B']; ?>"></textarea>
             </div>
+
             <div class="form-row">
               <div class="form-group col-12 mb-4">
-                <small class="text-gray">Формат</small>
-                <div class="">
-                  <div class="mt-2">
-                    <div class="custom-control custom-radio custom-control-inline">
-                      <input type="radio" id="design_format_2d" name="design_format" value="2D" required
-                             class="custom-control-input">
-                      <label class="custom-control-label" for="design_format_2d">2D</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                      <input type="radio" id="design_format_3d" name="design_format" value="3D" required
-                             class="custom-control-input">
-                      <label class="custom-control-label" for="design_format_3d">3D</label>
-                    </div>
-                  </div>
-                </div>
+                <small class="text-gray">Тип дизайна</small>
+                <select name="design_format" class="form-control" required>
+                  <option></option>
+									<?php foreach ($data['PROG_DATA']['DESIGN_TYPES'] as $dKey => $dVal): ?>
+                    <option value="<?= $dKey; ?>"><?= $dVal; ?></option>
+									<?php endforeach; ?>
+                </select>
               </div>
               <div class="form-group col-12 mb-4">
                 <small class="text-gray">дата сдачи</small>

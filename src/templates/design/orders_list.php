@@ -56,11 +56,11 @@
       <div class="form-group col">
         <select class="form-control form-control-sm" name="status">
           <option value="any" selected disabled>стадия</option>
-          <option <?= $data['formData']['status'] == 'any' ? 'selected' : ''; ?>
-                  value="any">любая
+          <option <?= $data['formData']['status'] == '0,100,200,210,220,230,240,250,260,270,280,290' ? 'selected' : ''; ?>
+                  value="0,100,200,210,220,230,240,250,260,270,280,290">активные
           </option>
-          <option <?= $data['formData']['status'] == '100,200,210,220,230,240,250,260,270,280,290' ? 'selected' : ''; ?>
-                  value="100,200,210,220,230,240,250,260,270,280,290">активные
+          <option <?= $data['formData']['status'] == 'any' ? 'selected' : ''; ?>
+                  value="any">любые
           </option>
           <option <?= $data['formData']['status'] == '0' ? 'selected' : ''; ?>
                   value="0">ожидание назначения дизайнера
