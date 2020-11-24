@@ -154,10 +154,16 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 
 	if (isset($_SESSION['navList']['productionOrdersListMy']['isActive']) &&
 		isset($_GET['department']) && $_SESSION['user']['availDepProd'] !== false &&
-		implode(',', $_SESSION['user']['availDepProd']) == $_GET['department'])
+		implode(',', $_SESSION['user']['availDepProd']) == $_GET['department']) {
 		$_SESSION['navList']['productionOrdersListMy']['isActive'] = true;
-	else if (isset($_SESSION['navList']['productionOrdersList']['isActive']))
+	} else if (isset($_SESSION['navList']['productionOrdersListManager']['isActive']) &&
+		isset($_GET['create_user_id']) && $_GET['create_user_id'] == $_SESSION['user']['id']) {
+		$_SESSION['navList']['productionOrdersListManager']['isActive'] = true;
+	} else if (isset($_SESSION['navList']['productionOrdersList']['isActive'])) {
 		$_SESSION['navList']['productionOrdersList']['isActive'] = true;
+	}
+
+
 	$tmpLayoutData['title'] = 'Заявки на производство';
 
 
@@ -184,7 +190,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	}
 
 	$sqlQuerySelect = $sqlQuerySelect . 'o.id, o.designer_id, o.order_name_in, o.order_name_out, o.client_name, 
-       o.order_priority, 
+       o.task_text, o.order_priority, 
        o.error_priority, DATE_FORMAT(o.general_deadline, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS general_deadline,
        o.error_priority, DATE_FORMAT(o.create_datetime, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS create_datetime 
        FROM production_orders o ';
@@ -217,18 +223,20 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 		($departmentFilter === false || count($departmentFilter) > 1) ? false : $departmentFilter[0];
 
 
-	if ($tmpLayoutContentData['showDepartment']) {
-		$sqlSortBy = "ORDER BY CASE 
-			WHEN (o.order_priority + o.sort_priority + o.error_priority) > 3 
-			THEN (20000 - DATEDIFF(o.{$tmpLayoutContentData['showDepartment']}_deadline_date, NOW())) * o.order_priority * o.sort_priority * o.error_priority 
-			ELSE o.id END DESC ";
+//	if ($tmpLayoutContentData['showDepartment']) {
+//		$sqlSortBy = "ORDER BY CASE
+//			WHEN (o.order_priority + o.sort_priority + o.error_priority) > 3
+//			THEN (20000 - DATEDIFF(o.{$tmpLayoutContentData['showDepartment']}_deadline_date, NOW())) * o.order_priority * o.sort_priority * o.error_priority
+//			ELSE o.id END DESC ";
+//
+//	} else {
+//		$sqlSortBy = 'ORDER BY CASE
+//			WHEN (o.order_priority + o.sort_priority + o.error_priority) > 3
+//			THEN (20000 - DATEDIFF(o.general_deadline, NOW())) * o.order_priority * o.sort_priority * o.error_priority
+//			ELSE o.id END DESC ';
+//	}
 
-	} else {
-		$sqlSortBy = 'ORDER BY CASE 
-			WHEN (o.order_priority + o.sort_priority + o.error_priority) > 3 
-			THEN (20000 - DATEDIFF(o.general_deadline, NOW())) * o.order_priority * o.sort_priority * o.error_priority 
-			ELSE o.id END DESC ';
-	}
+	$sqlSortBy = 'ORDER BY o.id * o.order_priority * o.sort_priority * o.error_priority DESC ';
 
 
 	if (isset($_GET['department']) && $dateFilter === false &&
@@ -313,7 +321,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	$sqlPagination = $paginationData['sqlPagination'];
 
 	$tmpLayoutContentData['createUsers'] =
-		dbSelectData($con, 'SELECT * FROM adm_users WHERE auth_design_order_new = 1 ORDER BY last_name', []);
+		dbSelectData($con, 'SELECT * FROM adm_users WHERE auth_production_order_new = 1 ORDER BY last_name', []);
+
 	$tmpLayoutContentData['designers'] = getDesignersUserData($PROG_DATA['DESIGN_TYPES'], $con, 'ORDER BY last_name');
 
 	$tmpLayoutContentData['orders'] =
@@ -348,7 +357,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'new_order_data') {
 			$PROG_CONFIG['HOST'] . '/production.php?action=new_order_card&error_massage=' . $PROG_DATA['ERROR']['INPUT_DATA']);
 	}
 
-	if (strtotime($_POST['general_deadline']) - time() < 60 * 60 * 12) {
+	if (strtotime($_POST['general_deadline']) - time() < 60 * 60 * 5) {
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] . '/production.php?action=new_order_card&error_massage=' . 'Упс, до дедлайна проекта не может быть менее одного дня!');
 	}
@@ -382,7 +391,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'new_order_data') {
 
 			$activeDepartmentQuantity++;
 
-			if (strtotime($_POST[$depKey . '_deadline']) - time() < 60 * 60 * 12) {
+			if (strtotime($_POST[$depKey . '_deadline']) - time() < 60 * 60 * 5) {
 				redirectToIf(false, '',
 					"{$PROG_CONFIG['HOST']}/production.php?action=new_order_card&error_massage=Упс, до дедлайна '{$depVal}' не может быть менее одного дня!");
 			}

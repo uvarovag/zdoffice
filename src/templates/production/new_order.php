@@ -23,10 +23,10 @@
                        pattern="^[a-zA-Z0-9 ]+$">
               </div>
               <div class="form-group col-12 mb-4">
-                <small class="text-gray">контагент (<?= 'en ' . $data['CONFIG']['MIN_LEN_A'] . '-' . $data['CONFIG']['MAX_LEN_A']; ?>)</small>
+                <small class="text-gray">контагент (<?= 'ru en ' . $data['CONFIG']['MIN_LEN_A'] . '-' . $data['CONFIG']['MAX_LEN_A']; ?>)</small>
                 <input type="text" name="client_name" class="form-control" required
                        minlength="<?= $data['CONFIG']['MIN_LEN_A']; ?>" maxlength="<?= $data['CONFIG']['MAX_LEN_A']; ?>"
-                       pattern="^[a-zA-Z0-9 ]+$">
+                       pattern="^[a-zA-Zа-яА-ЯёЁ0-9 ]+$">
               </div>
               <div class="form-group col-12 mb-4">
                 <small class="text-gray">телефон</small>

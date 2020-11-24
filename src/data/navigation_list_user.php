@@ -2,7 +2,7 @@
 
 $navigationListUser = [
 	'captionDesign' => [
-		'title' => 				'Дизайн',
+		'title' => 				'Дизайн и проектирование',
 		'url' => 					'#',
 		'isCaption' => 		true,
 		'isActive' => 		false,
@@ -17,7 +17,7 @@ $navigationListUser = [
 	],
 	'designOrdersList' => [
 		'title' => 				'<i class="ni ni-bullet-list-67 text-primary"></i><span class="nav-link-text">Заявки</span>',
-		'url' => 					$PROG_CONFIG['HOST'] . '/design.php?action=orders_list&status=0,100,200,210,220,230,240,250,260,270,280,290',
+		'url' => 					$PROG_CONFIG['HOST'] . '/design.php?action=orders_list',
 		'isCaption' => 		false,
 		'isActive' => 		false,
 		'isAvailable' =>	true
@@ -36,6 +36,13 @@ $navigationListUser = [
 		'isActive' => 		false,
 		'isAvailable' =>	true
 	],
+	'productionOrdersListManager' => [
+		'title' => 				'<i class="ni ni-atom text-primary"></i><span class="nav-link-text">Мои заявки</span>',
+		'url' => 					$PROG_CONFIG['HOST'] . '/production.php?action=orders_list',
+		'isCaption' => 		false,
+		'isActive' => 		false,
+		'isAvailable' =>	true
+	],
 	'productionOrdersListMy' => [
 		'title' => 				'<i class="ni ni-spaceship text-primary"></i><span class="nav-link-text">Мои заявки</span>',
 		'url' => 					$PROG_CONFIG['HOST'] . '/production.php?action=orders_list',
@@ -45,7 +52,7 @@ $navigationListUser = [
 	],
 	'productionOrdersList' => [
 		'title' => 				'<i class="ni ni-bullet-list-67 text-primary"></i><span class="nav-link-text">Заявки</span>',
-		'url' => 					$PROG_CONFIG['HOST'] . '/production.php?action=orders_list&status=0,100,200,210,220,230,240,250,260,270,280,290',
+		'url' => 					$PROG_CONFIG['HOST'] . '/production.php?action=orders_list',
 		'isCaption' => 		false,
 		'isActive' => 		false,
 		'isAvailable' =>	true

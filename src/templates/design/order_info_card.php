@@ -207,7 +207,7 @@
               <a class="nav-link mb-sm-3 mb-md-0 <?= $data['activeTab'] == 'designer' ? 'active' : ''; ?>" id="tabs-icons-text-designer-tab"
                  data-toggle="tab"
                  href="#tabs-icons-text-designer" role="tab"
-                 aria-controls="tabs-icons-text-designer" aria-selected="false">Дизайнер</a>
+                 aria-controls="tabs-icons-text-designer" aria-selected="false"><?= $data['PROG_DATA']['DESIGN_TYPES'][$data['order']['design_format']] ?? '???' ; ?></a>
             </li>
           </ul>
         </div>

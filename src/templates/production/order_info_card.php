@@ -225,8 +225,8 @@
           </div>
 				<?php endif; ?>
 
-				<?php if ($data['order']['create_user_id'] === $_SESSION['user']['id'] &&
-					currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTMENTS_LIST']) === $data['PROG_DATA']['STATUS_ID_PRODUCTION']['DONE']): ?>
+				<?php if (($data['order']['create_user_id'] === $_SESSION['user']['id'] &&
+					currentGeneralStatus($data['order'], $data['PROG_DATA']['DEPARTMENTS_LIST']) === $data['PROG_DATA']['STATUS_ID_PRODUCTION']['DONE'])): ?>
           <div class="mb-4 d-inline-block">
             <form class="d-inline-block mr-2" action="<?= $data['CONFIG']['HOST'] . '/production.php'; ?>" method="POST">
               <input type="hidden" name="action" value="change_status">

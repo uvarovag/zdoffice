@@ -138,6 +138,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 		$_SESSION['navList']['designOrdersList']['isActive'] = true;
 	$tmpLayoutData['title'] = 'Заявки на дизайн';
 
+	$tmpLayoutContentData['formData']['designType'] = $_GET['design_type'] ?? '';
 	$tmpLayoutContentData['formData']['createUserId'] = $_GET['create_user_id'] ?? '';
 	$tmpLayoutContentData['formData']['designerId'] = $_GET['designer_id'] ?? '';
 	$tmpLayoutContentData['formData']['priority'] = $_GET['priority'] ?? '';
@@ -152,7 +153,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	$sqlQuerySelect = 'SELECT 
 	ud.last_name AS ud_last_name, ud.first_name AS ud_first_name, 
 	uc.last_name AS uc_last_name, uc.first_name AS uc_first_name, 
-	o.id, o.order_name_in, o.order_name_out, o.client_name, o.designer_id, o.create_user_id, 
+	o.id, o.order_name_in, o.order_name_out, o.client_name, o.designer_id, o.create_user_id, o.design_format, o.task_text, 
 	o.current_status, o.order_priority, o.error_priority, 
 	DATE_FORMAT(o.deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS deadline_date, 
 	DATE_FORMAT(o.datetime_status_0, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS datetime_status_0 
@@ -162,10 +163,13 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	$sqlQueryJoin2 = 'LEFT JOIN adm_users uc ON o.create_user_id = uc.id ';
 	$sqlQueryWhere = 'WHERE o.id > 0 ';
 	$sqlParameters = [];
-	$sqlSortBy = 'ORDER BY CASE 
-			WHEN (order_priority + sort_priority + error_priority) > 3 
-			THEN (20000 - DATEDIFF(deadline_date, NOW())) * order_priority * sort_priority * error_priority 
-			ELSE o.id END DESC ';
+
+//	$sqlSortBy = 'ORDER BY CASE
+//			WHEN (order_priority + sort_priority + error_priority) > 3
+//			THEN (20000 - DATEDIFF(o.deadline_date, NOW())) * o.order_priority * o.sort_priority * o.error_priority
+//			ELSE o.id END DESC ';
+
+	$sqlSortBy = 'ORDER BY o.id * o.order_priority * o.sort_priority * o.error_priority DESC ';
 
 	$statusFilter = paramSqlFilterArrVal(',', $_GET['status'] ?? '', $PROG_DATA['STATUS_ID_DESIGN']);
 	if ($statusFilter === false) {
@@ -177,6 +181,10 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 
 	$statusFilterStr = implode(', ', $statusFilter);
 
+	if (isset($_GET['design_type']) && $_GET['design_type'] != 'any') {
+		$sqlQueryWhere = $sqlQueryWhere . 'AND design_format = ? ';
+		$sqlParameters[] = $_GET['design_type'];
+	}
 
 	if (isset($_GET['create_user_id']) && $_GET['create_user_id'] != 'any') {
 		$sqlQueryWhere = $sqlQueryWhere . 'AND create_user_id = ? ';
@@ -269,7 +277,7 @@ if (isset($_POST['action']) && isset($_POST['form_id']) && $_POST['action'] == '
 			$PROG_CONFIG['HOST'] . '/design.php?action=new_order_card&error_massage=' . $PROG_DATA['ERROR']['INPUT_DATA']);
 	}
 
-	if (strtotime($_POST['deadline_date']) - time() < 60 * 60 * 12) {
+	if (strtotime($_POST['deadline_date']) - time() < 60 * 60 * 5) {
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] . '/design.php?action=new_order_card&error_massage=' . 'Упс, до дедлайна не может быть менее одного дня!');
 	}

@@ -74,8 +74,8 @@
       <div class="form-group col">
         <select class="form-control form-control-sm" name="status">
           <option value="any" selected disabled>стадия</option>
-          <option <?= $data['formData']['status'] == '0,100,200,210,220,230,240,250,260,270,280,290' ? 'selected' : ''; ?>
-                  value="0,100,200,210,220,230,240,250,260,270,280,290">активные
+          <option <?= $data['formData']['status'] == '0,100,200,210,220,230,240,250,260,270,280,290,300' ? 'selected' : ''; ?>
+                  value="0,100,200,210,220,230,240,250,260,270,280,290,300">активные
           </option>
           <option <?= $data['formData']['status'] == 'any' ? 'selected' : ''; ?>
                   value="any">любые
@@ -86,8 +86,8 @@
           <option <?= $data['formData']['status'] == '100' ? 'selected' : ''; ?>
                   value="100">получено производством
           </option>
-          <option <?= $data['formData']['status'] == '200,210,220,230,240,250,260,270,280,290' ? 'selected' : ''; ?>
-                  value="200,210,220,230,240,250,260,270,280,290">в работе
+          <option <?= $data['formData']['status'] == '100,200,210,220,230,240,250,260,270,280,290' ? 'selected' : ''; ?>
+                  value="100,200,210,220,230,240,250,260,270,280,290">в работе
           </option>
           <option <?= $data['formData']['status'] == '300' ? 'selected' : ''; ?>
                   value="300">выполнено
@@ -155,7 +155,9 @@
 				<?php else: ?>
           <tr class="table-light">
 				<?php endif; ?>
-        <td><?= $order['create_datetime']; ?></td>
+        <td>
+          <span class="" data-toggle="tooltip" data-placement="top" title="<?= $order['task_text']; ?>"><?= $order['create_datetime']; ?></span>
+        </td>
         <td><?= shortStr($order['client_name'], $data['CONFIG']['MAX_SYMBOLS_TABLE_CELL']); ?></td>
         <td><?= $order['order_name_out']; ?></td>
         <td>

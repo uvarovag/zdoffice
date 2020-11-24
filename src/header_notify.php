@@ -5,6 +5,7 @@
 //production_order_change_status_* - Новых заявок на производство
 //production_order_start - Ожидает запуска в работу
 //production_order_cancel - Ожидает подтверждения отмены
+//production_order_done_formanager - заказ данного менеджера выполнен
 
 $tmpLayoutNotifyData['CONFIG'] = $tmpLayoutData['CONFIG'];
 $tmpLayoutNotifyData['PROG_DATA'] = $tmpLayoutData['PROG_DATA'];
@@ -124,5 +125,31 @@ if ($_SESSION['user']['auth_production_order_cancel']) {
 		$tmpLayoutData['notifyQuantity'] += $tmpLayoutNotifyData['notifyQuantity'];
 		$tmpLayoutData['notify'] = $tmpLayoutData['notify'] .
 			renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/src/templates/notify/production_order_cancel.php', $tmpLayoutNotifyData);
+	}
+}
+
+if ($_SESSION['user']['auth_production_order_new']) {
+
+
+	$tmpLayoutNotifyData['active_tab'] = 'notes';
+
+	$sqlSelect = "SELECT * FROM production_orders WHERE create_user_id = {$_SESSION['user']['id']} AND ";
+	$sqlParam = [];
+
+	foreach ($PROG_DATA['DEPARTMENTS_LIST'] as $depKey => $depVal) {
+		$sqlSelect = $sqlSelect . "({$depKey}_datetime_status_0 IS NULL OR {$depKey}_current_status = ?) AND ";
+		$sqlParam[] = $PROG_DATA['STATUS_ID_PRODUCTION']['DONE'];
+	}
+
+	$sqlSelect = substr($sqlSelect, 0, -4);
+	$sqlSelect = $sqlSelect . 'ORDER BY id * order_priority * sort_priority * error_priority DESC';
+
+	$tmpLayoutNotifyData['notifys'] = dbSelectData($con, $sqlSelect, $sqlParam);
+	$tmpLayoutNotifyData['notifyQuantity'] = count($tmpLayoutNotifyData['notifys']);
+
+	if ($tmpLayoutNotifyData['notifyQuantity'] > 0) {
+		$tmpLayoutData['notifyQuantity'] += $tmpLayoutNotifyData['notifyQuantity'];
+		$tmpLayoutData['notify'] = $tmpLayoutData['notify'] .
+			renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/src/templates/notify/production_order_done_formanager.php', $tmpLayoutNotifyData);
 	}
 }
