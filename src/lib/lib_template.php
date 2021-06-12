@@ -78,18 +78,18 @@ function deadlineBadge($date, $ifDays) {
 	$daysBefore = ceil((strtotime($date) - strtotime('now')) / 60 / 60 / 24);
 
 	if ($daysBefore > $ifDays) {
-		return '<span class="badge badge-pill badge-success" data-toggle="tooltip" data-placement="top" 
+		return '<span class="badge badge-pill bg-primary text-white" data-toggle="tooltip" data-placement="top" 
 		title="осталось дней - ' . $daysBefore . '">' . $date . '</span>';
 	}
 	if ($daysBefore == 0) {
-		return '<span class="badge badge-pill badge-warning" data-toggle="tooltip" data-placement="top" 
+		return '<span class="badge badge-pill bg-warning text-white" data-toggle="tooltip" data-placement="top" 
 		title="сегодня">' . $date . '</span>';
 	}
 	if ($daysBefore > 0) {
-		return '<span class="badge badge-pill badge-warning" data-toggle="tooltip" data-placement="top" 
+		return '<span class="badge badge-pill bg-warning text-white" data-toggle="tooltip" data-placement="top" 
 		title="осталось дней - ' . abs($daysBefore) . '">' . $date . '</span>';
 	}
-	return '<span class="badge badge-pill badge-danger" data-toggle="tooltip" data-placement="top" 
+	return '<span class="badge badge-pill bg-danger text-white" data-toggle="tooltip" data-placement="top" 
 		title="просрочено дней - ' . abs($daysBefore) . '">' . $date . '</span>';
 }
 
