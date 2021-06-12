@@ -2559,11 +2559,6 @@ pre code
     background-color: #fff;
     box-shadow: 0 0 0 .2rem rgba(0, 123, 255, .25);
 }
-.form-control::-ms-input-placeholder
-{
-    opacity: 1; 
-    color: #6c757d;
-}
 .form-control::placeholder
 {
     opacity: 1; 
@@ -3115,7 +3110,6 @@ textarea.form-control.is-invalid
 
     cursor: pointer;
     -webkit-user-select: none;
-        -ms-user-select: none;
             user-select: none;
     transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out; 
     text-align: center;
@@ -4789,7 +4783,6 @@ input[type='button'].btn-block
     background: #fff url('data:image/svg+xml,%3csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'4\' height=\'5\' viewBox=\'0 0 4 5\'%3e%3cpath fill=\'%23343a40\' d=\'M2 0L0 2h4zm0 5L0 3h4z\'/%3e%3c/svg%3e') no-repeat right .75rem center/8px 10px;
 
     -webkit-appearance: none;
-       -moz-appearance: none;
             appearance: none;
 }
 .custom-select:focus
@@ -4938,7 +4931,6 @@ input[type='button'].btn-block
     background-color: transparent;
 
     -webkit-appearance: none;
-       -moz-appearance: none;
             appearance: none;
 }
 .custom-range:focus
@@ -5010,8 +5002,7 @@ input[type='button'].btn-block
     border-radius: 1rem;
     background-color: #007bff;
 
-    -moz-appearance: none;
-         appearance: none;
+    appearance: none;
 }
 @media (prefers-reduced-motion: reduce)
 {
@@ -7045,7 +7036,6 @@ button.close
     background-color: transparent;
 
     -webkit-appearance: none;
-       -moz-appearance: none;
             appearance: none;
 }
 
@@ -9477,8 +9467,7 @@ button.bg-dark:focus
 
 .position-sticky
 {
-    position: -webkit-sticky !important;
-    position:         sticky !important;
+    position: sticky !important;
 }
 
 .fixed-top
@@ -9499,12 +9488,11 @@ button.bg-dark:focus
     left: 0;
 }
 
-@supports ((position: -webkit-sticky) or (position: sticky))
+@supports (position: sticky)
 {
     .sticky-top
     {
-        position: -webkit-sticky;
-        position:         sticky;
+        position: sticky;
         z-index: 1020; 
         top: 0;
     }
