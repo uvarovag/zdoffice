@@ -117,8 +117,11 @@
                  value="<?= $data['formData']['dateTo']; ?>" placeholder="по">
         </div>
       </div>
-      <div class="form-group col-2 mb-0">
-        <button type="submit" class="btn btn-sm btn-primary btn-block">Найти</button>
+      <div class="form-group col-2 mb-0 d-flex">
+          <?php if ($_SESSION['user']['id'] == 1 || $_SESSION['user']['id'] == 2): ?>
+              <button type="submit" name="button-action" value="download" class="btn btn-sm btn-primary"><i class="ni ni-cloud-download-95"></i></button>
+          <?php endif; ?>
+        <button type="submit" class="btn btn-sm btn-primary flex-fill">Найти</button>
       </div>
     </div>
   </form>

@@ -70,7 +70,7 @@ $STATUS_LIST_PRODUCTION = [
 $STATUS_ID_PRODUCTION = [
 	'WAIT_START' 	=> 0,
 	'RECEIVED' 		=> 100,
-	'START' 			=> 200,
+	'START' 		=> 200,
 	'READY_10' 		=> 210,
 	'READY_20' 		=> 220,
 	'READY_30' 		=> 230,
@@ -80,10 +80,10 @@ $STATUS_ID_PRODUCTION = [
 	'READY_70' 		=> 270,
 	'READY_80' 		=> 280,
 	'READY_90' 		=> 290,
-	'DONE' 				=> 300,
-	'ISSUED' 			=> 400,
-	'WAIT_CANCEL' => 998,
-	'CANCEL' 			=> 999
+	'DONE' 			=> 300,
+	'ISSUED' 		=> 400,
+	'WAIT_CANCEL'   => 998,
+	'CANCEL' 		=> 999
 ];
 
 

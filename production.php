@@ -151,7 +151,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	errorIfAccessDenied($_SESSION['user']['auth_production_order_view'],
 		$PROG_CONFIG['HOST'] . '/production.php?error_massage=' . $PROG_DATA['ERROR']['ACCESS_DENIED'] . ' ' . __LINE__);
 
-
 	if (isset($_SESSION['navList']['productionOrdersListMy']['isActive']) &&
 		isset($_GET['department']) && $_SESSION['user']['availDepProd'] !== false &&
 		implode(',', $_SESSION['user']['availDepProd']) == $_GET['department']) {
@@ -163,9 +162,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 		$_SESSION['navList']['productionOrdersList']['isActive'] = true;
 	}
 
-
 	$tmpLayoutData['title'] = 'Заявки на производство';
-
 
 	$tmpLayoutContentData['formData']['department'] = $_GET['department'] ?? '';
 	$tmpLayoutContentData['formData']['createUserId'] = $_GET['create_user_id'] ?? '';
@@ -183,11 +180,22 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
        ud.last_name AS ud_last_name, ud.first_name AS ud_first_name, 
        uc.last_name AS uc_last_name, uc.first_name AS uc_first_name, ';
 
-	foreach ($PROG_DATA['DEPARTMENTS_LIST'] as $depKey => $depVal) {
-		$sqlQuerySelect = $sqlQuerySelect . 'o.' . $depKey . '_current_status, 
-			DATE_FORMAT(' . $depKey . '_datetime_status_0, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS ' . $depKey . '_datetime_status_0, 
-			DATE_FORMAT(' . $depKey . '_deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS ' . $depKey . '_deadline_date, ';
-	}
+    if (isset($_GET['button-action']) && $_GET['button-action'] == 'download') {
+        foreach ($PROG_DATA['DEPARTMENTS_LIST'] as $depKey => $depVal) {
+            $sqlQuerySelect = $sqlQuerySelect . "o.{$depKey}_current_status, 
+            DATE_FORMAT({$depKey}_deadline_date, {$PROG_CONFIG['DATE_FORMAT']}) AS {$depKey}_deadline_date, ";
+            foreach ($PROG_DATA['STATUS_LIST_PRODUCTION'] as $statusKey => $statusVal) {
+                $sqlQuerySelect = $sqlQuerySelect . "DATE_FORMAT({$depKey}_datetime_status_{$statusKey}, {$PROG_CONFIG['DATE_FORMAT']}) AS {$depKey}_datetime_status_{$statusKey}, ";
+            }
+        }
+    }
+    else {
+        foreach ($PROG_DATA['DEPARTMENTS_LIST'] as $depKey => $depVal) {
+            $sqlQuerySelect = $sqlQuerySelect . "o.{$depKey}_current_status, 
+            DATE_FORMAT({$depKey}_deadline_date, {$PROG_CONFIG['DATE_FORMAT']}) AS {$depKey}_deadline_date, 
+            DATE_FORMAT({$depKey}_datetime_status_0,{$PROG_CONFIG['DATE_FORMAT']}) AS {$depKey}_datetime_status_0, ";
+        }
+    }
 
 	$sqlQuerySelect = $sqlQuerySelect . 'o.id, o.designer_id, o.order_name_in, o.order_name_out, o.client_name, 
        o.task_text, o.order_priority, 
@@ -214,14 +222,10 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	}
 
 	$dateFilter = isset($_GET['date_from']) && isset($_GET['date_to']) && $_GET['date_from'] && $_GET['date_to'];
-
 	$departmentOrAnd = (isset($_GET['department']) && $_GET['department'] == 'all') ? 'AND' : 'OR';
-
 	$statusFilterStr = implode(', ', $statusFilter);
-
 	$tmpLayoutContentData['showDepartment'] =
 		($departmentFilter === false || count($departmentFilter) > 1) ? false : $departmentFilter[0];
-
 
 //	if ($tmpLayoutContentData['showDepartment']) {
 //		$sqlSortBy = "ORDER BY CASE
@@ -238,7 +242,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 
 	$sqlSortBy = 'ORDER BY o.id * o.order_priority * o.sort_priority * o.error_priority DESC ';
 
-
 	if (isset($_GET['department']) && $dateFilter === false &&
 		count($departmentFilter) !== count($PROG_DATA['DEPARTMENTS_LIST'])) {
 
@@ -250,23 +253,18 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 		$sqlQueryWhere = substr($sqlQueryWhere, 0, -4);
 		$sqlQueryWhere = $sqlQueryWhere . ') ';
 	}
-
-
 	if (isset($_GET['create_user_id']) && $_GET['create_user_id'] != 'any') {
 		$sqlQueryWhere = $sqlQueryWhere . 'AND create_user_id = ? ';
 		$sqlParameters[] = $_GET['create_user_id'];
 	}
-
 	if (isset($_GET['designer_id']) && $_GET['designer_id'] != 'any') {
 		$sqlQueryWhere = $sqlQueryWhere . 'AND designer_id = ? ';
 		$sqlParameters[] = $_GET['designer_id'];
 	}
-
 	if (isset($_GET['priority']) && $_GET['priority'] != 'any') {
 		$sqlQueryWhere = $sqlQueryWhere . 'AND order_priority = ? ';
 		$sqlParameters[] = $_GET['priority'];
 	}
-
 
 	if (isset($_GET['status']) && $_GET['status'] !== 'any' && $dateFilter === false) {
 
@@ -282,7 +280,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 		$sqlQueryWhere = $sqlQueryWhere . ') ';
 	}
 
-
 	if (isset($_GET['search']) && $_GET['search']) {
 		$sqlQueryWhere = $sqlQueryWhere . 'AND (order_name_in LIKE ? OR order_name_out LIKE ? OR client_name LIKE ?) ';
 		$sqlParameters[] = '%' . $_GET['search'] . '%';
@@ -291,12 +288,9 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	}
 
 	if ($dateFilter) {
-
 		$sqlQueryWhere = $sqlQueryWhere . 'AND (';
-
 		foreach ($departmentFilter as $depKey => $depVal) {
 			foreach ($statusFilter as $stKey => $stVal) {
-
 				if (isset($_GET['department']) && $_GET['department'] == 'all')
 					$sqlQueryWhere = $sqlQueryWhere . "(({$depVal}_datetime_status_{$stVal} BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)) OR 
 						{$depVal}_datetime_status_0 IS NULL) {$departmentOrAnd} ";
@@ -320,6 +314,10 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	$tmpLayoutData['pagination'] = $paginationData['tmpPagination'];
 	$sqlPagination = $paginationData['sqlPagination'];
 
+    if (isset($_GET['button-action']) && $_GET['button-action'] == 'download') {
+        $sqlPagination = "";
+    }
+
 	$tmpLayoutContentData['createUsers'] =
 		dbSelectData($con, 'SELECT * FROM adm_users WHERE auth_production_order_new = 1 ORDER BY last_name', []);
 
@@ -333,8 +331,16 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 			currentGeneralStatus($val, $PROG_DATA['DEPARTMENTS_LIST']);
 	}
 
-	$tmpLayoutData['content'] =
-		renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/src/templates/production/orders_list.php', $tmpLayoutContentData);
+    if (isset($_GET['button-action']) && $_GET['button-action'] == 'download') {
+        header('Content-Type: application/octet-stream');
+        header("Content-Disposition: attachment; filename=production.xls");
+        echo renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/src/templates/production/orders_list_tabel.php', $tmpLayoutContentData);
+        exit();
+    }
+    else {
+        $tmpLayoutData['content'] =
+            renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/src/templates/production/orders_list.php', $tmpLayoutContentData);
+    }
 }
 
 
