@@ -17,7 +17,7 @@ $SYS_CONFIG = [
 ];
 
 if ($_SERVER['REMOTE_ADDR'] == '::1') {
-	$SYS_CONFIG['HOST'] = 'http://zdoffice';
+	$SYS_CONFIG['HOST'] = 'http://zdoffice.loc';
 	$SYS_CONFIG['BD_USER'] = 'root';
 	$SYS_CONFIG['BD_PASSWORD'] = 'root';
 	$SYS_CONFIG['BD_NAME'] = 'zdoffice';

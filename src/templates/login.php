@@ -1,14 +1,3 @@
-<!--
-=========================================================
-* Argon Dashboard - v1.2.0
-=========================================================
-* Product Page: https://www.creative-tim.com/product/argon-dashboard
-
-* Copyright  Creative Tim (http://www.creative-tim.com)
-* Coded by www.creative-tim.com
-=========================================================
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
--->
 <!DOCTYPE html>
 <html>
 
@@ -18,15 +7,16 @@
   <meta name="description" content="Start your development with a Dashboard for Bootstrap 4.">
   <meta name="author" content="Creative Tim">
   <title><?= $data['title']; ?></title>
-  <!-- Favicon -->
-  <link rel="icon" href="/img/zd-blue.png" type="image/png">
-  <!-- Fonts -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
-  <!-- Icons -->
-  <link rel="stylesheet" href="/argon-dashboard/assets/vendor/nucleo/css/nucleo.css" type="text/css">
-  <link rel="stylesheet" href="/argon-dashboard/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" type="text/css">
-  <!-- Argon CSS -->
-  <link rel="stylesheet" href="/argon-dashboard/assets/css/argon.css?v=1.2.0" type="text/css">
+    <!-- Favicon -->
+    <link rel="icon" href="/assets/img/zd-blue.png" type="image/png">
+    <!-- Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
+    <!-- Icons -->
+    <link rel="stylesheet" href="/assets/nucleo/css/nucleo.css" type="text/css">
+    <link rel="stylesheet" href="/assets/@fortawesome/fontawesome-free/css/all.min.css" type="text/css">
+    <!-- Page plugins -->
+    <!-- Argon CSS -->
+    <link rel="stylesheet" href="/assets/css/argon.min.css?v=1" type="text/css">
 </head>
 
 <body class="bg-white">
@@ -99,12 +89,16 @@
 </footer>
 <!-- Argon Scripts -->
 <!-- Core -->
-<script src="/argon-dashboard/assets/vendor/jquery/dist/jquery.min.js"></script>
-<script src="/argon-dashboard/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/argon-dashboard/assets/vendor/js-cookie/js.cookie.js"></script>
-<script src="/argon-dashboard/assets/vendor/jquery.scrollbar/jquery.scrollbar.min.js"></script>
-<script src="/argon-dashboard/assets/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js"></script>
+<script src="/assets/jquery/dist/jquery.min.js"></script>
+<script src="/assets/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assets/js-cookie/js.cookie.js"></script>
+<script src="/assets/jquery.scrollbar/jquery.scrollbar.min.js"></script>
+<script src="/assets/jquery-scroll-lock/dist/jquery-scrollLock.min.js"></script>
+<!-- Optional JS -->
+<script src="/assets/clipboard/dist/clipboard.min.js"></script>
+<script src="/assets/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+<script src="/assets/js/forms.js"></script>
 <!-- Argon JS -->
-<script src="/argon-dashboard/assets/js/argon.js?v=1.2.0"></script>
+<script src="/assets/js/argon.min.js"></script>
 </body>
 </html>

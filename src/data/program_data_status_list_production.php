@@ -3,7 +3,7 @@
 $STATUS_LIST_PRODUCTION = [
 	0 => [
 		'name' => 'ожидание подтверждения',
-		'icon' => '<span class="badge badge-pill bg-warning text-white">ожидание подтв.</span>'
+		'icon' => '<span class="badge badge-pill bg-warning text-dark">ожидание подтв.</span>'
 	],
 	100 => [
 		'name' => 'получено производством',

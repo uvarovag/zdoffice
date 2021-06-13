@@ -82,11 +82,11 @@ function deadlineBadge($date, $ifDays) {
 		title="осталось дней - ' . $daysBefore . '">' . $date . '</span>';
 	}
 	if ($daysBefore == 0) {
-		return '<span class="badge badge-pill bg-warning text-white" data-toggle="tooltip" data-placement="top" 
+		return '<span class="badge badge-pill bg-warning text-dark" data-toggle="tooltip" data-placement="top" 
 		title="сегодня">' . $date . '</span>';
 	}
 	if ($daysBefore > 0) {
-		return '<span class="badge badge-pill bg-warning text-white" data-toggle="tooltip" data-placement="top" 
+		return '<span class="badge badge-pill bg-warning text-dark" data-toggle="tooltip" data-placement="top" 
 		title="осталось дней - ' . abs($daysBefore) . '">' . $date . '</span>';
 	}
 	return '<span class="badge badge-pill bg-danger text-white" data-toggle="tooltip" data-placement="top" 

@@ -7,7 +7,7 @@ $PRIORITY_ORDERS = [
 	],
 	2 => [
 		'name' => 'высокий',
-		'icon' => '<span class="badge badge-pill bg-warning text-white">высокий</span>'
+		'icon' => '<span class="badge badge-pill bg-warning text-dark">высокий</span>'
 	],
 	3 => [
 		'name' => 'критичный',

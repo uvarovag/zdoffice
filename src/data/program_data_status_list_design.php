@@ -3,7 +3,7 @@
 $STATUS_LIST_DESIGN = [
 	0 =>		[
 		'name' => 'ожидание назначения дизайнера',
-		'icon' => '<span class="badge badge-pill bg-warning text-white">ожидание назн. диз.</span>'
+		'icon' => '<span class="badge badge-pill bg-warning text-dark">ожидание назн. диз.</span>'
 	],
 	100 =>	[
 		'name' => 'получено дизайнером',
