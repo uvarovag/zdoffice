@@ -279,5 +279,21 @@
 <script src="/assets/js/forms.js"></script>
 <!-- Argon JS -->
 <script src="/assets/js/argon.min.js"></script>
+<script type="text/javascript">
+    document.querySelectorAll('form').forEach(function (form) {
+        form.addEventListener('submit', function () {
+            var btn = form.querySelector('input[type="submit"], button[type="submit"]');
+            if (!btn) return;
+
+            btn.disabled = true;
+
+            if (btn.tagName === 'INPUT') {
+                btn.value = 'Загрузка...';
+            } else if (!btn.querySelector('i, img, svg')) {
+                btn.textContent = 'Загрузка...';
+            }
+        });
+    });
+</script>
 </body>
 </html>
