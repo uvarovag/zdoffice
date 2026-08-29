@@ -39,7 +39,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'files_cleanup') {
 			COUNT(*) AS filesCount,
 			SUM(size) AS totalSize
 		FROM files
-		WHERE is_deleted = 0
+		WHERE (is_deleted = 0 OR is_deleted IS NULL)
 		GROUP BY month
 		ORDER BY month DESC", []);
 
@@ -58,12 +58,12 @@ if (isset($_GET['action']) && isset($_GET['month']) && $_GET['action'] === 'file
 	}
 
 	$filesToDelete = dbSelectData($con,
-		"SELECT * FROM files WHERE is_deleted = 0 AND DATE_FORMAT(change_datetime, '%Y-%m') = ?", [$_GET['month']]);
+		"SELECT * FROM files WHERE (is_deleted = 0 OR is_deleted IS NULL) AND DATE_FORMAT(change_datetime, '%Y-%m') = ?", [$_GET['month']]);
 
 	mysqli_query($con, 'START TRANSACTION');
 
 	$deleteOk = dbExecQuery($con,
-		"UPDATE files SET is_deleted = 1 WHERE is_deleted = 0 AND DATE_FORMAT(change_datetime, '%Y-%m') = ?", [$_GET['month']]);
+		"UPDATE files SET is_deleted = 1 WHERE (is_deleted = 0 OR is_deleted IS NULL) AND DATE_FORMAT(change_datetime, '%Y-%m') = ?", [$_GET['month']]);
 
 	if ($deleteOk || empty($filesToDelete)) {
 		foreach ($filesToDelete as $file) {
@@ -72,6 +72,17 @@ if (isset($_GET['action']) && isset($_GET['month']) && $_GET['action'] === 'file
 			}
 		}
 		mysqli_query($con, 'COMMIT');
+
+		// удаляем папку месяца (и её пустые дневные подпапки), если она опустела
+		$monthDir = $_SERVER['DOCUMENT_ROOT'] . $SYS_CONFIG['DOWNLOAD_DIR'] . '/' .
+			substr($_GET['month'], 0, 4) . '/' . substr($_GET['month'], 5, 2);
+
+		if (is_dir($monthDir)) {
+			foreach (glob($monthDir . '/*', GLOB_ONLYDIR) as $dayDir) {
+				@rmdir($dayDir);
+			}
+			@rmdir($monthDir);
+		}
 	} else {
 		mysqli_query($con, 'ROLLBACK');
 	}
