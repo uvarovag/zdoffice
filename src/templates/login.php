@@ -8,7 +8,7 @@
   <meta name="author" content="Creative Tim">
   <title><?= $data['title']; ?></title>
     <!-- Favicon -->
-    <link rel="icon" href="/assets/img/zd-blue.png" type="image/png">
+    <link rel="icon" href="/assets/img/rocket.svg" type="image/svg+xml">
     <!-- Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
     <!-- Icons -->

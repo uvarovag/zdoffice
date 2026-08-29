@@ -1,11 +1,11 @@
 <?php
 
 $SYS_CONFIG = [
-	'HOST' => 'http://zdoffice.ru',
+	'HOST' => 'http://88.218.62.16',
 	'BD_HOST' => 'localhost',
-	'BD_USER' => 'root-zdoffice',
-	'BD_PASSWORD' => '9R6z2G9pH2j5V2r8',
-	'BD_NAME' => 'zdoffice_1t4u9e6p',
+	'BD_USER' => '88_218_62_16',
+	'BD_PASSWORD' => 'a/Q3q,O=6A|(;Z,S3`.u?Ml+*X8-Gk:o',
+	'BD_NAME' => '88_218_62_16',
 	'DEBUG_MODE_USER_ID' => false,
 	'DOWNLOAD_DIR' => '/uploaded_files',
 	'CHMOD_DWL_DIR' => 0755,
@@ -20,5 +20,5 @@ if ($_SERVER['REMOTE_ADDR'] == '::1') {
 	$SYS_CONFIG['HOST'] = 'http://mamp';
 	$SYS_CONFIG['BD_USER'] = 'root';
 	$SYS_CONFIG['BD_PASSWORD'] = 'root';
-	$SYS_CONFIG['BD_NAME'] = 'zdoffice';
+	$SYS_CONFIG['BD_NAME'] = 'test';
 }

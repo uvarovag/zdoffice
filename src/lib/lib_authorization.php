@@ -17,7 +17,7 @@ function setNavListUser($navList, $user, $PROG_DATA) {
 
 	$navList['productionOrdersListMy']['url'] =
 			$navList['productionOrdersListMy']['url'] . '&department=' .
-			implode(',', $_SESSION['user']['availDepProd']) .
+			implode(',', $_SESSION['user']['availDepProd'] ?: []) .
 			'&status=100,200,210,220,230,240,250,260,270,280,290';
 
 	$navList['productionOrdersList']['url'] =

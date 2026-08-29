@@ -7,7 +7,7 @@
     <meta name="author" content="Creative Tim">
     <title><?= $data['title']; ?></title>
     <!-- Favicon -->
-    <link rel="icon" href="/assets/img/zd-blue.png" type="image/png">
+    <link rel="icon" href="/assets/img/rocket.svg" type="image/svg+xml">
     <!-- Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
     <!-- Icons -->
@@ -56,8 +56,8 @@
         <!-- Brand -->
         <div class="sidenav-header  align-items-center mb-4">
             <a class="navbar-brand" href="<?= $data['CONFIG']['HOST'] . '/index.php'; ?>">
-                <img src="/assets/img/zd-blue.png" class="navbar-brand-img" alt="...">
-                <h2 class="d-inline align-bottom <?= $data['CONFIG']['TEXT_STYLE']; ?>">ZIYNAT DESIGN</h2><br/>
+                <img src="/assets/img/rocket.svg" class="navbar-brand-img" alt="...">
+                <h2 class="d-inline align-bottom <?= $data['CONFIG']['TEXT_STYLE']; ?>">ALI PRINT</h2><br/>
                 <p class="d-inline align-bottom <?= $data['CONFIG']['TEXT_STYLE']; ?>">online application</p>
             </a>
         </div>
