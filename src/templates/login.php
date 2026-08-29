@@ -100,5 +100,15 @@
 <script src="/assets/js/forms.js"></script>
 <!-- Argon JS -->
 <script src="/assets/js/argon.min.js"></script>
+<script type="text/javascript">
+    document.querySelectorAll('form input[name="login"], form input[name="password"]').forEach(function (input) {
+        input.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                input.closest('form').querySelector('[type="submit"]').click();
+            }
+        });
+    });
+</script>
 </body>
 </html>

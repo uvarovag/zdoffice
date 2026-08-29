@@ -27,6 +27,63 @@ if (isset($_GET['action']) && $_GET['action'] == 'info') {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+if (isset($_GET['action']) && $_GET['action'] === 'files_cleanup') {
+
+	$_SESSION['navList']['filesCleanup']['isActive'] = true;
+	$tmpLayoutData['title'] = 'Файлы';
+
+	$tmpLayoutContentData['filesByMonth'] = dbSelectData($con,
+		"SELECT
+			DATE_FORMAT(change_datetime, '%Y-%m') AS month,
+			DATE_FORMAT(change_datetime, '%m.%Y') AS monthLabel,
+			COUNT(*) AS filesCount,
+			SUM(size) AS totalSize
+		FROM files
+		WHERE is_deleted = 0
+		GROUP BY month
+		ORDER BY month DESC", []);
+
+	$tmpLayoutData['content'] =
+		renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/src/templates/adm_users/files_cleanup.php', $tmpLayoutContentData);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+if (isset($_GET['action']) && isset($_GET['month']) && $_GET['action'] === 'files_cleanup_delete') {
+
+	if (preg_match('/^\d{4}-\d{2}$/', $_GET['month']) !== 1) {
+		redirectToIf(false, '',
+			$PROG_CONFIG['HOST'] . '/adm_users.php?action=files_cleanup&error_massage=' . $PROG_DATA['ERROR']['INPUT_DATA']);
+	}
+
+	$filesToDelete = dbSelectData($con,
+		"SELECT * FROM files WHERE is_deleted = 0 AND DATE_FORMAT(change_datetime, '%Y-%m') = ?", [$_GET['month']]);
+
+	mysqli_query($con, 'START TRANSACTION');
+
+	$deleteOk = dbExecQuery($con,
+		"UPDATE files SET is_deleted = 1 WHERE is_deleted = 0 AND DATE_FORMAT(change_datetime, '%Y-%m') = ?", [$_GET['month']]);
+
+	if ($deleteOk || empty($filesToDelete)) {
+		foreach ($filesToDelete as $file) {
+			if (file_exists($_SERVER['DOCUMENT_ROOT'] . $file['path'])) {
+				unlink($_SERVER['DOCUMENT_ROOT'] . $file['path']);
+			}
+		}
+		mysqli_query($con, 'COMMIT');
+	} else {
+		mysqli_query($con, 'ROLLBACK');
+	}
+
+	redirectToIf($deleteOk || empty($filesToDelete),
+		$PROG_CONFIG['HOST'] . '/adm_users.php?action=files_cleanup&alert_massage=' . $PROG_DATA['ALERT']['OK'],
+		$PROG_CONFIG['HOST'] . '/adm_users.php?action=files_cleanup&error_massage=' . $PROG_DATA['ERROR']['BD_WRITE']);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 if (isset($_GET['action']) && $_GET['action'] === 'new_user_card') {
 
 	$_SESSION['formId'] = md5(time());

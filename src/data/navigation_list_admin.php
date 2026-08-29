@@ -21,5 +21,12 @@ $navigationListAdmin = [
 		'isCaption' => false,
 		'isActive' => false,
 		'isAvailable' => true
+	],
+	'filesCleanup' => [
+		'title' => '<i class="ni ni-single-copy-04 text-primary"></i><span class="nav-link-text">Файлы</span>',
+		'url' => $PROG_CONFIG['HOST'] . '/adm_users.php?action=files_cleanup',
+		'isCaption' => false,
+		'isActive' => false,
+		'isAvailable' => true
 	]
 ];
