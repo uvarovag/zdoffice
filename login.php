@@ -17,7 +17,13 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/src/data/user_admin_data.php');
 
 $tmpLayoutData['title'] = 'Войти';
 
+if (isPaidPeriodExpired($PROG_CONFIG) && $tmpLayoutData['errorMassage'] === false)
+	$tmpLayoutData['errorMassage'] = 'оплаченный период закончился';
+
 if (isset($_POST['action']) && $_POST['action'] === 'login') {
+
+	if (isPaidPeriodExpired($PROG_CONFIG))
+		redirectToIf(false, '', $PROG_CONFIG['HOST'] . '/login.php?error_massage=оплаченный период закончился');
 
 	if (isValidLoginPassword($PROG_CONFIG) === false)
 		redirectToIf(false, '', $PROG_CONFIG['HOST'] . '/login.php?error_massage=ошибка входных данных');

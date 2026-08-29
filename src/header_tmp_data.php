@@ -11,8 +11,13 @@ $tmpLayoutData = [
 	'notify' => '',
 	'pagination' => '',
 	'alertMassage' => false,
-	'errorMassage' => false
+	'errorMassage' => false,
+	'paidPeriodWarningDays' => false
 ];
+
+$tmpPaidPeriodDaysLeft = paidPeriodDaysLeft($PROG_CONFIG);
+if ($tmpPaidPeriodDaysLeft >= 0 && $tmpPaidPeriodDaysLeft <= $PROG_CONFIG['PAID_WARNING_DAYS_BEFORE'])
+	$tmpLayoutData['paidPeriodWarningDays'] = $tmpPaidPeriodDaysLeft;
 
 $tmpLayoutContentData = [
 	'CONFIG' => &$PROG_CONFIG,

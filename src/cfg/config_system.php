@@ -10,7 +10,7 @@ $SYS_CONFIG = [
 	'DOWNLOAD_DIR' => '/uploaded_files',
 	'CHMOD_DWL_DIR' => 0755,
 	'CHMOD_DWL_FILE' => 0444,
-	'MAX_UPL_FILE_SIZE' => 1000000 * 10,
+	'MAX_UPL_FILE_SIZE' => 1000000 * 25,
 	'FORBIDDEN_MIMI_TYPES' => [
 		'text/x-php'
 	]

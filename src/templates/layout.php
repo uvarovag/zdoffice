@@ -18,6 +18,11 @@
     <link rel="stylesheet" href="/assets/css/argon.min.css?v=1" type="text/css">
 </head>
 <body>
+<?php if ($data['paidPeriodWarningDays'] !== false): ?>
+    <div class="text-center bg-warning text-dark py-1" style="font-size: 0.8rem;">
+        <?= paidPeriodWarningText($data['paidPeriodWarningDays']); ?>
+    </div>
+<?php endif; ?>
 <?php if (isset($data['RELOAD_EVERY_MIN']) && $data['RELOAD_EVERY_MIN']): ?>
     <script type="text/javascript">
 

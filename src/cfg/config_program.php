@@ -3,6 +3,7 @@
 $PROG_CONFIG = [
 	'HOST' => $SYS_CONFIG['HOST'], // DONT TOUCH!!!
 	'DEBUG_MODE_USER_ID' => $SYS_CONFIG['DEBUG_MODE_USER_ID'], // DONT TOUCH!!!
+	'MAX_UPL_FILE_SIZE' => $SYS_CONFIG['MAX_UPL_FILE_SIZE'], // DONT TOUCH!!!
 	'RELOAD_EVERY_MIN' => 5,
 	'TIMEZONE' => 'Asia/Tashkent',
 	'PROG_NAME' => 'ALI PRINT',
@@ -20,5 +21,7 @@ $PROG_CONFIG = [
 	'MAX_LEN_C' => 150,  // !!! MAX 150
 	'DATE_FORMAT' => '\'%d.%m.%Y\'',
 	'DATETIME_FORMAT' => '\'%d.%m.%Y %H:%i\'',
-	'WARNING_DAYS_BEFORE_DEADLINE' => 3
+	'WARNING_DAYS_BEFORE_DEADLINE' => 3,
+	'PAID_UNTIL' => '2026-09-30',        // дата окончания оплаченного периода (Y-m-d)
+	'PAID_WARNING_DAYS_BEFORE' => 7      // за сколько дней до окончания показывать предупреждение
 ];
