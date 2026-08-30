@@ -1,7 +1,7 @@
 <?php
 
 $SYS_CONFIG = [
-	'HOST' => 'http://88.218.62.16',
+	'HOST' => 'https://88.218.62.16.nip.io',
 	'BD_HOST' => 'localhost',
 	'BD_USER' => '88_218_62_16',
 	'BD_PASSWORD' => 'a/Q3q,O=6A|(;Z,S3`.u?Ml+*X8-Gk:o',
