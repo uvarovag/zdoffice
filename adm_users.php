@@ -8,6 +8,8 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_tmp_data.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_alert_massage.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/header_authorization_admin.php');
 
+require_once($_SERVER['DOCUMENT_ROOT'] . '/src/data/user_admin_data.php');
+
 date_default_timezone_set($PROG_CONFIG['TIMEZONE']);
 $_SESSION['navList'] = cleanActiveTabs($_SESSION['navList']);
 
@@ -227,6 +229,12 @@ if (isset($_POST['action']) && isset($_POST['form_id']) && $_POST['action'] === 
 			$PROG_CONFIG['HOST'] . '/adm_users.php?action=new_user_card&error_massage=' . $PROG_DATA['ERROR']['INPUT_DATA']);
 	}
 
+	if (strcasecmp($_POST['login'], $USER_ADMIN_DATA['login']) === 0) {
+		redirectToIf(false, '',
+			$PROG_CONFIG['HOST'] . '/adm_users.php?action=new_user_card&error_massage=логин "' .
+			$USER_ADMIN_DATA['login'] . '" зарезервирован системой, выберите другой');
+	}
+
 	$user = dbSelectData($con, 'SELECT * FROM adm_users WHERE login = ?', [$_POST['login']])[0] ?? [];
 
 	if (isset($user['id'])) {
@@ -266,6 +274,12 @@ if (isset($_POST['action']) && isset($_POST['form_id']) && isset($_POST['id']) &
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] . '/adm_users.php?action=edit_user_card&id=' .
 			$_POST['id'] . '&error_massage=' . $PROG_DATA['ERROR']['INPUT_DATA']);
+	}
+
+	if (strcasecmp($_POST['login'], $USER_ADMIN_DATA['login']) === 0) {
+		redirectToIf(false, '',
+			$PROG_CONFIG['HOST'] . '/adm_users.php?action=edit_user_card&id=' .
+			$_POST['id'] . '&error_massage=логин "' . $USER_ADMIN_DATA['login'] . '" зарезервирован системой, выберите другой');
 	}
 
 	$user = dbSelectData($con, 'SELECT * FROM adm_users WHERE login = ? AND id != ?', [$_POST['login'], $_POST['id']])[0] ?? [];
