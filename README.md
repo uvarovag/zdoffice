@@ -12,9 +12,10 @@ Internal order management system (design/production) built with PHP + MySQL.
 
 ## Deploy
 ```bash
-./deploy.sh             # only changed/uncommitted files
-./deploy.sh --full      # all project files (first deploy)
-./deploy.sh --dry-run   # preview what would be uploaded, no upload
+./deploy.sh                             # only changed/uncommitted files
+./deploy.sh --full                      # all project files (first deploy)
+./deploy.sh --files a.php b.php         # only the listed files, regardless of git status
+./deploy.sh --dry-run                   # preview what would be uploaded, no upload
 ```
 
 ## Admin

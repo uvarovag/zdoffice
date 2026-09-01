@@ -4,11 +4,13 @@
 #
 # По умолчанию заливает только изменённые/незакоммиченные файлы (git status).
 # С флагом --full заливает вообще все файлы проекта под git (для первого деплоя).
+# С флагом --files заливает только явно перечисленные файлы, независимо от их статуса в git.
 #
 # Использование:
-#   ./deploy.sh                — залить только изменённые файлы
-#   ./deploy.sh --full         — залить все файлы проекта (первый деплой)
-#   ./deploy.sh --dry-run      — только показать, что будет залито
+#   ./deploy.sh                          — залить только изменённые файлы
+#   ./deploy.sh --full                   — залить все файлы проекта (первый деплой)
+#   ./deploy.sh --files a.php b.php      — залить только указанные файлы
+#   ./deploy.sh --dry-run                — только показать, что будет залито
 #   ./deploy.sh --full --dry-run
 
 set -euo pipefail
@@ -19,19 +21,43 @@ REMOTE_PATH="/var/www/site_user/data/www/88.218.62.16"
 
 DRY_RUN=0
 FULL=0
+FILES_MODE=0
+FILES_ARG=()
+
 for arg in "$@"; do
+	if [[ $FILES_MODE -eq 1 ]]; then
+		FILES_ARG+=("$arg")
+		continue
+	fi
+
 	case "$arg" in
 		--dry-run) DRY_RUN=1 ;;
 		--full) FULL=1 ;;
+		--files) FILES_MODE=1 ;;
 	esac
 done
+
+if [[ $FILES_MODE -eq 1 && ${#FILES_ARG[@]} -eq 0 ]]; then
+	echo "--files требует хотя бы один путь к файлу"
+	exit 1
+fi
 
 cd "$(git rev-parse --show-toplevel)"
 
 CHANGED_FILES=()
 DELETED_FILES=()
 
-if [[ $FULL -eq 1 ]]; then
+if [[ $FILES_MODE -eq 1 ]]; then
+
+	for f in "${FILES_ARG[@]}"; do
+		if [[ ! -e "$f" ]]; then
+			echo "Файл не найден: $f"
+			exit 1
+		fi
+		CHANGED_FILES+=("$f")
+	done
+
+elif [[ $FULL -eq 1 ]]; then
 
 	# Первый деплой — все файлы проекта, отслеживаемые git
 	# (только те, что реально есть на диске — git ls-files отдаёт индекс,
