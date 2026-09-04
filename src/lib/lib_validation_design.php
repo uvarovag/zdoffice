@@ -7,8 +7,11 @@ function isValidNewDesignOrderData($progConfig, $con) {
 		isset($_POST['deadline_date']) == false)
 		return false;
 
-	if (isValidLen($_POST['order_name_out'], $progConfig['MIN_LEN_A'], $progConfig['MAX_LEN_A']) == false ||
-		isValidLen($_POST['task_text'], $progConfig['MIN_LEN_B'], $progConfig['MAX_LEN_B']) == false)
+	if ($_POST['order_name_out'] !== '' &&
+		isValidLen($_POST['order_name_out'], $progConfig['MIN_LEN_A'], $progConfig['MAX_LEN_A']) == false)
+		return false;
+
+	if (isValidLen($_POST['task_text'], $progConfig['MIN_LEN_B'], $progConfig['MAX_LEN_B']) == false)
 		return false;
 
 	if (is_numeric($_POST['order_amount']) == false || (float)$_POST['order_amount'] <= 0)

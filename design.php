@@ -211,7 +211,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	}
 
 	if (isset($_GET['create_user_id']) && $_GET['create_user_id'] != 'any') {
-		$sqlQueryWhere = $sqlQueryWhere . 'AND create_user_id = ? ';
+		$sqlQueryWhere = $sqlQueryWhere . 'AND o.create_user_id = ? ';
 		$sqlParameters[] = $_GET['create_user_id'];
 	}
 

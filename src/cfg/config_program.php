@@ -15,6 +15,7 @@ $PROG_CONFIG = [
 	'MAX_ADM_USERS_LOGS' => 50,
 	'MIN_LEN_A' => 3,
 	'MAX_LEN_A' => 64,    // !!! MAX 64
+	'MIN_LEN_PASSWORD' => 6,
 	'MIN_LEN_B' => 10,
 	'MAX_LEN_B' => 1000,  // !!! MAX 1000
 	'MIN_LEN_C' => 10,

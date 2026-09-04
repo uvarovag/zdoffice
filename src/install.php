@@ -40,13 +40,59 @@ $sql_table_users = "CREATE TABLE adm_users (
 	auth_production_order_change_status_supply     TINYINT,
 	auth_production_order_change_priority          TINYINT,
 	auth_production_order_start                    TINYINT,
-	auth_production_order_cancel                   TINYINT
+	auth_production_order_cancel                   TINYINT,
+
+	auth_clients_view                              TINYINT,
+	auth_clients_new                               TINYINT,
+	auth_clients_edit                              TINYINT,
+	auth_money_view                                TINYINT,
+	auth_money_new                                 TINYINT,
+	auth_money_delete                              TINYINT
 )";
 
 if (mysqli_query($con, $sql_table_users))
 	echo '<p>OK sql_table_users</p>';
 else
 	echo '<p>ERROR sql_table_users</p>';
+
+
+$sql_table_clients = "CREATE TABLE clients (
+	id                      INT AUTO_INCREMENT PRIMARY KEY,
+	is_deleted              TINYINT DEFAULT 0,
+	name                    CHAR(64) NOT NULL,
+	mobile_phone            CHAR(32),
+	email                   CHAR(64),
+	note                    CHAR(255),
+	create_user_id          INT,
+	create_datetime         DATETIME,
+	last_modify_datetime    DATETIME
+)";
+
+if (mysqli_query($con, $sql_table_clients))
+	echo '<p>OK sql_table_clients</p>';
+else
+	echo '<p>ERROR sql_table_clients</p>';
+
+
+$sql_table_money_transactions = "CREATE TABLE money_transactions (
+	id                INT AUTO_INCREMENT PRIMARY KEY,
+	is_deleted        TINYINT DEFAULT 0,
+	type              TINYINT NOT NULL,
+	is_auto           TINYINT DEFAULT 0,
+	client_id         INT NULL,
+	order_id          INT NULL,
+	order_type        INT NULL,
+	amount            DECIMAL(14,2) NOT NULL,
+	category          CHAR(64),
+	comment           CHAR(255),
+	user_id           INT NOT NULL,
+	create_datetime   DATETIME
+)";
+
+if (mysqli_query($con, $sql_table_money_transactions))
+	echo '<p>OK sql_table_money_transactions</p>';
+else
+	echo '<p>ERROR sql_table_money_transactions</p>';
 
 
 $sql_table_design_orders = "CREATE TABLE design_orders (
@@ -58,9 +104,8 @@ $sql_table_design_orders = "CREATE TABLE design_orders (
 	order_priority           TINYINT,
 	sort_priority            TINYINT DEFAULT 2,
 	error_priority           TINYINT DEFAULT 1,
-	client_name              CHAR(64),
-	mobile_phone             CHAR(32),
-	email                    CHAR(64),
+	client_id                INT NOT NULL,
+	order_amount             DECIMAL(14,2),
 	task_text                TEXT(1000),
 	design_format            CHAR(64),
 	deadline_date            DATETIME,
@@ -102,9 +147,8 @@ $sql_table_production_orders = "CREATE TABLE production_orders (
 	sort_priority                       TINYINT DEFAULT 2,
 	error_priority                      TINYINT DEFAULT 1,
 
-	client_name                         CHAR(64),
-	mobile_phone                        CHAR(32),
-	email                                CHAR(64),
+	client_id                           INT NOT NULL,
+	order_amount                        DECIMAL(14,2),
 
 	task_text                           TEXT(1000),
 	task_quantity                       INT,

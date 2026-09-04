@@ -18,10 +18,11 @@
                        pattern="^[a-zA-Z0-9]+$">
               </div>
               <div class="form-group col-12 mb-4">
-                <small class="text-gray">пароль (<?= 'en ' . $data['CONFIG']['MIN_LEN_A'] . '-' . $data['CONFIG']['MAX_LEN_A']; ?>)</small>
+                <small class="text-gray">пароль (en <?= $data['CONFIG']['MIN_LEN_PASSWORD'] . '-' . $data['CONFIG']['MAX_LEN_A']; ?>, буквы и цифры)</small>
                 <input type="password" name="password" class="form-control" required
-                       minlength="<?= $data['CONFIG']['MIN_LEN_A']; ?>" maxlength="<?= $data['CONFIG']['MAX_LEN_A']; ?>"
-                       pattern="^[a-zA-Z0-9]+$">
+                       minlength="<?= $data['CONFIG']['MIN_LEN_PASSWORD']; ?>" maxlength="<?= $data['CONFIG']['MAX_LEN_A']; ?>"
+                       pattern="^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{<?= $data['CONFIG']['MIN_LEN_PASSWORD']; ?>,<?= $data['CONFIG']['MAX_LEN_A']; ?>}$"
+                       title="Минимум <?= $data['CONFIG']['MIN_LEN_PASSWORD']; ?> символов, должны быть и буквы, и цифры">
               </div>
               <div class="form-group col-12 mb-4">
                 <small class="text-gray">фамилия (<?= 'ru ' . $data['CONFIG']['MIN_LEN_A'] . '-' . $data['CONFIG']['MAX_LEN_A']; ?>)</small>

@@ -17,8 +17,8 @@
             <h4>Данные контрагента</h4>
             <div class="form-row">
               <div class="form-group col-12 mb-4">
-                <small class="text-gray">Счет бонсенс (<?= 'en ' . $data['CONFIG']['MIN_LEN_A'] . '-' . $data['CONFIG']['MAX_LEN_A']; ?>)</small>
-                <input type="text" name="order_name_out" class="form-control" required
+                <small class="text-gray">Внешний счет (<?= 'en ' . $data['CONFIG']['MIN_LEN_A'] . '-' . $data['CONFIG']['MAX_LEN_A']; ?>)</small>
+                <input type="text" name="order_name_out" class="form-control"
                        minlength="<?= $data['CONFIG']['MIN_LEN_A']; ?>" maxlength="<?= $data['CONFIG']['MAX_LEN_A']; ?>"
                        pattern="^[a-zA-Z0-9 ]+$">
               </div>

@@ -224,9 +224,14 @@ if (isset($_POST['action']) && isset($_POST['form_id']) && $_POST['action'] === 
 
 	$_SESSION['formId'] = 'none';
 
-	if (isValidNewUserData($PROG_CONFIG, $PROG_DATA) === false || isValidNewUserPassword($PROG_CONFIG) === false) {
+	if (isValidNewUserData($PROG_CONFIG, $PROG_DATA) === false) {
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] . '/adm_users.php?action=new_user_card&error_massage=' . $PROG_DATA['ERROR']['INPUT_DATA']);
+	}
+
+	if (isValidNewUserPassword($PROG_CONFIG) === false) {
+		redirectToIf(false, '',
+			$PROG_CONFIG['HOST'] . '/adm_users.php?action=new_user_card&error_massage=' . $PROG_DATA['ERROR']['WEAK_PASSWORD']);
 	}
 
 	if (strcasecmp($_POST['login'], $USER_ADMIN_DATA['login']) === 0) {
@@ -274,6 +279,12 @@ if (isset($_POST['action']) && isset($_POST['form_id']) && isset($_POST['id']) &
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] . '/adm_users.php?action=edit_user_card&id=' .
 			$_POST['id'] . '&error_massage=' . $PROG_DATA['ERROR']['INPUT_DATA']);
+	}
+
+	if ($_POST['password'] !== $PASSWORD_EMPTY_VALUE && isValidNewUserPassword($PROG_CONFIG) === false) {
+		redirectToIf(false, '',
+			$PROG_CONFIG['HOST'] . '/adm_users.php?action=edit_user_card&id=' .
+			$_POST['id'] . '&error_massage=' . $PROG_DATA['ERROR']['WEAK_PASSWORD']);
 	}
 
 	if (strcasecmp($_POST['login'], $USER_ADMIN_DATA['login']) === 0) {

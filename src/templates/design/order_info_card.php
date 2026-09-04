@@ -46,7 +46,7 @@
               <td class="px-0"><?= $data['order']['order_name_in']; ?></td>
             </tr>
             <tr>
-              <td class="px-0" width="40%">Счет бонсенс</td>
+              <td class="px-0" width="40%">Внешний счет</td>
               <td class="px-0"><?= $data['order']['order_name_out']; ?></td>
             </tr>
             <tr>

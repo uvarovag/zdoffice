@@ -107,7 +107,7 @@
     <div class="form-row">
       <div class="form-group col mb-0">
         <input type="text" class="form-control form-control-sm" name="search"
-               value="<?= $data['formData']['search']; ?>" placeholder="id / счет бонсенс / контрагент">
+               value="<?= $data['formData']['search']; ?>" placeholder="id / внешний счет / контрагент">
       </div>
       <div class="form-group col-3 mb-0 input-daterange datepicker">
         <div class="input-group">
@@ -136,7 +136,7 @@
       <tr>
         <th scope="col">Дата создания</th>
         <th scope="col">Контрагент</th>
-        <th scope="col">Счет бонсенс</th>
+        <th scope="col">Внешний счет</th>
         <th scope="col">Менеджер</th>
         <th scope="col">Дизайнер</th>
         <th scope="col">Приоритет</th>
