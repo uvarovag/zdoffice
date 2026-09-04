@@ -120,6 +120,50 @@
             <?php endforeach; ?>
           </table>
         </div>
+
+        <div class="mb-4">
+          <hr>
+          <h4 class="mb-4">Клиенты</h4>
+          <table class="table mb-4">
+            <tr class="">
+              <td class="px-0" width="60%">просматривать клиентов</td>
+              <td class="px-0"><?= $data['user']['auth_clients_view'] ? '<i class="ni ni-fat-add text-success"></i>' :
+									'<i class="ni ni-fat-delete text-danger"></i>'; ?></td>
+            </tr>
+            <tr class="">
+              <td class="px-0">создавать клиентов</td>
+              <td class="px-0"><?= $data['user']['auth_clients_new'] ? '<i class="ni ni-fat-add text-success"></i>' :
+									'<i class="ni ni-fat-delete text-danger"></i>'; ?></td>
+            </tr>
+            <tr class="">
+              <td class="px-0">редактировать клиентов</td>
+              <td class="px-0"><?= $data['user']['auth_clients_edit'] ? '<i class="ni ni-fat-add text-success"></i>' :
+									'<i class="ni ni-fat-delete text-danger"></i>'; ?></td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="mb-4">
+          <hr>
+          <h4 class="mb-4">Деньги</h4>
+          <table class="table mb-4">
+            <tr class="">
+              <td class="px-0" width="60%">просматривать раздел «Деньги»</td>
+              <td class="px-0"><?= $data['user']['auth_money_view'] ? '<i class="ni ni-fat-add text-success"></i>' :
+									'<i class="ni ni-fat-delete text-danger"></i>'; ?></td>
+            </tr>
+            <tr class="">
+              <td class="px-0">вносить операции</td>
+              <td class="px-0"><?= $data['user']['auth_money_new'] ? '<i class="ni ni-fat-add text-success"></i>' :
+									'<i class="ni ni-fat-delete text-danger"></i>'; ?></td>
+            </tr>
+            <tr class="">
+              <td class="px-0">удалять операции</td>
+              <td class="px-0"><?= $data['user']['auth_money_delete'] ? '<i class="ni ni-fat-add text-success"></i>' :
+									'<i class="ni ni-fat-delete text-danger"></i>'; ?></td>
+            </tr>
+          </table>
+        </div>
       </div>
       <div class="col-12 col-md-6">
         <div class="mb-4">

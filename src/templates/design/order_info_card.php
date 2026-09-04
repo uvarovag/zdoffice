@@ -16,7 +16,15 @@
           <table class="table">
             <tr>
               <td class="px-0" width="40%">Контрагент</td>
-              <td class="px-0"><?= $data['order']['client_name']; ?></td>
+              <td class="px-0">
+								<?php if ($data['order']['client_id']): ?>
+                <a href="<?= $data['CONFIG']['HOST'] . '/clients.php?action=client_info_card&id=' . $data['order']['client_id']; ?>">
+									<?= $data['order']['client_name']; ?>
+                </a>
+								<?php else: ?>
+									<?= $data['order']['client_name']; ?>
+								<?php endif; ?>
+              </td>
             </tr>
             <tr>
               <td class="px-0">Телефон</td>
@@ -40,6 +48,10 @@
             <tr>
               <td class="px-0" width="40%">Счет бонсенс</td>
               <td class="px-0"><?= $data['order']['order_name_out']; ?></td>
+            </tr>
+            <tr>
+              <td class="px-0">Стоимость</td>
+              <td class="px-0"><?= $data['order']['order_amount']; ?></td>
             </tr>
             <tr>
               <td class="px-0">Менеджер</td>
@@ -209,6 +221,14 @@
                  href="#tabs-icons-text-designer" role="tab"
                  aria-controls="tabs-icons-text-designer" aria-selected="false"><?= $data['PROG_DATA']['DESIGN_TYPES'][$data['order']['design_format']] ?? '???' ; ?></a>
             </li>
+						<?php if ($data['showMoney'] ?? false): ?>
+            <li class="nav-item">
+              <a class="mb-3 nav-link mb-sm-3 mb-md-0 <?= $data['activeTab'] == 'money' ? 'active' : ''; ?>" id="tabs-icons-text-money-tab"
+                 data-toggle="tab"
+                 href="#tabs-icons-text-money" role="tab"
+                 aria-controls="tabs-icons-text-money" aria-selected="false">Оплаты</a>
+            </li>
+						<?php endif; ?>
           </ul>
         </div>
         <div class="card shadow">
@@ -365,6 +385,26 @@
 									<?php endforeach; ?>
                 </table>
               </div>
+
+							<?php if ($data['showMoney'] ?? false): ?>
+              <div class="tab-pane fade <?= $data['activeTab'] == 'money' ? 'show active' : ''; ?>" id="tabs-icons-text-money" role="tabpanel"
+                   aria-labelledby="tabs-icons-text-money-tab">
+								<?php echo renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/src/templates/money/transactions_table.php', $data); ?>
+								<?php if ($_SESSION['user']['auth_money_new'] ?? false): ?>
+									<?php
+										$data['orderId'] = $data['order']['id'];
+										$data['orderType'] = $data['PROG_DATA']['ORDER_TYPES']['DESIGN'];
+										$data['clientId'] = $data['order']['client_id'];
+										$data['clients'] = $data['order']['client_id'] ?
+											[['id' => $data['order']['client_id'], 'name' => $data['order']['client_name']]] : [];
+										$data['redirectSuccess'] = $data['CONFIG']['HOST'] . '/design.php?' .
+											http_build_query(['action' => 'order_info_card', 'active_tab' => 'money', 'id' => $data['order']['id']]);
+										$data['redirectError'] = $data['redirectSuccess'];
+										echo renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/src/templates/money/transaction_form.php', $data);
+									?>
+								<?php endif; ?>
+              </div>
+							<?php endif; ?>
 
             </div>
           </div>

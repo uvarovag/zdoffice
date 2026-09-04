@@ -18,25 +18,19 @@
                        pattern="^[a-zA-Z0-9 ]+$">
               </div>
               <div class="form-group col-12 mb-4">
-                <small class="text-gray">контагент (<?= 'ru en ' . $data['CONFIG']['MIN_LEN_A'] . '-' . $data['CONFIG']['MAX_LEN_A']; ?>)</small>
-                <input type="text" name="client_name" class="form-control" required
-                       minlength="<?= $data['CONFIG']['MIN_LEN_A']; ?>" maxlength="<?= $data['CONFIG']['MAX_LEN_A']; ?>"
-                       pattern="^[a-zA-Zа-яА-ЯёЁ0-9 ]+$">
+                <small class="text-gray">клиент</small>
+                <select name="client_id" class="form-control" required>
+                  <option value=""></option>
+									<?php foreach ($data['clients'] as $client): ?>
+                    <option value="<?= $client['id']; ?>">
+											<?= $client['name'] . ' — ' . $data['CONFIG']['PHONE_PREFIX'] . ' ' . $client['mobile_phone']; ?>
+                    </option>
+									<?php endforeach; ?>
+                </select>
               </div>
               <div class="form-group col-12 mb-4">
-                <small class="text-gray">телефон</small>
-                <div class="input-group">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1"><?= $data['CONFIG']['PHONE_PREFIX']; ?></span>
-                  </div>
-                  <input type="tel" name="mobile_phone" class="form-control" required
-                         pattern="\d{2}\s\d{3}\s\d{2}\s\d{2}"
-                         placeholder="XX XXX XX XX"">
-                </div>
-              </div>
-              <div class="form-group col-12 mb-4">
-                <small class="text-gray">почта</small>
-                <input type="email" name="email" class="form-control">
+                <small class="text-gray">стоимость заявки</small>
+                <input type="number" name="order_amount" class="form-control" step="0.01" min="0.01" required>
               </div>
             </div>
           </div>

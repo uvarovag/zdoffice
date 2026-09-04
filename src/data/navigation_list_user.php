@@ -63,5 +63,40 @@ $navigationListUser = [
 		'isCaption' => 		false,
 		'isActive' => 		false,
 		'isAvailable' =>	true
+	],
+	'captionClients' => [
+		'title' => 				'Клиенты',
+		'url' => 					'#',
+		'isCaption' => 		true,
+		'isActive' => 		false,
+		'isAvailable' =>	true
+	],
+	'clientsList' => [
+		'title' => 				'<i class="ni ni-bullet-list-67 text-primary"></i><span class="nav-link-text">Клиенты</span>',
+		'url' => 					$PROG_CONFIG['HOST'] . '/clients.php?action=clients_list',
+		'isCaption' => 		false,
+		'isActive' => 		false,
+		'isAvailable' =>	true
+	],
+	'newClientCard' => [
+		'title' => 				'<i class="ni ni-fat-add text-primary"></i><span class="nav-link-text">Добавить клиента</span>',
+		'url' => 					$PROG_CONFIG['HOST'] . '/clients.php?action=new_client_card',
+		'isCaption' => 		false,
+		'isActive' => 		false,
+		'isAvailable' =>	true
+	],
+	'captionMoney' => [
+		'title' => 				'Деньги',
+		'url' => 					'#',
+		'isCaption' => 		true,
+		'isActive' => 		false,
+		'isAvailable' =>	true
+	],
+	'moneyJournal' => [
+		'title' => 				'<i class="ni ni-money-coins text-primary"></i><span class="nav-link-text">Деньги</span>',
+		'url' => 					$PROG_CONFIG['HOST'] . '/money.php?action=money_journal',
+		'isCaption' => 		false,
+		'isActive' => 		false,
+		'isAvailable' =>	true
 	]
 ];

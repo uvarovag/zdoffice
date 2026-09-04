@@ -33,6 +33,9 @@ if (isset($_GET['action']) && $_GET['action'] == 'new_order_card') {
 	$tmpLayoutContentData['designers'] =
 		getDesignersUserData($PROG_DATA['DESIGN_TYPES'], $con, 'AND is_block = 0 AND is_deleted = 0 ORDER BY last_name');
 
+	$tmpLayoutContentData['clients'] =
+		dbSelectData($con, 'SELECT id, name, mobile_phone FROM clients WHERE is_deleted = 0 ORDER BY name', []);
+
 	$tmpLayoutData['content'] = renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/src/templates/production/new_order.php', $tmpLayoutContentData);
 }
 
@@ -53,7 +56,7 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'order_in
 
 	$tmpLayoutContentData['activeTab'] = isset($_GET['active_tab']) ? $_GET['active_tab'] : 'notes';
 
-	$sqlSelect = 'SELECT *, 
+	$sqlSelect = 'SELECT production_orders.*, c.name AS client_name, c.mobile_phone, c.email,
 	DATE_FORMAT(general_deadline, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS general_deadline, ';
 
 	foreach ($PROG_DATA['DEPARTMENTS_LIST'] as $depKey => $depVal) {
@@ -62,7 +65,7 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'order_in
 	}
 
 	$sqlSelect = substr($sqlSelect, 0, -2);
-	$sqlSelect = $sqlSelect . 'FROM production_orders WHERE id = ?';
+	$sqlSelect = $sqlSelect . 'FROM production_orders LEFT JOIN clients c ON production_orders.client_id = c.id WHERE production_orders.id = ?';
 
 	$tmpLayoutContentData['order'] = dbSelectData($con, $sqlSelect, [$_GET['id']])[0] ?? [];
 
@@ -120,6 +123,23 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'order_in
 	$tmpLayoutContentData['files'] =
 		dbSelectData($con, $filesQuery, [$tmpLayoutContentData['order']['id'], $PROG_DATA['ORDER_TYPES']['PRODUCTION']]);
 
+	if ($_SESSION['user']['auth_money_view'] ?? false) {
+		$tmpLayoutContentData['showMoney'] = true;
+		$tmpLayoutContentData['canDelete'] = $_SESSION['user']['auth_money_delete'] ?? false;
+		$tmpLayoutContentData['redirectBack'] = $PROG_CONFIG['HOST'] .
+			'/production.php?action=order_info_card&active_tab=money&id=' . $tmpLayoutContentData['order']['id'];
+
+		$tmpLayoutContentData['transactions'] = dbSelectData($con,
+			'SELECT mt.*, c.name AS client_name, u.last_name AS user_last_name, u.first_name AS user_first_name,
+				DATE_FORMAT(mt.create_datetime, ' . $PROG_CONFIG['DATETIME_FORMAT'] . ') AS create_datetime
+			FROM money_transactions mt
+			LEFT JOIN clients c ON mt.client_id = c.id
+			LEFT JOIN adm_users u ON mt.user_id = u.id
+			WHERE mt.order_id = ? AND mt.order_type = ? AND (mt.is_deleted = 0 OR mt.is_deleted IS NULL)
+			ORDER BY mt.id DESC',
+			[$tmpLayoutContentData['order']['id'], $PROG_DATA['ORDER_TYPES']['PRODUCTION']]);
+	}
+
 	$tmpLayoutModalData = [
 		'CONFIG' => &$PROG_CONFIG,
 		'PROG_DATA' => $PROG_DATA,
@@ -174,11 +194,12 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	$tmpLayoutContentData['formData']['dateFrom'] = $_GET['date_from'] ?? '';
 	$tmpLayoutContentData['formData']['dateTo'] = $_GET['date_to'] ?? '';
 
-	$sqlQuerySelectPagination = 'SELECT COUNT(*) as pgn FROM production_orders o ';
+	$sqlQuerySelectPagination = 'SELECT COUNT(*) as pgn FROM production_orders o LEFT JOIN clients c ON o.client_id = c.id ';
 
-	$sqlQuerySelect = 'SELECT 
-       ud.last_name AS ud_last_name, ud.first_name AS ud_first_name, 
-       uc.last_name AS uc_last_name, uc.first_name AS uc_first_name, ';
+	$sqlQuerySelect = 'SELECT
+       ud.last_name AS ud_last_name, ud.first_name AS ud_first_name,
+       uc.last_name AS uc_last_name, uc.first_name AS uc_first_name,
+       c.name AS client_name, ';
 
     if (isset($_GET['button-action']) && $_GET['button-action'] == 'download') {
         foreach ($PROG_DATA['DEPARTMENTS_LIST'] as $depKey => $depVal) {
@@ -197,14 +218,15 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
         }
     }
 
-	$sqlQuerySelect = $sqlQuerySelect . 'o.id, o.designer_id, o.order_name_in, o.order_name_out, o.client_name, 
-       o.task_text, o.order_priority, 
+	$sqlQuerySelect = $sqlQuerySelect . 'o.id, o.designer_id, o.order_name_in, o.order_name_out,
+       o.task_text, o.order_priority,
        o.error_priority, DATE_FORMAT(o.general_deadline, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS general_deadline,
-       o.error_priority, DATE_FORMAT(o.create_datetime, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS create_datetime 
+       o.error_priority, DATE_FORMAT(o.create_datetime, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS create_datetime
        FROM production_orders o ';
 
 	$sqlQueryJoin1 = 'LEFT JOIN adm_users ud ON o.designer_id = ud.id ';
 	$sqlQueryJoin2 = 'LEFT JOIN adm_users uc ON o.create_user_id = uc.id ';
+	$sqlQueryJoin3 = 'LEFT JOIN clients c ON o.client_id = c.id ';
 	$sqlQueryWhere = 'WHERE o.id > 0 ';
 	$sqlParameters = [];
 	$sqlSortBy = '';
@@ -281,7 +303,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	}
 
 	if (isset($_GET['search']) && $_GET['search']) {
-		$sqlQueryWhere = $sqlQueryWhere . 'AND (order_name_in LIKE ? OR order_name_out LIKE ? OR client_name LIKE ?) ';
+		$sqlQueryWhere = $sqlQueryWhere . 'AND (order_name_in LIKE ? OR order_name_out LIKE ? OR c.name LIKE ?) ';
 		$sqlParameters[] = '%' . $_GET['search'] . '%';
 		$sqlParameters[] = '%' . $_GET['search'] . '%';
 		$sqlParameters[] = '%' . $_GET['search'] . '%';
@@ -324,7 +346,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	$tmpLayoutContentData['designers'] = getDesignersUserData($PROG_DATA['DESIGN_TYPES'], $con, 'ORDER BY last_name');
 
 	$tmpLayoutContentData['orders'] =
-		dbSelectData($con, $sqlQuerySelect . $sqlQueryJoin1 . $sqlQueryJoin2 . $sqlQueryWhere . $sqlSortBy . $sqlPagination, $sqlParameters) ?? [];
+		dbSelectData($con, $sqlQuerySelect . $sqlQueryJoin1 . $sqlQueryJoin2 . $sqlQueryJoin3 . $sqlQueryWhere . $sqlSortBy . $sqlPagination, $sqlParameters) ?? [];
 
 	foreach ($tmpLayoutContentData['orders'] as $key => $val) {
 		$tmpLayoutContentData['orders'][$key]['general_status'] =
@@ -358,7 +380,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'new_order_data') {
 
 	$_SESSION['formId'] = 'none';
 
-	if (isValidNewProductionOrderData($PROG_CONFIG) === false) {
+	if (isValidNewProductionOrderData($PROG_CONFIG, $con) === false) {
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] . '/production.php?action=new_order_card&error_massage=' . $PROG_DATA['ERROR']['INPUT_DATA']);
 	}
@@ -376,9 +398,8 @@ if (isset($_POST['action']) && $_POST['action'] == 'new_order_data') {
 
 		'order_priority' => $PROG_DATA['PRIORITY_ID']['NORM'],
 
-		'client_name' => correctFormatUpper($_POST['client_name']),
-		'mobile_phone' => correctFormat($_POST['mobile_phone']),
-		'email' => correctFormatLower($_POST['email']),
+		'client_id' => (int)$_POST['client_id'],
+		'order_amount' => (float)$_POST['order_amount'],
 
 		'task_text' => correctFormat($_POST['task_text']),
 		'task_quantity' => $_POST['task_quantity'],
@@ -524,6 +545,15 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['depart
 			$_POST['order_id'] . '&error_massage=' . $PROG_DATA['ERROR']['ACCESS_DENIED'] . ' ' . __LINE__);
 	}
 
+	// заявку, которая уже выполнена (или сдана), отменить нельзя
+	if ($_POST['status'] == $PROG_DATA['STATUS_ID_PRODUCTION']['WAIT_CANCEL'] &&
+		in_array(currentGeneralStatus($orderData, $PROG_DATA['DEPARTMENTS_LIST']),
+			[$PROG_DATA['STATUS_ID_PRODUCTION']['DONE'], $PROG_DATA['STATUS_ID_PRODUCTION']['ISSUED']], true)) {
+		redirectToIf(false, '',
+			$PROG_CONFIG['HOST'] . '/production.php?action=order_info_card&id=' .
+			$_POST['order_id'] . '&error_massage=Упс, заявку после выполнения отменить нельзя!');
+	}
+
 	// подтвердить отмену у кого есть права && статус 'ожидание подтверждения отмены - (998 WAIT_CANCEL)'
 	if ($_POST['status'] == $PROG_DATA['STATUS_ID_PRODUCTION']['CANCEL'] &&
 		($_SESSION['user']['auth_production_order_cancel'] == 0 ||
@@ -630,7 +660,43 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['depart
 
 	$changeStatus = dbExecQuery($con, $sqlQueryUpdate . $sqlQuerySet . $sqlQueryWhere, $sqlParameters);
 
-	if ($confirmStart && $confirmCancel && $changeStatus)
+	// автосписание стоимости заявки с баланса клиента при переводе в "выполнено" -
+	// DONE достижим только по отдельному цеху (department != 'all', см. проверку выше:
+	// диапазон START..DONE), а вся заявка считается выполненной, когда ВСЕ активные цеха
+	// одновременно на DONE. Симулируем итоговое состояние заявки после этого обновления
+	// (не перезапрашивая из БД - меняется только статус одного цеха) и проверяем
+	// currentGeneralStatus() по нему: если только что этим обновлением заявка целиком
+	// перешла в DONE - списываем. Строго в этой же транзакции, чтобы статус и списание
+	// были атомарны. При department == 'all' DONE недостижим (см. проверку выше про
+	// разрешённые статусы для 'all'), так что для группового обновления списание не
+	// проверяем - там оно просто не может сработать.
+	$moneyCharge = true;
+	if ($_POST['department'] != 'all' && $_POST['status'] == $PROG_DATA['STATUS_ID_PRODUCTION']['DONE']) {
+		$simulatedOrderData = $orderData;
+		// $_POST всегда строка, а значения из БД mysqli/mysqlnd возвращает как int -
+		// currentGeneralStatus() сравнивает строго (!==), поэтому обязательно приводим
+		// тип, иначе int(300) из БД у соседнего цеха не совпадёт со string("300") здесь
+		$simulatedOrderData[$_POST['department'] . '_current_status'] = (int)$_POST['status'];
+
+		if (currentGeneralStatus($simulatedOrderData, $PROG_DATA['DEPARTMENTS_LIST']) === $PROG_DATA['STATUS_ID_PRODUCTION']['DONE'] &&
+			$orderData['client_id'] && $orderData['order_amount']) {
+			$moneyCharge = (bool) dbInsertData($con, 'money_transactions', [
+				'is_deleted' => 0,
+				'type' => $PROG_DATA['MONEY_TYPES_ID']['CHARGE'],
+				'is_auto' => 1,
+				'client_id' => $orderData['client_id'],
+				'order_id' => $orderData['id'],
+				'order_type' => $PROG_DATA['ORDER_TYPES']['PRODUCTION'],
+				'amount' => $orderData['order_amount'],
+				'category' => 'списание по заявке',
+				'comment' => $orderData['order_name_out'],
+				'user_id' => $_SESSION['user']['id'],
+				'create_datetime' => date('Y-m-d H:i:s')
+			]);
+		}
+	}
+
+	if ($confirmStart && $confirmCancel && $changeStatus && $moneyCharge)
 		mysqli_query($con, 'COMMIT');
 	else
 		mysqli_query($con, 'ROLLBACK');
@@ -645,7 +711,7 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['depart
 		dbExecQuery($con, 'UPDATE production_orders SET order_priority = 1, sort_priority = 1, error_priority = 1 WHERE id = ?', [$_POST['order_id']]);
 	}
 
-	redirectToIf($confirmStart && $confirmCancel && $changeStatus,
+	redirectToIf($confirmStart && $confirmCancel && $changeStatus && $moneyCharge,
 		$_POST['redirect_success'] . '&alert_massage=' . $PROG_DATA['ALERT']['OK'],
 		$_POST['redirect_error'] . '&error_massage=' . $PROG_DATA['ERROR']['BD_WRITE']);
 

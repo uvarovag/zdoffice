@@ -53,5 +53,22 @@ function setNavListUser($navList, $user, $PROG_DATA) {
 		unset($navList['productionNewOrder']);
 
 
+	if ($user['auth_clients_view'] === 0 && $user['auth_clients_new'] === 0)
+		unset($navList['captionClients']);
+
+	if ($user['auth_clients_view'] === 0)
+		unset($navList['clientsList']);
+
+	if ($user['auth_clients_new'] === 0)
+		unset($navList['newClientCard']);
+
+
+	if ($user['auth_money_view'] === 0)
+		unset($navList['captionMoney']);
+
+	if ($user['auth_money_view'] === 0)
+		unset($navList['moneyJournal']);
+
+
 	return $navList;
 }

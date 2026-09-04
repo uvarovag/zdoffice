@@ -124,6 +124,38 @@
               </div>
             <?php endforeach; ?>
           </div>
+          <div class="mb-4">
+            <hr>
+            <h4>Клиенты</h4>
+            <div class="custom-control custom-checkbox mb-2">
+              <input type="checkbox" name="clients_view" id="auth_clients_view" class="custom-control-input">
+              <label class="custom-control-label" for="auth_clients_view">просматривать клиентов</label>
+            </div>
+            <div class="custom-control custom-checkbox mb-2">
+              <input type="checkbox" name="clients_new" id="auth_clients_new" class="custom-control-input">
+              <label class="custom-control-label" for="auth_clients_new">создавать клиентов</label>
+            </div>
+            <div class="custom-control custom-checkbox mb-2">
+              <input type="checkbox" name="clients_edit" id="auth_clients_edit" class="custom-control-input">
+              <label class="custom-control-label" for="auth_clients_edit">редактировать клиентов</label>
+            </div>
+          </div>
+          <div class="mb-4">
+            <hr>
+            <h4>Деньги</h4>
+            <div class="custom-control custom-checkbox mb-2">
+              <input type="checkbox" name="money_view" id="auth_money_view" class="custom-control-input">
+              <label class="custom-control-label" for="auth_money_view">просматривать раздел «Деньги»</label>
+            </div>
+            <div class="custom-control custom-checkbox mb-2">
+              <input type="checkbox" name="money_new" id="auth_money_new" class="custom-control-input">
+              <label class="custom-control-label" for="auth_money_new">вносить операции</label>
+            </div>
+            <div class="custom-control custom-checkbox mb-2">
+              <input type="checkbox" name="money_delete" id="auth_money_delete" class="custom-control-input">
+              <label class="custom-control-label" for="auth_money_delete">удалять операции</label>
+            </div>
+          </div>
         </div>
       </div>
       <div class="mb-4">

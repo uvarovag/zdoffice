@@ -10,6 +10,7 @@ function setProgData() {
 	require_once($_SERVER['DOCUMENT_ROOT'] . '/src/data/program_data_massages.php');
 	require_once($_SERVER['DOCUMENT_ROOT'] . '/src/data/program_data_departments_list.php');
 	require_once($_SERVER['DOCUMENT_ROOT'] . '/src/data/program_data_design_types.php');
+	require_once($_SERVER['DOCUMENT_ROOT'] . '/src/data/program_data_money_types.php');
 
 	$PROG_DATA = [
 		'USERS_POSITIONS_LIST' => $USERS_POSITIONS_LIST,
@@ -29,6 +30,9 @@ function setProgData() {
 		'ORDER_TYPES' => $ORDER_TYPES,
 
 		'DESIGN_TYPES' => $DESIGN_TYPES,
+
+		'MONEY_TYPES_LIST' => $MONEY_TYPES_LIST,
+		'MONEY_TYPES_ID' => $MONEY_TYPES_ID,
 
 		'ERROR' => $ERROR,
 		'ALERT' => $ALERT

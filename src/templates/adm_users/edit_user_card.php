@@ -152,6 +152,44 @@
               </div>
             <?php endforeach; ?>
           </div>
+          <div class="mb-4">
+            <hr>
+            <h4>Клиенты</h4>
+            <div class="custom-control custom-checkbox mb-2">
+              <input type="checkbox" name="clients_view" id="clients_view"
+                     class="custom-control-input" <?= $data['user']['auth_clients_view'] ? 'checked' : ''; ?>>
+              <label class="custom-control-label" for="clients_view">просматривать клиентов</label>
+            </div>
+            <div class="custom-control custom-checkbox mb-2">
+              <input type="checkbox" name="clients_new" id="clients_new"
+                     class="custom-control-input" <?= $data['user']['auth_clients_new'] ? 'checked' : ''; ?>>
+              <label class="custom-control-label" for="clients_new">создавать клиентов</label>
+            </div>
+            <div class="custom-control custom-checkbox mb-2">
+              <input type="checkbox" name="clients_edit" id="clients_edit"
+                     class="custom-control-input" <?= $data['user']['auth_clients_edit'] ? 'checked' : ''; ?>>
+              <label class="custom-control-label" for="clients_edit">редактировать клиентов</label>
+            </div>
+          </div>
+          <div class="mb-4">
+            <hr>
+            <h4>Деньги</h4>
+            <div class="custom-control custom-checkbox mb-2">
+              <input type="checkbox" name="money_view" id="money_view"
+                     class="custom-control-input" <?= $data['user']['auth_money_view'] ? 'checked' : ''; ?>>
+              <label class="custom-control-label" for="money_view">просматривать раздел «Деньги»</label>
+            </div>
+            <div class="custom-control custom-checkbox mb-2">
+              <input type="checkbox" name="money_new" id="money_new"
+                     class="custom-control-input" <?= $data['user']['auth_money_new'] ? 'checked' : ''; ?>>
+              <label class="custom-control-label" for="money_new">вносить операции</label>
+            </div>
+            <div class="custom-control custom-checkbox mb-2">
+              <input type="checkbox" name="money_delete" id="money_delete"
+                     class="custom-control-input" <?= $data['user']['auth_money_delete'] ? 'checked' : ''; ?>>
+              <label class="custom-control-label" for="money_delete">удалять операции</label>
+            </div>
+          </div>
         </div>
       </div>
       <div class="">

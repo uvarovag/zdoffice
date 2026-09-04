@@ -30,6 +30,9 @@ if (isset($_GET['action']) && $_GET['action'] == 'new_order_card') {
 		$_SESSION['navList']['designNewOrder']['isActive'] = true;
 	$tmpLayoutData['title'] = 'Новая заявка на дизайн';
 
+	$tmpLayoutContentData['clients'] =
+		dbSelectData($con, 'SELECT id, name, mobile_phone FROM clients WHERE is_deleted = 0 ORDER BY name', []);
+
 	$tmpLayoutData['content'] = renderTemplate($_SERVER['DOCUMENT_ROOT'] .
 		'/src/templates/design/new_order.php', $tmpLayoutContentData);
 }
@@ -54,10 +57,12 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'order_in
 		$tmpLayoutContentData['activeTab'] = $_GET['active_tab'];
 
 	$tmpLayoutContentData['order'] =
-		dbSelectData($con, 'SELECT *, 
+		dbSelectData($con, 'SELECT design_orders.*, c.name AS client_name, c.mobile_phone, c.email,
 		DATE_FORMAT(deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS deadline_date,
-		' . addSuffixStatusList('datetime_status_', $PROG_DATA['STATUS_ID_DESIGN'], $PROG_CONFIG['DATETIME_FORMAT']) . ' 
-		FROM design_orders WHERE id = ?', [$_GET['id']])[0] ?? [];
+		' . addSuffixStatusList('datetime_status_', $PROG_DATA['STATUS_ID_DESIGN'], $PROG_CONFIG['DATETIME_FORMAT']) . '
+		FROM design_orders
+		LEFT JOIN clients c ON design_orders.client_id = c.id
+		WHERE design_orders.id = ?', [$_GET['id']])[0] ?? [];
 
 	if (empty($tmpLayoutContentData['order'])) {
 		redirectToIf(false, '', $PROG_CONFIG['HOST'] .
@@ -98,6 +103,23 @@ if (isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'order_in
 
 	$tmpLayoutContentData['files'] =
 		dbSelectData($con, $filesQuery, [$tmpLayoutContentData['order']['id'], $PROG_DATA['ORDER_TYPES']['DESIGN']]);
+
+	if ($_SESSION['user']['auth_money_view'] ?? false) {
+		$tmpLayoutContentData['showMoney'] = true;
+		$tmpLayoutContentData['canDelete'] = $_SESSION['user']['auth_money_delete'] ?? false;
+		$tmpLayoutContentData['redirectBack'] = $PROG_CONFIG['HOST'] .
+			'/design.php?action=order_info_card&active_tab=money&id=' . $tmpLayoutContentData['order']['id'];
+
+		$tmpLayoutContentData['transactions'] = dbSelectData($con,
+			'SELECT mt.*, c.name AS client_name, u.last_name AS user_last_name, u.first_name AS user_first_name,
+				DATE_FORMAT(mt.create_datetime, ' . $PROG_CONFIG['DATETIME_FORMAT'] . ') AS create_datetime
+			FROM money_transactions mt
+			LEFT JOIN clients c ON mt.client_id = c.id
+			LEFT JOIN adm_users u ON mt.user_id = u.id
+			WHERE mt.order_id = ? AND mt.order_type = ? AND (mt.is_deleted = 0 OR mt.is_deleted IS NULL)
+			ORDER BY mt.id DESC',
+			[$tmpLayoutContentData['order']['id'], $PROG_DATA['ORDER_TYPES']['DESIGN']]);
+	}
 
 	$tmpLayoutModalData = [
 		'CONFIG' => &$PROG_CONFIG,
@@ -148,19 +170,21 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 	$tmpLayoutContentData['formData']['dateFrom'] = $_GET['date_from'] ?? '';
 	$tmpLayoutContentData['formData']['dateTo'] = $_GET['date_to'] ?? '';
 
-	$sqlQuerySelectPagination = 'SELECT COUNT(*) as pgn FROM design_orders o ';
+	$sqlQuerySelectPagination = 'SELECT COUNT(*) as pgn FROM design_orders o LEFT JOIN clients c ON o.client_id = c.id ';
 
-	$sqlQuerySelect = 'SELECT 
-	ud.last_name AS ud_last_name, ud.first_name AS ud_first_name, 
-	uc.last_name AS uc_last_name, uc.first_name AS uc_first_name, 
-	o.id, o.order_name_in, o.order_name_out, o.client_name, o.designer_id, o.create_user_id, o.design_format, o.task_text, 
-	o.current_status, o.order_priority, o.error_priority, 
-	DATE_FORMAT(o.deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS deadline_date, 
-	DATE_FORMAT(o.datetime_status_0, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS datetime_status_0 
+	$sqlQuerySelect = 'SELECT
+	ud.last_name AS ud_last_name, ud.first_name AS ud_first_name,
+	uc.last_name AS uc_last_name, uc.first_name AS uc_first_name,
+	c.name AS client_name,
+	o.id, o.order_name_in, o.order_name_out, o.designer_id, o.create_user_id, o.design_format, o.task_text,
+	o.current_status, o.order_priority, o.error_priority,
+	DATE_FORMAT(o.deadline_date, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS deadline_date,
+	DATE_FORMAT(o.datetime_status_0, ' . $PROG_CONFIG['DATE_FORMAT'] . ') AS datetime_status_0
 	FROM design_orders o ';
 
 	$sqlQueryJoin1 = 'LEFT JOIN adm_users ud ON o.designer_id = ud.id ';
 	$sqlQueryJoin2 = 'LEFT JOIN adm_users uc ON o.create_user_id = uc.id ';
+	$sqlQueryJoin3 = 'LEFT JOIN clients c ON o.client_id = c.id ';
 	$sqlQueryWhere = 'WHERE o.id > 0 ';
 	$sqlParameters = [];
 
@@ -214,7 +238,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 
 
 	if (isset($_GET['search']) && $_GET['search']) {
-		$sqlQueryWhere = $sqlQueryWhere . 'AND (order_name_in LIKE ? OR order_name_out LIKE ? OR client_name LIKE ?) ';
+		$sqlQueryWhere = $sqlQueryWhere . 'AND (order_name_in LIKE ? OR order_name_out LIKE ? OR c.name LIKE ?) ';
 		$sqlParameters[] = '%' . $_GET['search'] . '%';
 		$sqlParameters[] = '%' . $_GET['search'] . '%';
 		$sqlParameters[] = '%' . $_GET['search'] . '%';
@@ -251,7 +275,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'orders_list') {
 
 
 	$tmpLayoutContentData['orders'] =
-		dbSelectData($con, $sqlQuerySelect . $sqlQueryJoin1 . $sqlQueryJoin2 . $sqlQueryWhere . $sqlSortBy . $sqlPagination, $sqlParameters) ?? [];
+		dbSelectData($con, $sqlQuerySelect . $sqlQueryJoin1 . $sqlQueryJoin2 . $sqlQueryJoin3 . $sqlQueryWhere . $sqlSortBy . $sqlPagination, $sqlParameters) ?? [];
 
 	$tmpLayoutData['content'] =
 		renderTemplate($_SERVER['DOCUMENT_ROOT'] . '/src/templates/design/orders_list.php', $tmpLayoutContentData);
@@ -272,7 +296,7 @@ if (isset($_POST['action']) && isset($_POST['form_id']) && $_POST['action'] == '
 
 	$_SESSION['formId'] = 'none';
 
-	if (isValidNewDesignOrderData($PROG_CONFIG) === false) {
+	if (isValidNewDesignOrderData($PROG_CONFIG, $con) === false) {
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] . '/design.php?action=new_order_card&error_massage=' . $PROG_DATA['ERROR']['INPUT_DATA']);
 	}
@@ -288,9 +312,8 @@ if (isset($_POST['action']) && isset($_POST['form_id']) && $_POST['action'] == '
 		'create_user_id' => $_SESSION['user']['id'],
 		'order_name_out' => correctFormatUpper($_POST['order_name_out']),
 		'order_priority' => $PROG_DATA['PRIORITY_ID']['NORM'],
-		'client_name' => correctFormatUpper($_POST['client_name']),
-		'mobile_phone' => correctFormat($_POST['mobile_phone']),
-		'email' => correctFormatLower($_POST['email']),
+		'client_id' => (int)$_POST['client_id'],
+		'order_amount' => (float)$_POST['order_amount'],
 		'task_text' => correctFormat($_POST['task_text']),
 		'design_format' => $_POST['design_format'],
 		'deadline_date' => date('Y-m-d H:i:s', strtotime($_POST['deadline_date'])),
@@ -453,7 +476,7 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['status
 
 		redirectToIf(false, '',
 			$PROG_CONFIG['HOST'] . '/design.php?action=order_info_card&id=' .
-			$_POST['order_id'] . '&error_massage=' . $PROG_DATA['ERROR']['ACCESS_DENIED'] . __LINE__);
+			$_POST['order_id'] . '&error_massage=Упс, заявку после выполнения отменить нельзя!');
 	}
 
 	// отменить только кто создал
@@ -487,13 +510,33 @@ if (isset($_POST['action']) && isset($_POST['order_id']) && isset($_POST['status
 	$orderStatus = changeOrderStatusAndSetDatetime($con, 'design_orders', 'current_status',
 		'datetime_status_', $_POST['status'], $_POST['order_id']);
 
-	if ($sortPriority && $orderStatus)
+	// автосписание стоимости заявки с баланса клиента при переводе в "выполнено" -
+	// строго в этой же транзакции, чтобы статус и списание были атомарны
+	$moneyCharge = true;
+	if ($_POST['status'] == $PROG_DATA['STATUS_ID_DESIGN']['DONE'] &&
+		$orderData['client_id'] && $orderData['order_amount']) {
+		$moneyCharge = (bool) dbInsertData($con, 'money_transactions', [
+			'is_deleted' => 0,
+			'type' => $PROG_DATA['MONEY_TYPES_ID']['CHARGE'],
+			'is_auto' => 1,
+			'client_id' => $orderData['client_id'],
+			'order_id' => $orderData['id'],
+			'order_type' => $PROG_DATA['ORDER_TYPES']['DESIGN'],
+			'amount' => $orderData['order_amount'],
+			'category' => 'списание по заявке',
+			'comment' => $orderData['order_name_out'],
+			'user_id' => $_SESSION['user']['id'],
+			'create_datetime' => date('Y-m-d H:i:s')
+		]);
+	}
+
+	if ($sortPriority && $orderStatus && $moneyCharge)
 		mysqli_query($con, 'COMMIT');
 	else
 		mysqli_query($con, 'ROLLBACK');
 
 
-	redirectToIf($sortPriority && $orderStatus,
+	redirectToIf($sortPriority && $orderStatus && $moneyCharge,
 		$_POST['redirect_success'] . '&alert_massage=' . $PROG_DATA['ALERT']['OK'],
 		$_POST['redirect_error'] . '&error_massage=' . $PROG_DATA['ERROR']['BD_WRITE']);
 }

@@ -39,7 +39,21 @@ function createNewAdmUser($con, $departmentsList, $designTypes, $tableName) {
 				$_POST['production_order_start'] == 'on') ? 1 : 0,
 		'auth_production_order_cancel' =>
 			(isset($_POST['production_order_cancel']) &&
-				$_POST['production_order_cancel'] == 'on') ? 1 : 0
+				$_POST['production_order_cancel'] == 'on') ? 1 : 0,
+
+		'auth_clients_view' =>
+			(isset($_POST['clients_view']) && $_POST['clients_view'] == 'on') ? 1 : 0,
+		'auth_clients_new' =>
+			(isset($_POST['clients_new']) && $_POST['clients_new'] == 'on') ? 1 : 0,
+		'auth_clients_edit' =>
+			(isset($_POST['clients_edit']) && $_POST['clients_edit'] == 'on') ? 1 : 0,
+
+		'auth_money_view' =>
+			(isset($_POST['money_view']) && $_POST['money_view'] == 'on') ? 1 : 0,
+		'auth_money_new' =>
+			(isset($_POST['money_new']) && $_POST['money_new'] == 'on') ? 1 : 0,
+		'auth_money_delete' =>
+			(isset($_POST['money_delete']) && $_POST['money_delete'] == 'on') ? 1 : 0
 	];
 
 	foreach ($designTypes as $dKey => $dVal) {
@@ -91,26 +105,48 @@ function editAdmUserData($con, $departmentsList, $designTypes, $tableName) {
 				$_POST['production_order_start'] == 'on') ? 1 : 0,
 		'auth_production_order_cancel' =>
 			(isset($_POST['production_order_cancel']) &&
-				$_POST['production_order_cancel'] == 'on') ? 1 : 0
+				$_POST['production_order_cancel'] == 'on') ? 1 : 0,
+
+		'auth_clients_view' =>
+			(isset($_POST['clients_view']) && $_POST['clients_view'] == 'on') ? 1 : 0,
+		'auth_clients_new' =>
+			(isset($_POST['clients_new']) && $_POST['clients_new'] == 'on') ? 1 : 0,
+		'auth_clients_edit' =>
+			(isset($_POST['clients_edit']) && $_POST['clients_edit'] == 'on') ? 1 : 0,
+
+		'auth_money_view' =>
+			(isset($_POST['money_view']) && $_POST['money_view'] == 'on') ? 1 : 0,
+		'auth_money_new' =>
+			(isset($_POST['money_new']) && $_POST['money_new'] == 'on') ? 1 : 0,
+		'auth_money_delete' =>
+			(isset($_POST['money_delete']) && $_POST['money_delete'] == 'on') ? 1 : 0
 	];
 
-	$editUserQuery = 'UPDATE ' . $tableName . ' SET 
-		last_name = ?, 
-		first_name = ?, 
-		position = ?, 
-		mobile_phone = ?, 
-		email = ?, 
-		last_modify_datetime = ?, 
-		auth_design_order_new = ?, 
-		auth_design_order_view = ?, 
-		auth_design_order_select_designer = ?, 
-		auth_design_order_change_priority = ?, 
-		
-		auth_production_order_new = ?, 
-		auth_production_order_view = ?, 
-		auth_production_order_change_priority = ?, 
-		auth_production_order_start = ?, 
-		auth_production_order_cancel = ?, ';
+	$editUserQuery = 'UPDATE ' . $tableName . ' SET
+		last_name = ?,
+		first_name = ?,
+		position = ?,
+		mobile_phone = ?,
+		email = ?,
+		last_modify_datetime = ?,
+		auth_design_order_new = ?,
+		auth_design_order_view = ?,
+		auth_design_order_select_designer = ?,
+		auth_design_order_change_priority = ?,
+
+		auth_production_order_new = ?,
+		auth_production_order_view = ?,
+		auth_production_order_change_priority = ?,
+		auth_production_order_start = ?,
+		auth_production_order_cancel = ?,
+
+		auth_clients_view = ?,
+		auth_clients_new = ?,
+		auth_clients_edit = ?,
+
+		auth_money_view = ?,
+		auth_money_new = ?,
+		auth_money_delete = ?, ';
 
 	foreach ($designTypes as $dKey => $dVal) {
 
